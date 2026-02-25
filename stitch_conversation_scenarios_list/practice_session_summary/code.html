@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Practice Session Summary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#19a6b3",
+                        "background-light": "#f0f2f4",
+                        "background-dark": "#22252a",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .waveform-bar {
+            width: 3px;
+            background-color: #19a6b3;
+            border-radius: 2px;
+            margin: 0 1px;
+        }
+        .waveform-bar.inactive {
+            background-color: #d1e4e6;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#0e191b] dark:text-white transition-colors duration-300">
+<div class="relative flex h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-background-light dark:bg-background-dark">
+<!-- Top Navigation -->
+<div class="flex items-center p-4 pb-2 justify-between">
+<button class="text-[#0e191b] dark:text-white flex size-12 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h2 class="text-[#0e191b] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Session Summary</h2>
+</div>
+<div class="flex-1 overflow-y-auto pb-32">
+<!-- Header/Celebration Section -->
+<div class="px-4 pt-6 pb-2 text-center">
+<div class="inline-flex items-center justify-center p-4 bg-primary/10 rounded-full mb-4">
+<span class="material-symbols-outlined text-primary text-5xl">celebration</span>
+</div>
+<h1 class="text-[#0e191b] dark:text-white tracking-tight text-[32px] font-extrabold leading-tight">Congratulations!</h1>
+<p class="text-[#0e191b]/70 dark:text-white/70 text-base mt-2">Great job, Alex! You've successfully completed this practice session.</p>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-4 p-4">
+<div class="flex flex-col gap-2 rounded-xl p-5 border border-primary/20 bg-white dark:bg-[#2d3139] shadow-sm">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+<p class="text-[#0e191b]/60 dark:text-white/60 text-xs font-bold uppercase tracking-wider">Lines</p>
+</div>
+<p class="text-[#0e191b] dark:text-white tracking-tight text-2xl font-bold">10/10</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-5 border border-primary/20 bg-white dark:bg-[#2d3139] shadow-sm">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-lg">star</span>
+<p class="text-[#0e191b]/60 dark:text-white/60 text-xs font-bold uppercase tracking-wider">Perfect</p>
+</div>
+<p class="text-[#0e191b] dark:text-white tracking-tight text-2xl font-bold">7</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-5 border border-primary/20 bg-white dark:bg-[#2d3139] shadow-sm">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-lg">history</span>
+<p class="text-[#0e191b]/60 dark:text-white/60 text-xs font-bold uppercase tracking-wider">Retries</p>
+</div>
+<p class="text-[#0e191b] dark:text-white tracking-tight text-2xl font-bold">5</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-1 rounded-xl p-5 border-2 border-primary bg-white dark:bg-[#2d3139] shadow-md relative overflow-hidden">
+<!-- Subtle background decoration for the main stat -->
+<div class="absolute -right-2 -bottom-2 opacity-5">
+<span class="material-symbols-outlined text-8xl">insights</span>
+</div>
+<p class="text-primary text-xs font-black uppercase tracking-widest mb-1 z-10">Match Score</p>
+<div class="relative flex items-center justify-center z-10">
+<svg class="w-16 h-16 transform -rotate-90">
+<circle class="text-primary/10" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="6"></circle>
+<circle class="text-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175.9" stroke-dashoffset="22.8" stroke-width="6"></circle>
+</svg>
+<span class="absolute text-lg font-black text-[#0e191b] dark:text-white">87%</span>
+</div>
+</div>
+</div>
+<!-- Audio Review Section -->
+<div class="px-4 pt-4">
+<h3 class="text-[#0e191b] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-3">Review your recording</h3>
+<div class="bg-white dark:bg-[#2d3139] rounded-xl p-5 shadow-sm border border-black/5 dark:border-white/5">
+<div class="flex items-center gap-4 mb-4">
+<button class="size-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-3xl">play_arrow</span>
+</button>
+<div class="flex-1">
+<p class="text-sm font-bold text-[#0e191b] dark:text-white leading-tight">Practice Session #42</p>
+<p class="text-xs text-[#0e191b]/50 dark:text-white/50">2 mins 14 secs • English Conversation</p>
+</div>
+</div>
+<!-- Waveform visualization -->
+<div class="flex items-end justify-between h-12 w-full px-1">
+<!-- Simulated Waveform Bars -->
+<div class="waveform-bar h-4"></div><div class="waveform-bar h-6"></div><div class="waveform-bar h-8"></div><div class="waveform-bar h-5"></div>
+<div class="waveform-bar h-10"></div><div class="waveform-bar h-12"></div><div class="waveform-bar h-7"></div><div class="waveform-bar h-9"></div>
+<div class="waveform-bar h-6"></div><div class="waveform-bar h-4"></div><div class="waveform-bar h-5"></div><div class="waveform-bar h-8"></div>
+<div class="waveform-bar h-11"></div><div class="waveform-bar h-6"></div><div class="waveform-bar h-4"></div><div class="waveform-bar h-7"></div>
+<div class="waveform-bar h-9 inactive"></div><div class="waveform-bar h-10 inactive"></div><div class="waveform-bar h-6 inactive"></div><div class="waveform-bar h-8 inactive"></div>
+<div class="waveform-bar h-5 inactive"></div><div class="waveform-bar h-4 inactive"></div><div class="waveform-bar h-3 inactive"></div><div class="waveform-bar h-5 inactive"></div>
+<div class="waveform-bar h-7 inactive"></div><div class="waveform-bar h-8 inactive"></div><div class="waveform-bar h-6 inactive"></div><div class="waveform-bar h-4 inactive"></div>
+</div>
+<div class="flex justify-between mt-2">
+<span class="text-[10px] font-bold text-primary">0:45</span>
+<span class="text-[10px] font-bold text-[#0e191b]/40 dark:text-white/40">2:14</span>
+</div>
+</div>
+</div>
+<!-- Image/Banner Decoration -->
+<div class="p-4">
+<div class="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden bg-primary/5 rounded-xl min-h-[140px] border border-primary/10 relative" data-alt="Two people having a friendly conversation in a bright cafe" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCCOifsZORpQX1P8lDxWPSmQj-CRgmbwOKQjO2ayBWNX473szFnikysbjlVycxAeXwj5hObIJgK69cmfMcA4K1wIdQmuqsa9fwRXxE6clv018U61ARQAcCU4ulnMJ5ZMoHo0T_5YBKIp-PwoZPZzuZcGEEoAcoYnp_O3vnIY--Tth5xIrS8byBSIaF6fCt2uXous-ZInRkmNlZtpnKIdvj1a-hVwE0h6NYTORUG4K1npjXxkL0oLspkwRcxNPZG63jDgAfEJn2mxhJi");'>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
+<div class="relative p-4">
+<p class="text-white text-sm font-bold">Keep the momentum going!</p>
+<p class="text-white/80 text-xs">Consistent practice is the key to fluency.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer Actions -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md flex flex-col gap-3 pb-8">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-xl shadow-primary/20 flex items-center justify-center gap-2 transition-transform active:scale-95">
+<span class="material-symbols-outlined">refresh</span>
+                Restart Session
+            </button>
+<button class="w-full bg-white dark:bg-[#2d3139] text-[#0e191b] dark:text-white font-bold py-4 rounded-xl border border-black/5 dark:border-white/10 flex items-center justify-center gap-2 transition-transform active:scale-95">
+<span class="material-symbols-outlined">dashboard</span>
+                Back to Dashboard
+            </button>
+</div>
+</div>
+</body></html>

@@ -23,10 +23,10 @@ export const conversations: Conversation[] = [
   {
     id: 'restaurant-order',
     title: 'Restaurant Order',
-    description:  'Practice ordering food and drinks at a restaurant.  Learn common phrases for dining out.',
+    description:  'Practice ordering food, asking for recommendations, and handling the check.',
     difficulty: 'beginner',
     category: 'Dining',
-    thumbnail: '🍽️',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfWkkR3sl5_48VqaeuyeuXCKAO5cIe7Opg4rH9DLdvfWp18YB9YnjkD8d5GdLe3URQ6wvgNBZUERQ4ETBr3bReqi8O7SyZrVKHwQ4WRenftkeaU0_7GIONhpTinxtaJM1CbiXWpfFr9LLHOIpSyIj1MCRb14vUDLx_gZxZzTB-FkChxnN8BoNzbvVn1ysN8xbMqXAaFvj-1H9RR_ZgMwoDSbDLsn8PJMD1lMFeOfyMsmLS2ypKUaTFttGqG7E8DKzGMfQ9QzpJ2UrX',
     estimatedTime: 5,
     lines: [
       {
@@ -100,10 +100,10 @@ export const conversations: Conversation[] = [
   {
     id: 'meeting-new-people',
     title: 'Meeting New People',
-    description: 'Learn how to introduce yourself and make small talk when meeting someone new.',
+    description: 'Learn natural introductions, ice-breakers, and basic small talk for social events.',
     difficulty: 'beginner',
     category: 'Social',
-    thumbnail: '👋',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB2h8Zs7rNcb9pSYTYDo-yH-Ompw_XGQTPSpoqPYla3s_suRbsHGrKhZKpKGuEEPsp_7_2HGiWj5gU3NwqER_ro58Atdb7mgMJipq9IYDMIZG6WiuIK6WfmQAwCz7k9Ll3QmiJ4l7BTEN_s1MDF2z5sELrUxhbpciXH0j7nGK1PzZEjU9KHfr1TixK5v0al34Kk249VcoIcyd9w1-jYWoYsK35VB0G2JvSDfOsOjfDoeriEyM0PdqcoDVXqOgTnGVsBpcjcVZ5TDI0T',
     estimatedTime: 4,
     lines: [
       {
@@ -166,10 +166,10 @@ export const conversations: Conversation[] = [
   {
     id: 'at-the-store',
     title: 'Shopping at the Store',
-    description:  'Practice common phrases used when shopping at a retail store.',
+    description:  'Ask for prices, sizes, and find specific items while browsing a local shop.',
     difficulty: 'beginner',
     category: 'Shopping',
-    thumbnail: '🛒',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA2WTqz4PmE5mUdmAy1ROhg6AlU_mFQNung0YEahNEZwRhwIkOI2C6xC8ZA4N-Z_z53UITMG_pXvO1Fsh8dhKe7hLaijrYAuoBLe22evlLVfFPmunqrv-_6-Ur1Q0bPpKjtEL9BjoqI35gG6mXOrlgrB7U-0sqwEagrh1wDdASrqCC9DU3VgHRU803UvYVq6R-_KyEBy-J3Ycbb4YGJ_n05-Kzcvfsj6GN-EXLeToa1kMRKM22BeGpc6n4oFf95SsN-rNJBWxBtHFbl',
     estimatedTime: 4,
     lines: [
       {
@@ -234,10 +234,10 @@ export const conversations: Conversation[] = [
   {
     id: 'at-the-airport',
     title: 'At the Airport',
-    description: 'Navigate airport situations including check-in, security, and boarding.',
+    description: 'Navigate check-in, customs, and boarding announcements with confidence.',
     difficulty: 'intermediate',
     category: 'Travel',
-    thumbnail: '✈️',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCSihMHc0Q7VVVRz1_1CPcEG6iPEM9EnTU2U8heDVwW31E17ccjCilNdFoa488xZRJTITHwhNJbg0YB535202kurctf__NzkYDAx4XnOR_gdmUQu_E7eVychhCHuBjFHiv5NHWQOSEIvvsXMoW7gEn3CEtO-DLPeJlXUrnsl21fEMWbF1x3_FUeWOcLMqNXDlv3xktOEwM3QQoTj4asQ1MHAo36ZWPUDvyMlggGtBwPpR_qwyur0WKc250c1lt-Ose--xymX6DAy1Ct',
     estimatedTime: 6,
     lines: [
       {
@@ -311,10 +311,10 @@ export const conversations: Conversation[] = [
   {
     id: 'doctor-visit',
     title: 'Doctor Visit',
-    description:  'Learn how to describe symptoms and communicate with healthcare professionals.',
+    description:  'Explain symptoms, understand medical advice, and ask about treatments.',
     difficulty: 'intermediate',
     category: 'Healthcare',
-    thumbnail: '🏥',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-konOb0FtFBj7kXyasb8pk8Ei1T9E4H2_xBkcxj_Xyx6w79CYBwWCuZpp_LU_FnokjLxxLuSCbXOcGOBRjJ_7GNK-d7kmyWhnkjQjGAVZGud9E6OkX67Whi9HcXYQaFuN-OQi47NDhOFFtZeg86g3mjt8NdnFXBZLkVpxFoKZZbHmegbGSOynoTuFJ25zpbmIkMrPyKNJmytUnwk0sbWT4AktFaiVn69UwDkfV6qNWzfcs37aAAXJE01aeabIt45-JbXmR_HttImd',
     estimatedTime: 5,
     lines:  [
       {
@@ -388,10 +388,10 @@ export const conversations: Conversation[] = [
   {
     id: 'hotel-check-in',
     title: 'Hotel Check-in',
-    description: 'Practice checking into a hotel and handling common requests.',
+    description: 'Manage your reservation, request amenities, and report room issues.',
     difficulty: 'intermediate',
     category: 'Travel',
-    thumbnail: '🏨',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBfcu-OiS8aTb7RWCiQ2TQT1qkG5qjKxPI5ROpFNprMZOT2fGz_mscoDJE4nefcy9wfistrnIrz7BfywjyvwI-jupzYYywIkxCmlw-4sd9FMu71pYyDboWzrek6kgXFIVzrTUnb-edBcT4AWTSdB5IyVAmMYGX5GJdAwiNekd6zP2iA2wilFln4y1ouApPLz-fwy6uvncyKyGTC_AGtDqJqbKaRKTQjPVxfseA5WyFmFNTnZc2VDiJ5IAkXo_N3H-bADiJGWMujiieM',
     estimatedTime:  5,
     lines: [
       {
@@ -467,10 +467,10 @@ export const conversations: Conversation[] = [
   {
     id: 'job-interview',
     title: 'Job Interview',
-    description:  'Practice answering common job interview questions professionally.',
+    description:  'Master professional vocabulary and answer complex behavioral questions.',
     difficulty: 'advanced',
     category: 'Professional',
-    thumbnail: '💼',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAgb3BwlUTACd2jJobRAu4Ii-Vdgi7xP8I0Bk5UWUNtTqDwE03wO-UgVALFypZ9C_dIX6siGYoGPDf-Hw5BgN653VZg_sdOZOS5jZ_h-jQMJgVyijNG68sN2ZGarvpGlfOf1bWZJ8GRR393t-U8O62Ipz6hYm9BdFAqrr1vZb1S5MHWOUNqfsStRwYwAxD5ER2whWPiMG3fw8e40X9BaJp0YnQN0YBmBmSEgAeNJSLWDYfwOfO-n5n0Neh9td74GhZlDaxi-H3wuYRE',
     estimatedTime: 8,
     lines: [
       {
@@ -566,10 +566,10 @@ export const conversations: Conversation[] = [
   {
     id: 'business-negotiation',
     title: 'Business Negotiation',
-    description: 'Practice negotiating terms, prices, and contracts in a business setting.',
+    description: 'Practice persuasive speaking, counter-offers, and closing formal deals.',
     difficulty: 'advanced',
     category: 'Professional',
-    thumbnail: '🤝',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAO-HPgTIRVFk7aWG7VQLOc_NDNLkf7XU4VrKijcm94vZbRROsaq9IxftpI33kL0mQLumzKX-2NF2NeX_eQgRCdrYFvRAg-DsDhcbVQEN7kik1ABelfDcy_bhsNJ3K6-lZlRsX5SmHBYfqZIk2YyXs-kelrvKJ8iWHWMAk0KgLST_mBBP_VxTAYwa283H98SjusOo9DAK51brd90PMbXBFck8aPj6Qmsbnx3PH9fsMtF7BeZEAwDOwji_vgVkTjmy-jS0jsWEO90N3O',
     estimatedTime:  7,
     lines: [
       {
@@ -654,10 +654,10 @@ export const conversations: Conversation[] = [
   {
     id: 'technical-support-call',
     title: 'Technical Support Call',
-    description: 'Practice explaining technical issues and following troubleshooting instructions.',
+    description: 'Diagnose tech problems, follow instructions, and resolve connectivity issues.',
     difficulty: 'advanced',
     category: 'Technology',
-    thumbnail: '🔧',
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAi8S83oRAfXxZc1hUeHGoC0__-GxGW2i0OhR-fUAU4WC04khGkX7xLB3KNWafj9NTmUVGfbjohp8vVan8u3yjvaeSGpy8ODDgKSAVgW3kYU0AltW8ud3pyM2ElV6jyr3HAZ5Z1YRgR-aMjRj8ZnPutmixW6BxzprfCGYSFvmWPyVPuvuraXRqeVEMUlQaq7BoI_aVsLurqr48zuZxMdGAxcUl1YqQH016Q9DE9defPVyNUt8CydXTNpnT9k9XqpCuFs00wQXK5oOYD',
     estimatedTime:  6,
     lines: [
       {
