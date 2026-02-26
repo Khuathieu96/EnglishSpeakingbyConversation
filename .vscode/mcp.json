@@ -1,0 +1,13 @@
+{
+	"servers": {
+		"Figma": {
+			"url": "https://mcp.figma.com/mcp",
+			"type": "http"
+		},
+		"drawio": {
+			"command": "npx",
+			"args": ["@next-ai-drawio/mcp-server@latest"]
+    }
+	},
+	"inputs": []
+}
