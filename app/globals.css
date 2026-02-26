@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf8f4;
+  --foreground: #1e293b;
 }
 
 * {
@@ -22,7 +22,7 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Spline Sans', 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: max(884px, 100dvh);
@@ -114,6 +114,7 @@ a {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

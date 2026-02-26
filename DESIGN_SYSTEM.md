@@ -6,12 +6,14 @@ This document defines the complete design system for the English Speaking Practi
 ## Color Palette
 
 ### Primary Colors
-- **Primary**: `#19a6b3` (Teal/Cyan) - Main brand color
-- **Background Light**: `#f0f2f4` - Light mode background
+- **Primary**: `#00d1ae` (Teal) - Main brand color
+- **Primary Dark**: `#0f172a` - Hero and dark emphasis backgrounds
+- **Background Cream**: `#faf8f4` - Primary light surface background
+- **Background Light**: `#faf8f4` - Light mode background
 - **Background Dark**: `#22252a` - Dark mode background
 
 ### Text Colors
-- **Light Mode Text**: `#0e191b` - Primary text
+- **Light Mode Text**: `#1e293b` - Primary text
 - **Dark Mode Text**: `#f8fbfb` / `white` - Primary text
 - **Muted Text Light**: `opacity-70` on primary text
 - **Muted Text Dark**: `opacity-70` on white
@@ -23,8 +25,9 @@ This document defines the complete design system for the English Speaking Practi
 ## Typography
 
 ### Font Family
-- **Primary**: Manrope (Google Font)
-- **Weights**: 400, 500, 600, 700, 800
+- **Primary**: Spline Sans (Google Font)
+- **Fallback**: Manrope
+- **Weights**: 400, 500, 600, 700
 
 ### Text Styles
 

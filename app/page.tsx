@@ -1,75 +1,180 @@
-import { ConversationList } from '@/components/ConversationList';
-import { BrowserWarning } from '@/components/BrowserWarning';
-import { conversations } from '@/data/conversations';
+import { Spline_Sans } from 'next/font/google';
+import Link from 'next/link';
+import styles from './dashboard/PolishDashboard.module.css';
+import { TopNav } from './dashboard/components/TopNav';
+import { HeroSection } from './dashboard/components/HeroSection';
+import { JourneySection } from './dashboard/components/JourneySection';
+import { StatsSection } from './dashboard/components/StatsSection';
+import { BottomFooter } from './dashboard/components/BottomFooter';
+import { inProgressScenarioItems, polishAssets } from './dashboard/polishData';
+
+const spline = Spline_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+});
 
 export default function Home() {
+  const mobileCards = inProgressScenarioItems.slice(0, 5);
+
   return (
-    <div className="bg-background-light dark:bg-background-dark text-[#0e191b] dark:text-gray-100 min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50">
-        <div className="flex items-center p-4 pb-3 justify-between max-w-md mx-auto w-full">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary text-white p-2 rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-              <span className="material-symbols-outlined">mic</span>
+    <div className={`${styles.page} ${spline.className}`}>
+      <div className={styles.desktopDashboard}>
+        <TopNav />
+        <main className={styles.main}>
+          <div className={styles.container}>
+            <HeroSection />
+            <JourneySection />
+            <StatsSection />
+          </div>
+        </main>
+        <BottomFooter />
+      </div>
+
+      <div className={styles.mobileDashboard}>
+        <header className={styles.mobileHeaderBar}>
+          <div className={styles.mobileHeaderLeft}>
+            <div className={styles.mobileHeaderAvatarWrap}>
+              <img
+                src={polishAssets.avatar}
+                alt='Profile'
+                className={styles.mobileHeaderAvatar}
+              />
+              <span className={styles.mobileHeaderAvatarStatus} aria-hidden='true' />
             </div>
-            <h2 className="text-xl font-bold leading-tight tracking-tight">Practice English</h2>
+            <div className={styles.mobileHeaderIdentity}>
+              <h1 className={styles.mobileHeaderTitle}>Alex</h1>
+              <p className={styles.mobileHeaderSubtitle}>Student</p>
+            </div>
           </div>
-          <button className="flex items-center justify-center rounded-full w-10 h-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <span className="material-symbols-outlined text-gray-600 dark:text-gray-300">account_circle</span>
-          </button>
-        </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-md mx-auto w-full pb-32">
-        <div className="px-4 py-6">
-          <h1 className="text-2xl font-extrabold mb-1">Where to today?</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
-            Choose a scenario to start your AI practice session.
-          </p>
-        </div>
+          <div className={styles.mobileHeaderActions}>
+            <button className={styles.mobileIconBtn} aria-label='Information'>
+              <span className='material-symbols-outlined'>info</span>
+            </button>
+            <button className={styles.mobileIconBtn} aria-label='More options'>
+              <span className='material-symbols-outlined'>more_vert</span>
+            </button>
+          </div>
+        </header>
 
-        {/* Browser Warning */}
-        <div className="px-4 mb-4">
-          <BrowserWarning />
-        </div>
+        <main className={styles.mobileMainContent}>
+          <section className={styles.mobileIntroSection}>
+            <h2>Hi, Alex! 👋</h2>
+            <p>Ready to level up your English today?</p>
 
-        <div className="px-4 pb-4">
-          <h3 className="text-lg font-bold leading-tight tracking-tight mb-4">
-            Conversation Scenarios
-          </h3>
-          {/* Conversation List */}
-          <ConversationList conversations={conversations} />
-        </div>
-      </main>
+            <div className={styles.mobileLevelCard}>
+              <div className={styles.mobileLevelIcon}>
+                <span className='material-symbols-outlined'>school</span>
+              </div>
+              <div>
+                <p className={styles.mobileLevelLabel}>Current Level</p>
+                <p className={styles.mobileLevelValue}>B2 Upper Intermediate</p>
+              </div>
+            </div>
+          </section>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-t border-gray-200 dark:border-gray-800 px-6 pb-6 pt-3 flex justify-between items-center max-w-md mx-auto rounded-t-3xl shadow-2xl">
-        <a className="flex flex-col items-center gap-1 group" href="#">
-          <div className="text-primary flex h-8 items-center justify-center">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
-          </div>
-          <p className="text-[10px] font-bold text-primary uppercase tracking-tighter">Home</p>
-        </a>
-        <a className="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 group" href="#">
-          <div className="flex h-8 items-center justify-center active:text-primary">
-            <span className="material-symbols-outlined">analytics</span>
-          </div>
-          <p className="text-[10px] font-bold uppercase tracking-tighter">Progress</p>
-        </a>
-        <a className="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 group" href="#">
-          <div className="flex h-8 items-center justify-center active:text-primary">
-            <span className="material-symbols-outlined">social_leaderboard</span>
-          </div>
-          <p className="text-[10px] font-bold uppercase tracking-tighter">Ranking</p>
-        </a>
-        <a className="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 group" href="#">
-          <div className="flex h-8 items-center justify-center active:text-primary">
-            <span className="material-symbols-outlined">settings</span>
-          </div>
-          <p className="text-[10px] font-bold uppercase tracking-tighter">Settings</p>
-        </a>
-      </nav>
+          <section className={styles.mobileStatsGrid}>
+            <article className={styles.mobileStatCard}>
+              <span className='material-symbols-outlined'>local_fire_department</span>
+              <strong>15</strong>
+              <p>Streak</p>
+            </article>
+            <article className={styles.mobileStatCard}>
+              <span className='material-symbols-outlined'>schedule</span>
+              <strong>42</strong>
+              <p>Hours</p>
+            </article>
+            <article className={styles.mobileStatCard}>
+              <span className='material-symbols-outlined'>chat_bubble</span>
+              <strong>128</strong>
+              <p>Dialogs</p>
+            </article>
+          </section>
+
+          <section className={styles.mobileJourneySection}>
+            <div className={styles.mobileJourneyHeader}>
+              <h3>Continue Journey</h3>
+              <button>View All</button>
+            </div>
+
+            <div className={styles.mobileJourneyScroller}>
+              {mobileCards.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/conversation/${item.id}`}
+                  className={styles.mobileLessonCard}
+                >
+                  <div className={styles.mobileLessonImageWrap}>
+                    <img src={item.image} alt={item.title} className={styles.mobileLessonImage} />
+                    <span
+                      className={
+                        item.badge === 'beginner'
+                          ? styles.mobileBadgeBeginner
+                          : item.badge === 'intermediate'
+                            ? styles.mobileBadgeIntermediate
+                            : styles.mobileBadgeAdvanced
+                      }
+                    >
+                      {item.badge}
+                    </span>
+                  </div>
+                  <div className={styles.mobileLessonBody}>
+                    <h4>{item.title}</h4>
+                    <p>{item.description}</p>
+
+                    <div className={styles.mobileLessonProgressRow}>
+                      <div className={styles.mobileLessonProgressTrack}>
+                        <div
+                          className={styles.mobileLessonProgressFill}
+                          style={{ width: `${item.progress}%` }}
+                        />
+                      </div>
+                      <span>{item.progress}%</span>
+                    </div>
+
+                    <div className={styles.mobileLessonAction}>Resume Lesson</div>
+                  </div>
+                </Link>
+              ))}
+
+              <Link href='/scenarios' className={styles.mobileShowMoreCard}>
+                <span className='material-symbols-outlined'>apps</span>
+                <strong>Show More</strong>
+                <p>Explore all conversations</p>
+              </Link>
+            </div>
+          </section>
+
+          <section className={styles.mobileGoalCard}>
+            <h3>Weekly Goal</h3>
+            <p>You&apos;re almost there! 4 more hours to hit your target.</p>
+            <div className={styles.mobileGoalValueRow}>
+              <strong>16</strong>
+              <span>/ 20 hrs</span>
+            </div>
+            <span className={styles.mobileGoalIcon}>emoji_events</span>
+          </section>
+        </main>
+
+        <nav className={styles.mobileBottomNavBar}>
+          <a className={styles.mobileNavLinkActive} href='#'>
+            <span className='material-symbols-outlined'>home</span>
+            <span>Home</span>
+          </a>
+          <a className={styles.mobileNavLink} href='#'>
+            <span className='material-symbols-outlined'>chat_bubble</span>
+            <span>Practice</span>
+          </a>
+          <a className={styles.mobileNavLink} href='#'>
+            <span className='material-symbols-outlined'>menu_book</span>
+            <span>Library</span>
+          </a>
+          <a className={styles.mobileNavLink} href='#'>
+            <span className='material-symbols-outlined'>person</span>
+            <span>Profile</span>
+          </a>
+        </nav>
+      </div>
     </div>
   );
 }
