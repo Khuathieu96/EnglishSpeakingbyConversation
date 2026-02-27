@@ -1,5 +1,8 @@
-import styles from '../PolishDashboard.module.css';
-import { polishAssets } from '../polishData';
+'use client';
+
+import { useTranslations } from 'next-intl';
+import styles from '../Dashboard.module.css';
+import { dashboardAssets } from '../dashboardData';
 
 function StatCard({
   icon,
@@ -26,24 +29,26 @@ function StatCard({
 }
 
 export function StatsSection() {
+  const t = useTranslations('stats');
+
   return (
     <section className={styles.statsSection}>
       <StatCard
-        icon={polishAssets.statIcons.streak}
-        value='12 Day'
-        label='Learning Streak'
+        icon={dashboardAssets.statIcons.streak}
+        value={t('streakValue')}
+        label={t('streakLabel')}
         tone='teal'
       />
       <StatCard
-        icon={polishAssets.statIcons.hours}
-        value='4.5 Hours'
-        label='Practice Time'
+        icon={dashboardAssets.statIcons.hours}
+        value={t('hoursValue')}
+        label={t('hoursLabel')}
         tone='indigo'
       />
       <StatCard
-        icon={polishAssets.statIcons.completed}
-        value='8 Scenarios'
-        label='Completed Tasks'
+        icon={dashboardAssets.statIcons.completed}
+        value={t('completedValue')}
+        label={t('completedLabel')}
         tone='amber'
       />
     </section>

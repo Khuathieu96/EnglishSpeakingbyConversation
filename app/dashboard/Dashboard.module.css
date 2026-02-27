@@ -14,7 +14,7 @@
 }
 
 .main {
-  padding-top: 81px;
+  padding-top: 69px;
 }
 
 .container {
@@ -40,8 +40,8 @@
 .topNavInner {
   max-width: 1200px;
   margin: 0 auto;
-  height: 80px;
-  padding: 0 24px;
+  height: 68px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -50,13 +50,13 @@
 .brandWrap {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .brandIconShell {
-  width: 40px;
-  height: 40px;
-  border-radius: 24px;
+  width: 34px;
+  height: 34px;
+  border-radius: 20px;
   background: #00d1ae;
   display: grid;
   place-items: center;
@@ -65,13 +65,13 @@
 }
 
 .brandIcon {
-  width: 22px;
-  height: 20px;
+  width: 18px;
+  height: 16px;
 }
 
 .brandText {
-  font-size: 20px;
-  line-height: 28px;
+  font-size: 17px;
+  line-height: 24px;
   letter-spacing: -0.5px;
   font-weight: 700;
   color: #1e293b;
@@ -80,13 +80,13 @@
 .mainNav {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 28px;
 }
 
 .activeLink,
 .navLink {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 13px;
+  line-height: 18px;
   font-weight: 600;
 }
 
@@ -101,7 +101,7 @@
 .navActions {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .startButton {
@@ -110,20 +110,20 @@
   background: #00d1ae;
   color: #0f172a;
   font-weight: 700;
-  font-size: 16px;
-  line-height: 24px;
-  padding: 10px 24px;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 8px 18px;
   box-shadow: 0 4px 6px -1px rgba(0, 209, 174, 0.1),
     0 2px 4px -2px rgba(0, 209, 174, 0.1);
   text-decoration: none;
 }
 
 .avatarRing {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   border: 2px solid rgba(0, 209, 174, 0.3);
-  padding: 4px;
+  padding: 3px;
   box-sizing: border-box;
 }
 
@@ -149,17 +149,17 @@
 
 .appHeaderInner {
   width: 100%;
-  height: 56px;
-  padding: 0 24px;
+  height: 52px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .appHeaderIconShell {
-  width: 32px;
-  height: 32px;
-  border-radius: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 16px;
   background: #00d1ae;
   display: grid;
   place-items: center;
@@ -167,8 +167,8 @@
 }
 
 .appHeaderBrandText {
-  font-size: 16px;
-  line-height: 22px;
+  font-size: 15px;
+  line-height: 20px;
   letter-spacing: -0.4px;
   font-weight: 700;
   color: #1e293b;
@@ -668,8 +668,8 @@
 
 .footerWrap {
   border-top: 1px solid #e2e8f0;
-  margin-top: 48px;
-  padding: 41px 0 40px;
+  margin-top: 40px;
+  padding: 28px 0;
 }
 
 .footerInner {
@@ -678,53 +678,15 @@
   padding: 0 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.footerBrand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  opacity: 0.7;
-}
-
-.footerBrandIconWrap {
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  background: #94a3b8;
-  display: grid;
-  place-items: center;
-}
-
-.footerBrandIcon {
-  width: 16px;
-  height: 15px;
-}
-
-.footerBrandText {
-  color: #475569;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
-}
-
-.footerLinks {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  color: #94a3b8;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
+  justify-content: center;
 }
 
 .footerCopy {
   margin: 0;
   color: #94a3b8;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: center;
 }
 
 @media (max-width: 1199px) {

@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
 import { useMemo, useState } from 'react';
 import { useRef } from 'react';
 import Link from 'next/link';
-import styles from '../PolishDashboard.module.css';
-import { inProgressScenarioItems, polishAssets } from '../polishData';
+import { useTranslations } from 'next-intl';
+import styles from '../Dashboard.module.css';
+import { inProgressScenarioItems, dashboardAssets } from '../dashboardData';
 
 type LevelFilter = 'all' | 'beginner' | 'intermediate' | 'advanced';
 
@@ -25,11 +26,9 @@ function ScenarioCard({
   icon: string;
   progress: number;
 }) {
+  const t = useTranslations('journey');
   return (
-    <Link
-      href={`/conversation/${id}`}
-      className={styles.scenarioCardLink}
-    >
+    <Link href={`/conversation/${id}`} className={styles.scenarioCardLink}>
       <article className={styles.scenarioCard}>
         <div className={styles.scenarioImageWrap}>
           <img src={image} alt={title} className={styles.scenarioImage} />
@@ -62,12 +61,12 @@ function ScenarioCard({
 
         <div className={styles.scenarioProgressBlock}>
           <div className={styles.scenarioProgressHeader}>
-            <span className={styles.progressLabel}>Progress</span>
+            <span className={styles.progressLabel}>{t('progress')}</span>
             {progress > 0 ? (
               <span className={styles.progressValue}>{progress}%</span>
             ) : (
               <img
-                src={polishAssets.scenarioIcons.lock}
+                src={dashboardAssets.scenarioIcons.lock}
                 alt=''
                 aria-hidden='true'
                 className={styles.progressLock}
@@ -88,6 +87,7 @@ function ScenarioCard({
 
 export function JourneySection() {
   const [activeFilter, setActiveFilter] = useState<LevelFilter>('all');
+  const t = useTranslations('journey');
   const [isDragging, setIsDragging] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const dragStateRef = useRef({
@@ -103,7 +103,9 @@ export function JourneySection() {
       return inProgressScenarioItems;
     }
 
-    return inProgressScenarioItems.filter((item) => item.badge === activeFilter);
+    return inProgressScenarioItems.filter(
+      (item) => item.badge === activeFilter,
+    );
   }, [activeFilter]);
 
   const visibleItems = filteredItems.slice(0, 5);
@@ -167,40 +169,52 @@ export function JourneySection() {
     <section className={styles.journeySection}>
       <div className={styles.journeyHeader}>
         <div>
-          <h2 className={styles.journeyTitle}>Continue Your Journey</h2>
-          <p className={styles.journeySubtitle}>
-            Pick up where you left off or start a new challenge.
-          </p>
+          <h2 className={styles.journeyTitle}>{t('title')}</h2>
+          <p className={styles.journeySubtitle}>{t('subtitle')}</p>
         </div>
 
         <div className={styles.levelFilters}>
           <button
-            className={activeFilter === 'all' ? styles.levelActive : styles.levelInactive}
+            className={
+              activeFilter === 'all' ? styles.levelActive : styles.levelInactive
+            }
             onClick={() => setActiveFilter('all')}
             aria-pressed={activeFilter === 'all'}
           >
-            All Levels
+            {t('allLevels')}
           </button>
           <button
-            className={activeFilter === 'beginner' ? styles.levelActive : styles.levelInactive}
+            className={
+              activeFilter === 'beginner'
+                ? styles.levelActive
+                : styles.levelInactive
+            }
             onClick={() => setActiveFilter('beginner')}
             aria-pressed={activeFilter === 'beginner'}
           >
-            Beginner
+            {t('beginner')}
           </button>
           <button
-            className={activeFilter === 'intermediate' ? styles.levelActive : styles.levelInactive}
+            className={
+              activeFilter === 'intermediate'
+                ? styles.levelActive
+                : styles.levelInactive
+            }
             onClick={() => setActiveFilter('intermediate')}
             aria-pressed={activeFilter === 'intermediate'}
           >
-            Intermediate
+            {t('intermediate')}
           </button>
           <button
-            className={activeFilter === 'advanced' ? styles.levelActive : styles.levelInactive}
+            className={
+              activeFilter === 'advanced'
+                ? styles.levelActive
+                : styles.levelInactive
+            }
             onClick={() => setActiveFilter('advanced')}
             aria-pressed={activeFilter === 'advanced'}
           >
-            Advanced
+            {t('advanced')}
           </button>
         </div>
       </div>
@@ -220,8 +234,8 @@ export function JourneySection() {
         <Link href='/scenarios' className={styles.scenarioCardLink}>
           <article className={styles.showMoreCard}>
             <span className='material-symbols-outlined'>apps</span>
-            <h3>Show More</h3>
-            <p>Explore all conversation categories</p>
+            <h3>{t('showMore')}</h3>
+            <p>{t('exploreAll')}</p>
           </article>
         </Link>
       </div>

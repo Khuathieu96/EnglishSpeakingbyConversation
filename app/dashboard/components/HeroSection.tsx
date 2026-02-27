@@ -1,7 +1,13 @@
-import styles from '../PolishDashboard.module.css';
-import { polishAssets } from '../polishData';
+'use client';
+
+import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import styles from '../Dashboard.module.css';
+import { dashboardAssets } from '../dashboardData';
 
 export function HeroSection() {
+  const t = useTranslations('hero');
+
   return (
     <section className={styles.heroSection}>
       <div className={styles.heroGradient} />
@@ -10,35 +16,31 @@ export function HeroSection() {
         <div className={styles.heroLeft}>
           <div className={styles.heroBadge}>
             <span className={styles.heroBadgeDot} />
-            <span className={styles.heroBadgeText}>New AI Scenario Live</span>
+            <span className={styles.heroBadgeText}>{t('badge')}</span>
           </div>
 
           <h1 className={styles.heroTitle}>
-            <span>Master English</span>
+            <span>{t('titleLine1')}</span>
+            <span>{t('titleLine2')}</span>
             <span>
-              through <em>Real-</em>
+              <em>{t('titleLine3')}</em>
             </span>
-            <span>
-              <em>World</em>
-            </span>
-            <span>Conversations</span>
+            <span>{t('titleLine4')}</span>
           </h1>
 
-          <p className={styles.heroCopy}>
-            Stop memorizing rules. Start talking. Practice natural interactions
-            in high-stakes environments designed for your success.
-          </p>
+          <p className={styles.heroCopy}>{t('description')}</p>
 
           <div className={styles.heroButtons}>
-            <button className={styles.primaryCta}>Get Started Free</button>
-            <button className={styles.secondaryCta}>View Demo</button>
+            <Link href='/scenarios' className={styles.primaryCta}>
+              {t('cta')}
+            </Link>
           </div>
         </div>
 
         <div className={styles.heroRight}>
           <div className={styles.heroImageFrame}>
             <img
-              src={polishAssets.heroImage}
+              src={dashboardAssets.heroImage}
               alt='Learner practicing English conversation'
               className={styles.heroImage}
             />

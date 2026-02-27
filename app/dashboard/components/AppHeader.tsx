@@ -7,7 +7,14 @@ import styles from '../Dashboard.module.css';
 import { dashboardAssets } from '../dashboardData';
 import { LanguageToggle } from '@/components/LanguageToggle';
 
-export function TopNav() {
+/**
+ * Application header — used on functional pages like /conversation/[id].
+ * Same visual style as TopNav (landing page header) but:
+ *  - Smaller height (56px vs 80px)
+ *  - Full-width (no max-width container)
+ *  - No "Start Learning" CTA button
+ */
+export function AppHeader() {
   const pathname = usePathname();
   const t = useTranslations('nav');
 
@@ -15,10 +22,10 @@ export function TopNav() {
   const isScenarios = pathname === '/scenarios';
 
   return (
-    <header className={styles.topNavWrap}>
-      <div className={styles.topNavInner}>
+    <header className={styles.appHeaderWrap}>
+      <div className={styles.appHeaderInner}>
         <div className={styles.brandWrap}>
-          <div className={styles.brandIconShell}>
+          <div className={styles.appHeaderIconShell}>
             <img
               src={dashboardAssets.headerLogo}
               alt=''
@@ -26,7 +33,7 @@ export function TopNav() {
               className={styles.brandIcon}
             />
           </div>
-          <span className={styles.brandText}>{t('brand')}</span>
+          <span className={styles.appHeaderBrandText}>{t('brand')}</span>
         </div>
 
         <nav className={styles.mainNav}>
@@ -45,9 +52,6 @@ export function TopNav() {
         </nav>
 
         <div className={styles.navActions}>
-          <Link href='/scenarios' className={styles.startButton}>
-            {t('startLearning')}
-          </Link>
           <LanguageToggle />
           <div className={styles.avatarRing}>
             <img

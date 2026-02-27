@@ -86,7 +86,8 @@
 .desktopMain {
   display: grid;
   grid-template-columns: 420px 1fr;
-  min-height: calc(100vh - 81px);
+  height: calc(100vh - 56px);
+  padding-top: 56px;
 }
 
 .desktopAside {
@@ -95,6 +96,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: auto;
 }
 
 .asideTop {
@@ -219,11 +221,13 @@
   background: #f8fafc;
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .browserWarningWrap {
   padding: 10px 16px 0;
+  flex-shrink: 0;
 }
 
 .desktopChatHeader {
@@ -233,6 +237,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .tutorWrap {
@@ -386,6 +391,7 @@
   background: #fff;
   border-top: 1px solid #f1f5f9;
   padding: 14px 24px 18px;
+  flex-shrink: 0;
 }
 
 .progressMeta {

@@ -95,6 +95,18 @@ A web application that helps users practice English speaking through interactive
 | F2.5.5 | Option to restart conversation | Medium |
 | F2.5.6 | Option to return to conversation list | High |
 
+### 2.6 Multilingual UI
+
+| ID | Requirement | Priority |
+|----|-------------|----------|
+| F2.6.1 | Support Vietnamese and English for all UI text | High |
+| F2.6.2 | Default language is Vietnamese | High |
+| F2.6.3 | Provide a language toggle button in the header | High |
+| F2.6.4 | Persist selected language in browser localStorage | High |
+| F2.6.5 | Use a font that fully supports Vietnamese characters (Be Vietnam Pro) | High |
+| F2.6.6 | Conversation scripts (learning content) remain in English only | Medium |
+| F2.6.7 | All feedback messages are translated (matching results, errors, etc.) | Medium |
+
 ---
 
 ## 3. Non-Functional Requirements

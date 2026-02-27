@@ -1,0 +1,168 @@
+{
+  "nav": {
+    "brand": "PCT - Mrs. Linh - SEC Anh Ngữ",
+    "home": "Trang chủ",
+    "scenarios": "Thư viện hội thoại",
+    "startLearning": "Bắt đầu học"
+  },
+  "hero": {
+    "badge": "Hội thoại AI mới",
+    "titleLine1": "Thành thạo",
+    "titleLine2": "Tiếng Anh qua",
+    "titleLine3": "Hội thoại",
+    "titleLine4": "Thực tế",
+    "description": "Ngừng học thuộc quy tắc. Hãy bắt đầu nói. Luyện tập giao tiếp tự nhiên trong các tình huống thực tế được thiết kế cho sự thành công của bạn.",
+    "cta": "Bắt đầu miễn phí"
+  },
+  "journey": {
+    "title": "Tiếp tục hành trình",
+    "subtitle": "Tiếp tục từ nơi bạn đã dừng lại hoặc bắt đầu thử thách mới.",
+    "allLevels": "Tất cả",
+    "beginner": "Cơ bản",
+    "intermediate": "Trung cấp",
+    "advanced": "Nâng cao",
+    "progress": "Tiến độ",
+    "showMore": "Xem thêm",
+    "exploreAll": "Khám phá tất cả chủ đề hội thoại"
+  },
+  "stats": {
+    "streakValue": "12 Ngày",
+    "streakLabel": "Chuỗi học liên tục",
+    "hoursValue": "4,5 Giờ",
+    "hoursLabel": "Thời gian luyện tập",
+    "completedValue": "8 hội thoại",
+    "completedLabel": "Bài đã hoàn thành"
+  },
+  "footer": {
+    "copyright": "© 2024 PCT - Mrs. Linh - SEC Anh Ngữ. Bản quyền được bảo lưu."
+  },
+  "mobile": {
+    "greeting": "Xin chào, Alex! 👋",
+    "readyText": "Sẵn sàng nâng cao tiếng Anh hôm nay chưa?",
+    "currentLevel": "Trình độ hiện tại",
+    "levelValue": "B2 Trung cấp trên",
+    "streak": "Chuỗi",
+    "hours": "Giờ",
+    "dialogs": "Hội thoại",
+    "continueJourney": "Tiếp tục hành trình",
+    "resumeLesson": "Tiếp tục bài học",
+    "showMore": "Xem thêm",
+    "exploreAll": "Khám phá tất cả hội thoại",
+    "weeklyGoal": "Mục tiêu tuần",
+    "weeklyGoalText": "Sắp hoàn thành rồi! Còn 4 giờ nữa để đạt mục tiêu.",
+    "goalUnit": "/ 20 giờ",
+    "home": "Trang chủ",
+    "library": "Thư viện",
+    "student": "Học viên"
+  },
+  "scenarios": {
+    "currentStreak": "Chuỗi hiện tại",
+    "totalLearningTime": "Tổng thời gian học",
+    "scenariosCompleted": "Hội thoại đã hoàn thành",
+    "averageAccuracy": "Độ chính xác TB",
+    "libraryTitle": "Thư viện hội thoại",
+    "librarySubtitle": "Thành thạo tiếng Anh thực tế qua các hội thoại tương tác.",
+    "allTopics": "Tất cả chủ đề",
+    "topic": "Chủ đề",
+    "objectives": "Mục tiêu:",
+    "startPractice": "Bắt đầu luyện tập",
+    "mins": "phút",
+    "practiceVocabulary": "Luyện từ vựng {category}",
+    "buildFluency": "Rèn phản xạ giao tiếp"
+  },
+  "conversation": {
+    "introduction": "Giới thiệu",
+    "learningObjectives": "Mục tiêu học tập",
+    "keyPhrases": "Cụm từ chính",
+    "proTip": "Mẹo",
+    "proTipText": "Cố gắng bắt chước giọng điệu của gia sư để đạt điểm lưu loát tốt hơn.",
+    "speaking": "Đang nói...",
+    "listening": "Đang nghe...",
+    "you": "Bạn",
+    "justNow": "Vừa xong",
+    "matchScore": "Điểm khớp: {score}%",
+    "expected": "Câu đúng: \"{text}\"",
+    "correctAnswer": "Đáp án đúng: \"{text}\"",
+    "sayHint": "Hãy nói: \"{text}\"",
+    "waitForAi": "Đợi AI nói xong...",
+    "tapToSpeak": "Nhấn để nói",
+    "stop": "Dừng",
+    "skip": "Bỏ qua",
+    "attemptsRemaining": "Số lần thử còn lại: {count}",
+    "phrases": "cụm từ",
+    "lessonFocus": "Trọng tâm bài học",
+    "aiTutor": "Gia sư AI",
+    "match": "Khớp: {score}%",
+    "attempts": "Lượt thử: {count}",
+    "home": "Trang chủ",
+    "practice": "Luyện tập",
+    "libraryNav": "Thư viện",
+    "objective1": "Sử dụng \"Nice to meet you\"",
+    "objective2": "Đặt 3 câu hỏi tiếp nối",
+    "objective3": "Luyện thì hiện tại đơn"
+  },
+  "chat": {
+    "processing": "Đang xử lý giọng nói...",
+    "correctAnswerIs": "💡 Đáp án đúng là:",
+    "movingNext": "Chuyển sang câu tiếp...",
+    "aiSpeaking": "AI đang nói...",
+    "completed": "🎉 Hoàn thành hội thoại!",
+    "aiAssistant": "Trợ lý AI",
+    "youSaid": "Bạn nói:",
+    "expectedLabel": "Câu đúng:",
+    "matchLabel": "Khớp:",
+    "passed": "✅ Đạt!",
+    "tryAgain": "❌ Thử lại"
+  },
+  "voice": {
+    "listening": "🎤 Đang nghe...",
+    "tapToSpeak": "🎤 Nhấn để nói",
+    "recording": "🔴 Đang ghi âm...",
+    "speakClearly": "Nói rõ ràng vào micro",
+    "stop": "⏹️ Dừng",
+    "skip": "⏭️ Bỏ qua",
+    "attemptsRemaining": "Số lần thử còn lại: {count}",
+    "speakClearlyStop": "Nói rõ ràng, rồi nhấn Dừng khi xong"
+  },
+  "completion": {
+    "title": "Chúc mừng!",
+    "subtitle": "Bạn đã hoàn thành \"{title}\"",
+    "linesCompleted": "Câu đã hoàn thành",
+    "perfectLines": "Câu hoàn hảo",
+    "retriesUsed": "Số lần thử lại",
+    "averageMatch": "Điểm khớp TB",
+    "listenRecording": "🔊 Nghe lại bản ghi âm",
+    "restart": "🔄 Làm lại",
+    "backToList": "📋 Về danh sách"
+  },
+  "browser": {
+    "title": "Thông báo tương thích trình duyệt",
+    "recommendation": "Bạn đang sử dụng {browserName}. Để có trải nghiệm tốt nhất với nhận dạng giọng nói và tính năng âm thanh, chúng tôi khuyên dùng Google Chrome hoặc Microsoft Edge.",
+    "safariWarning": "Safari hỗ trợ một phần các tính năng giọng nói. Một số chức năng có thể bị giới hạn.",
+    "firefoxWarning": "Firefox không hỗ trợ đầy đủ Web Speech API. Vui lòng chuyển sang Chrome hoặc Edge."
+  },
+  "feedback": {
+    "perfect": "Hoàn hảo! Phát âm tuyệt vời!",
+    "great": "Rất tốt! Gần hoàn hảo!",
+    "good": "Tốt! Bạn đã đạt!",
+    "almost": "Gần đạt rồi! Thử lại nhé.",
+    "notQuite": "Chưa đúng lắm. Thử lại lần nữa!",
+    "tryAgain": "Hãy thử lại câu đó. Từ từ thôi."
+  },
+  "audio": {
+    "pause": "⏸️ Tạm dừng",
+    "play": "▶️ Phát"
+  },
+  "hint": {
+    "yourLine": "📝 Câu của bạn:",
+    "hint": "💡 Gợi ý: {hint}"
+  },
+  "matchingResult": {
+    "title": "Kết quả so khớp",
+    "youSaid": "Bạn nói:",
+    "expected": "Câu đúng:"
+  },
+  "progressBar": {
+    "progress": "Tiến độ"
+  }
+}

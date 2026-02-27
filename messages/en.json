@@ -1,0 +1,168 @@
+{
+  "nav": {
+    "brand": "PCT - Mrs. Linh - SEC Anh Ngữ",
+    "home": "Home",
+    "scenarios": "Scenarios",
+    "startLearning": "Start Learning"
+  },
+  "hero": {
+    "badge": "New AI Scenario Live",
+    "titleLine1": "Master English",
+    "titleLine2": "through Real-",
+    "titleLine3": "World",
+    "titleLine4": "Conversations",
+    "description": "Stop memorizing rules. Start talking. Practice natural interactions in high-stakes environments designed for your success.",
+    "cta": "Get Started Free"
+  },
+  "journey": {
+    "title": "Continue Your Journey",
+    "subtitle": "Pick up where you left off or start a new challenge.",
+    "allLevels": "All Levels",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "progress": "Progress",
+    "showMore": "Show More",
+    "exploreAll": "Explore all conversation categories"
+  },
+  "stats": {
+    "streakValue": "12 Day",
+    "streakLabel": "Learning Streak",
+    "hoursValue": "4.5 Hours",
+    "hoursLabel": "Practice Time",
+    "completedValue": "8 Scenarios",
+    "completedLabel": "Completed Tasks"
+  },
+  "footer": {
+    "copyright": "© 2024 PCT - Mrs. Linh - SEC Anh Ngữ. All rights reserved."
+  },
+  "mobile": {
+    "greeting": "Hi, Alex! 👋",
+    "readyText": "Ready to level up your English today?",
+    "currentLevel": "Current Level",
+    "levelValue": "B2 Upper Intermediate",
+    "streak": "Streak",
+    "hours": "Hours",
+    "dialogs": "Dialogs",
+    "continueJourney": "Continue Journey",
+    "resumeLesson": "Resume Lesson",
+    "showMore": "Show More",
+    "exploreAll": "Explore all conversations",
+    "weeklyGoal": "Weekly Goal",
+    "weeklyGoalText": "You're almost there! 4 more hours to hit your target.",
+    "goalUnit": "/ 20 hrs",
+    "home": "Home",
+    "library": "Library",
+    "student": "Student"
+  },
+  "scenarios": {
+    "currentStreak": "Current Streak",
+    "totalLearningTime": "Total Learning Time",
+    "scenariosCompleted": "Scenarios Completed",
+    "averageAccuracy": "Average Accuracy",
+    "libraryTitle": "Conversation Library",
+    "librarySubtitle": "Master real-world English through interactive scenarios.",
+    "allTopics": "All Topics",
+    "topic": "Topic",
+    "objectives": "Objectives:",
+    "startPractice": "Start Practice",
+    "mins": "mins",
+    "practiceVocabulary": "Practice {category} vocabulary",
+    "buildFluency": "Build response fluency"
+  },
+  "conversation": {
+    "introduction": "Introduction",
+    "learningObjectives": "Learning Objectives",
+    "keyPhrases": "Key Phrases",
+    "proTip": "Pro Tip",
+    "proTipText": "Try to match the tutor's tone for better fluency scores.",
+    "speaking": "Speaking...",
+    "listening": "Listening...",
+    "you": "You",
+    "justNow": "Just now",
+    "matchScore": "Match score: {score}%",
+    "expected": "Expected: \"{text}\"",
+    "correctAnswer": "Correct answer: \"{text}\"",
+    "sayHint": "Say: \"{text}\"",
+    "waitForAi": "Wait for AI to finish speaking...",
+    "tapToSpeak": "Tap to Speak",
+    "stop": "Stop",
+    "skip": "Skip",
+    "attemptsRemaining": "Attempts remaining: {count}",
+    "phrases": "phrases",
+    "lessonFocus": "Lesson Focus",
+    "aiTutor": "AI Language Tutor",
+    "match": "Match: {score}%",
+    "attempts": "Attempts: {count}",
+    "home": "Home",
+    "practice": "Practice",
+    "libraryNav": "Library",
+    "objective1": "Use \"Nice to meet you\"",
+    "objective2": "Ask 3 follow-up questions",
+    "objective3": "Practice present simple tense"
+  },
+  "chat": {
+    "processing": "Processing your speech...",
+    "correctAnswerIs": "💡 The correct answer is:",
+    "movingNext": "Moving to the next line...",
+    "aiSpeaking": "AI is speaking...",
+    "completed": "🎉 Conversation completed!",
+    "aiAssistant": "AI Assistant",
+    "youSaid": "You said:",
+    "expectedLabel": "Expected:",
+    "matchLabel": "Match:",
+    "passed": "✅ Passed!",
+    "tryAgain": "❌ Try again"
+  },
+  "voice": {
+    "listening": "🎤 Listening...",
+    "tapToSpeak": "🎤 Tap to Speak",
+    "recording": "🔴 Recording...",
+    "speakClearly": "Speak clearly into your microphone",
+    "stop": "⏹️ Stop",
+    "skip": "⏭️ Skip",
+    "attemptsRemaining": "Attempts remaining: {count}",
+    "speakClearlyStop": "Speak clearly, then click Stop when finished"
+  },
+  "completion": {
+    "title": "Congratulations!",
+    "subtitle": "You completed \"{title}\"",
+    "linesCompleted": "Lines Completed",
+    "perfectLines": "Perfect Lines",
+    "retriesUsed": "Retries Used",
+    "averageMatch": "Average Match",
+    "listenRecording": "🔊 Listen to Your Recording",
+    "restart": "🔄 Restart",
+    "backToList": "📋 Back to List"
+  },
+  "browser": {
+    "title": "Browser Compatibility Notice",
+    "recommendation": "You are using {browserName}. For the best experience with speech recognition and audio features, we recommend using Google Chrome or Microsoft Edge.",
+    "safariWarning": "Safari has partial support for speech features. Some functionality may be limited.",
+    "firefoxWarning": "Firefox does not fully support Web Speech API. Please switch to Chrome or Edge."
+  },
+  "feedback": {
+    "perfect": "Perfect! Excellent pronunciation!",
+    "great": "Great job! Very close!",
+    "good": "Good! You passed!",
+    "almost": "Almost there! Try again.",
+    "notQuite": "Not quite. Give it another try!",
+    "tryAgain": "Let's try that again. Take your time."
+  },
+  "audio": {
+    "pause": "⏸️ Pause",
+    "play": "▶️ Play"
+  },
+  "hint": {
+    "yourLine": "📝 Your line:",
+    "hint": "💡 Hint: {hint}"
+  },
+  "matchingResult": {
+    "title": "Matching Result",
+    "youSaid": "You said:",
+    "expected": "Expected:"
+  },
+  "progressBar": {
+    "progress": "Progress"
+  }
+}

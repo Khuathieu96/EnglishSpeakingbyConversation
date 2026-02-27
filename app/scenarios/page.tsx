@@ -1,35 +1,38 @@
-"use client";
+'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { conversations } from '@/data/conversations';
+import { TopNav } from '@/app/dashboard/components/TopNav';
+import { BottomFooter } from '@/app/dashboard/components/BottomFooter';
 import styles from './scenarios.module.css';
 
-const difficultyClass: Record<'beginner' | 'intermediate' | 'advanced', string> = {
+const difficultyClass: Record<
+  'beginner' | 'intermediate' | 'advanced',
+  string
+> = {
   beginner: styles.badgeBeginner,
   intermediate: styles.badgeIntermediate,
   advanced: styles.badgeAdvanced,
 };
 
-const stats = [
-  { label: 'Current Streak', value: '12 Days', delta: '' },
-  { label: 'Total Learning Time', value: '24h 15m', delta: '+1.6h' },
-  { label: 'Scenarios Completed', value: '48', delta: '+5' },
-  { label: 'Average Accuracy', value: '92%', delta: '+1%' },
+const stats_keys = [
+  { labelKey: 'currentStreak', value: '12 Days', delta: '' },
+  { labelKey: 'totalLearningTime', value: '24h 15m', delta: '+1.6h' },
+  { labelKey: 'scenariosCompleted', value: '48', delta: '+5' },
+  { labelKey: 'averageAccuracy', value: '92%', delta: '+1%' },
 ] as const;
 
 type DifficultyFilter = 'all' | 'beginner' | 'intermediate' | 'advanced';
 
-const difficultyLabelMap: Record<DifficultyFilter, string> = {
-  all: 'All Levels',
-  beginner: 'Beginner',
-  intermediate: 'Intermediate',
-  advanced: 'Advanced',
-};
-
 export default function ScenariosPage() {
-  const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyFilter>('all');
-  const [selectedTopicCategory, setSelectedTopicCategory] = useState<string>('all');
+  const t = useTranslations('scenarios');
+  const tJourney = useTranslations('journey');
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<DifficultyFilter>('all');
+  const [selectedTopicCategory, setSelectedTopicCategory] =
+    useState<string>('all');
   const [isDifficultyOpen, setIsDifficultyOpen] = useState(false);
   const [isTopicOpen, setIsTopicOpen] = useState(false);
   const difficultyRef = useRef<HTMLDivElement | null>(null);
@@ -51,14 +54,22 @@ export default function ScenariosPage() {
       objectives:
         objectives.length > 0
           ? objectives
-          : [`Practice ${conversation.category.toLowerCase()} vocabulary`, 'Build response fluency'],
+          : [
+              t('practiceVocabulary', {
+                category: conversation.category.toLowerCase(),
+              }),
+              t('buildFluency'),
+            ],
       category: conversation.category,
     };
   });
 
   const categories = useMemo(
-    () => ['all', ...new Set(conversations.map((conversation) => conversation.category))],
-    []
+    () => [
+      'all',
+      ...new Set(conversations.map((conversation) => conversation.category)),
+    ],
+    [],
   );
 
   useEffect(() => {
@@ -81,7 +92,9 @@ export default function ScenariosPage() {
   const filteredCards = useMemo(() => {
     return cards.filter((card) => {
       const matchesDifficulty =
-        selectedDifficulty === 'all' ? true : card.difficulty === selectedDifficulty;
+        selectedDifficulty === 'all'
+          ? true
+          : card.difficulty === selectedDifficulty;
 
       const matchesTopicCategory =
         selectedTopicCategory === 'all'
@@ -94,37 +107,13 @@ export default function ScenariosPage() {
 
   return (
     <div className={styles.page}>
-      <header className={styles.topBar}>
-        <div className={styles.topBarInner}>
-          <div className={styles.brand}>
-            <div className={styles.brandIcon}>✈</div>
-            <span className={styles.brandText}>EnglishHub</span>
-            <nav className={styles.mainNav}>
-              <a className={styles.activeNav}>Scenarios</a>
-              <a>Tutor</a>
-              <a>Community</a>
-              <a>Profile</a>
-            </nav>
-          </div>
-
-          <div className={styles.topActions}>
-            <label className={styles.searchBox}>
-              <span className='material-symbols-outlined'>search</span>
-              <input type='text' defaultValue='Search scenarios...' aria-label='Search scenarios' />
-            </label>
-            <button className={styles.iconButton} aria-label='Notifications'>
-              <span className='material-symbols-outlined'>notifications</span>
-            </button>
-            <div className={styles.avatar}>👤</div>
-          </div>
-        </div>
-      </header>
+      <TopNav />
 
       <main className={styles.main}>
         <section className={styles.statsGrid}>
-          {stats.map((stat) => (
-            <article key={stat.label} className={styles.statCard}>
-              <div className={styles.statLabel}>{stat.label}</div>
+          {stats_keys.map((stat) => (
+            <article key={stat.labelKey} className={styles.statCard}>
+              <div className={styles.statLabel}>{t(stat.labelKey)}</div>
               <div className={styles.statValueRow}>
                 <strong>{stat.value}</strong>
                 {stat.delta ? <span>{stat.delta}</span> : null}
@@ -136,8 +125,8 @@ export default function ScenariosPage() {
         <section className={styles.librarySection}>
           <div className={styles.libraryHeader}>
             <div>
-              <h1>Conversation Library</h1>
-              <p>Master real-world English through interactive scenarios.</p>
+              <h1>{t('libraryTitle')}</h1>
+              <p>{t('librarySubtitle')}</p>
             </div>
 
             <div className={styles.filterRow}>
@@ -150,25 +139,44 @@ export default function ScenariosPage() {
                   }}
                 >
                   <span className='material-symbols-outlined'>equalizer</span>
-                  {difficultyLabelMap[selectedDifficulty]}
+                  {tJourney(
+                    selectedDifficulty === 'all'
+                      ? 'allLevels'
+                      : selectedDifficulty === 'beginner'
+                        ? 'beginner'
+                        : selectedDifficulty === 'intermediate'
+                          ? 'intermediate'
+                          : 'advanced',
+                  )}
                   <span className='material-symbols-outlined'>expand_more</span>
                 </button>
                 {isDifficultyOpen ? (
                   <div className={styles.filterMenu}>
-                    {(['all', 'beginner', 'intermediate', 'advanced'] as DifficultyFilter[]).map(
-                      (level) => (
-                        <button
-                          key={level}
-                          className={selectedDifficulty === level ? styles.filterMenuActive : ''}
-                          onClick={() => {
-                            setSelectedDifficulty(level);
-                            setIsDifficultyOpen(false);
-                          }}
-                        >
-                          {level === 'all' ? 'All Levels' : `${level[0].toUpperCase()}${level.slice(1)}`}
-                        </button>
-                      )
-                    )}
+                    {(
+                      [
+                        'all',
+                        'beginner',
+                        'intermediate',
+                        'advanced',
+                      ] as DifficultyFilter[]
+                    ).map((level) => (
+                      <button
+                        key={level}
+                        className={
+                          selectedDifficulty === level
+                            ? styles.filterMenuActive
+                            : ''
+                        }
+                        onClick={() => {
+                          setSelectedDifficulty(level);
+                          setIsDifficultyOpen(false);
+                        }}
+                      >
+                        {level === 'all'
+                          ? tJourney('allLevels')
+                          : tJourney(level)}
+                      </button>
+                    ))}
                   </div>
                 ) : null}
               </div>
@@ -182,7 +190,7 @@ export default function ScenariosPage() {
                   }}
                 >
                   <span className='material-symbols-outlined'>widgets</span>
-                  Topic
+                  {t('topic')}
                   <span className='material-symbols-outlined'>expand_more</span>
                 </button>
                 {isTopicOpen ? (
@@ -190,62 +198,70 @@ export default function ScenariosPage() {
                     {categories.map((category) => (
                       <button
                         key={category}
-                        className={selectedTopicCategory === category ? styles.filterMenuActive : ''}
+                        className={
+                          selectedTopicCategory === category
+                            ? styles.filterMenuActive
+                            : ''
+                        }
                         onClick={() => {
                           setSelectedTopicCategory(category);
                           setIsTopicOpen(false);
                         }}
                       >
-                        {category === 'all' ? 'All Topics' : category}
+                        {category === 'all' ? t('allTopics') : category}
                       </button>
                     ))}
                   </div>
                 ) : null}
               </div>
-
             </div>
           </div>
 
           <div className={styles.cardGrid}>
             {filteredCards.map((card) => (
-              <Link key={card.id} href={`/conversation/${card.id}`} className={styles.cardLink}>
+              <Link
+                key={card.id}
+                href={`/conversation/${card.id}`}
+                className={styles.cardLink}
+              >
                 <article className={styles.card}>
                   <div className={styles.cardImageWrap}>
-                    <img src={card.image} alt={card.title} className={styles.cardImage} />
-                    <span className={`${styles.badge} ${difficultyClass[card.difficulty]}`}>
+                    <img
+                      src={card.image}
+                      alt={card.title}
+                      className={styles.cardImage}
+                    />
+                    <span
+                      className={`${styles.badge} ${difficultyClass[card.difficulty]}`}
+                    >
                       {card.difficulty}
                     </span>
-                    <span className={styles.timeBadge}>{card.estimatedTime} mins</span>
+                    <span className={styles.timeBadge}>
+                      {card.estimatedTime} {t('mins')}
+                    </span>
                   </div>
 
                   <div className={styles.cardBody}>
                     <h2>{card.title}</h2>
                     <p className={styles.cardDescription}>{card.description}</p>
-                    <p className={styles.objectiveTitle}>Objectives:</p>
+                    <p className={styles.objectiveTitle}>{t('objectives')}</p>
                     <ul>
                       {card.objectives.map((objective) => (
                         <li key={objective}>{objective}</li>
                       ))}
                     </ul>
-                    <div className={styles.startButton}>Start Practice</div>
+                    <div className={styles.startButton}>
+                      {t('startPractice')}
+                    </div>
                   </div>
                 </article>
               </Link>
             ))}
           </div>
-
-          <div className={styles.discoverWrap}>
-            <button className={styles.discoverButton}>
-              Discover More Scenarios
-              <span className='material-symbols-outlined'>expand_more</span>
-            </button>
-          </div>
         </section>
       </main>
 
-      <footer className={styles.footer}>
-        © 2024 EnglishHub Learning. Designed for global communicators.
-      </footer>
+      <BottomFooter />
     </div>
   );
 }

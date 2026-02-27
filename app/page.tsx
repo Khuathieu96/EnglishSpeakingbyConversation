@@ -1,23 +1,24 @@
-import { Spline_Sans } from 'next/font/google';
+'use client';
+
 import Link from 'next/link';
-import styles from './dashboard/PolishDashboard.module.css';
+import { useTranslations } from 'next-intl';
+import styles from './dashboard/Dashboard.module.css';
 import { TopNav } from './dashboard/components/TopNav';
 import { HeroSection } from './dashboard/components/HeroSection';
 import { JourneySection } from './dashboard/components/JourneySection';
 import { StatsSection } from './dashboard/components/StatsSection';
 import { BottomFooter } from './dashboard/components/BottomFooter';
-import { inProgressScenarioItems, polishAssets } from './dashboard/polishData';
-
-const spline = Spline_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
+import {
+  inProgressScenarioItems,
+  dashboardAssets,
+} from './dashboard/dashboardData';
 
 export default function Home() {
+  const t = useTranslations('mobile');
   const mobileCards = inProgressScenarioItems.slice(0, 5);
 
   return (
-    <div className={`${styles.page} ${spline.className}`}>
+    <div className={styles.page}>
       <div className={styles.desktopDashboard}>
         <TopNav />
         <main className={styles.main}>
@@ -35,66 +36,63 @@ export default function Home() {
           <div className={styles.mobileHeaderLeft}>
             <div className={styles.mobileHeaderAvatarWrap}>
               <img
-                src={polishAssets.avatar}
+                src={dashboardAssets.avatar}
                 alt='Profile'
                 className={styles.mobileHeaderAvatar}
               />
-              <span className={styles.mobileHeaderAvatarStatus} aria-hidden='true' />
+              <span
+                className={styles.mobileHeaderAvatarStatus}
+                aria-hidden='true'
+              />
             </div>
             <div className={styles.mobileHeaderIdentity}>
               <h1 className={styles.mobileHeaderTitle}>Alex</h1>
-              <p className={styles.mobileHeaderSubtitle}>Student</p>
+              <p className={styles.mobileHeaderSubtitle}>{t('student')}</p>
             </div>
           </div>
 
-          <div className={styles.mobileHeaderActions}>
-            <button className={styles.mobileIconBtn} aria-label='Information'>
-              <span className='material-symbols-outlined'>info</span>
-            </button>
-            <button className={styles.mobileIconBtn} aria-label='More options'>
-              <span className='material-symbols-outlined'>more_vert</span>
-            </button>
-          </div>
+          <div className={styles.mobileHeaderActions}></div>
         </header>
 
         <main className={styles.mobileMainContent}>
           <section className={styles.mobileIntroSection}>
-            <h2>Hi, Alex! 👋</h2>
-            <p>Ready to level up your English today?</p>
+            <h2>{t('greeting')}</h2>
+            <p>{t('readyText')}</p>
 
             <div className={styles.mobileLevelCard}>
               <div className={styles.mobileLevelIcon}>
                 <span className='material-symbols-outlined'>school</span>
               </div>
               <div>
-                <p className={styles.mobileLevelLabel}>Current Level</p>
-                <p className={styles.mobileLevelValue}>B2 Upper Intermediate</p>
+                <p className={styles.mobileLevelLabel}>{t('currentLevel')}</p>
+                <p className={styles.mobileLevelValue}>{t('levelValue')}</p>
               </div>
             </div>
           </section>
 
           <section className={styles.mobileStatsGrid}>
             <article className={styles.mobileStatCard}>
-              <span className='material-symbols-outlined'>local_fire_department</span>
+              <span className='material-symbols-outlined'>
+                local_fire_department
+              </span>
               <strong>15</strong>
-              <p>Streak</p>
+              <p>{t('streak')}</p>
             </article>
             <article className={styles.mobileStatCard}>
               <span className='material-symbols-outlined'>schedule</span>
               <strong>42</strong>
-              <p>Hours</p>
+              <p>{t('hours')}</p>
             </article>
             <article className={styles.mobileStatCard}>
               <span className='material-symbols-outlined'>chat_bubble</span>
               <strong>128</strong>
-              <p>Dialogs</p>
+              <p>{t('dialogs')}</p>
             </article>
           </section>
 
           <section className={styles.mobileJourneySection}>
             <div className={styles.mobileJourneyHeader}>
-              <h3>Continue Journey</h3>
-              <button>View All</button>
+              <h3>{t('continueJourney')}</h3>
             </div>
 
             <div className={styles.mobileJourneyScroller}>
@@ -105,7 +103,11 @@ export default function Home() {
                   className={styles.mobileLessonCard}
                 >
                   <div className={styles.mobileLessonImageWrap}>
-                    <img src={item.image} alt={item.title} className={styles.mobileLessonImage} />
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className={styles.mobileLessonImage}
+                    />
                     <span
                       className={
                         item.badge === 'beginner'
@@ -132,47 +134,41 @@ export default function Home() {
                       <span>{item.progress}%</span>
                     </div>
 
-                    <div className={styles.mobileLessonAction}>Resume Lesson</div>
+                    <div className={styles.mobileLessonAction}>
+                      {t('resumeLesson')}
+                    </div>
                   </div>
                 </Link>
               ))}
 
               <Link href='/scenarios' className={styles.mobileShowMoreCard}>
                 <span className='material-symbols-outlined'>apps</span>
-                <strong>Show More</strong>
-                <p>Explore all conversations</p>
+                <strong>{t('showMore')}</strong>
+                <p>{t('exploreAll')}</p>
               </Link>
             </div>
           </section>
 
           <section className={styles.mobileGoalCard}>
-            <h3>Weekly Goal</h3>
-            <p>You&apos;re almost there! 4 more hours to hit your target.</p>
+            <h3>{t('weeklyGoal')}</h3>
+            <p>{t('weeklyGoalText')}</p>
             <div className={styles.mobileGoalValueRow}>
               <strong>16</strong>
-              <span>/ 20 hrs</span>
+              <span>{t('goalUnit')}</span>
             </div>
             <span className={styles.mobileGoalIcon}>emoji_events</span>
           </section>
         </main>
 
         <nav className={styles.mobileBottomNavBar}>
-          <a className={styles.mobileNavLinkActive} href='#'>
+          <Link className={styles.mobileNavLinkActive} href='/'>
             <span className='material-symbols-outlined'>home</span>
-            <span>Home</span>
-          </a>
-          <a className={styles.mobileNavLink} href='#'>
-            <span className='material-symbols-outlined'>chat_bubble</span>
-            <span>Practice</span>
-          </a>
-          <a className={styles.mobileNavLink} href='#'>
+            <span>{t('home')}</span>
+          </Link>
+          <Link className={styles.mobileNavLink} href='/scenarios'>
             <span className='material-symbols-outlined'>menu_book</span>
-            <span>Library</span>
-          </a>
-          <a className={styles.mobileNavLink} href='#'>
-            <span className='material-symbols-outlined'>person</span>
-            <span>Profile</span>
-          </a>
+            <span>{t('library')}</span>
+          </Link>
         </nav>
       </div>
     </div>

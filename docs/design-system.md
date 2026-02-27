@@ -13,7 +13,7 @@ Design source: Stitch-based screens for conversation list, chat, and session sum
 
 ## Typography
 
-- Primary font: Spline Sans (fallback Manrope)
+- Primary font: Be Vietnam Pro (Google Font, full Vietnamese character support)
 - Typical body: `text-[15px] font-medium`
 - Card title: `text-base font-bold`
 - Labels: uppercase, tight tracking, small size (`10px`-`11px`)

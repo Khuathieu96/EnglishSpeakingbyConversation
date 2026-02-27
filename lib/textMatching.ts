@@ -94,7 +94,20 @@ export function matchText(
 }
 
 /**
- * Get a user-friendly message based on matching result
+ * Get a translation key based on matching result
+ * Caller should use this key with useTranslations('feedback') to get localized message
+ */
+export function getMatchingMessageKey(similarity: number): string {
+  if (similarity >= 95) return 'perfect';
+  if (similarity >= 90) return 'great';
+  if (similarity >= MATCHING_THRESHOLD) return 'good';
+  if (similarity >= 70) return 'almost';
+  if (similarity >= 50) return 'notQuite';
+  return 'tryAgain';
+}
+
+/**
+ * Get a user-friendly message based on matching result (English fallback)
  */
 export function getMatchingMessage(similarity: number): string {
   if (similarity >= 95) return 'Perfect! Excellent pronunciation!';

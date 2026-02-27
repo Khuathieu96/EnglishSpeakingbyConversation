@@ -19,6 +19,11 @@
 - [x] Consolidate duplicate documentation into `/docs`
 - [x] Remove root markdown duplicates
 - [x] Improve type safety in key chat/speech modules
+- [x] Add multilingual UI support (Vietnamese / English) with `next-intl`
+- [x] Replace Spline Sans + Manrope fonts with Be Vietnam Pro
+- [x] Add `LanguageToggle` component to both headers (TopNav & AppHeader)
+- [x] Add translation files (`messages/en.json`, `messages/vi.json`)
+- [x] Refactor `getMatchingMessage` to return translation keys
 - [ ] Add/restore reliable lint command compatible with current Next.js version
 - [ ] Add tests for text matching and state transitions
 

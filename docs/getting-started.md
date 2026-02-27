@@ -21,6 +21,7 @@ Open `http://localhost:3000`.
 3. Allow microphone access.
 4. Speak responses and check matching feedback.
 5. Complete session and review summary/audio.
+6. Toggle language (VI/EN) via the translate icon in the header and verify UI updates.
 
 ## Useful commands
 
@@ -35,3 +36,4 @@ npm run start
 - Microphone blocked: allow microphone permission in browser settings.
 - Recognition not starting: use Chrome/Edge and check internet connection.
 - Audio playback issue: verify output device and browser media permissions.
+- Language not persisting: check that `localStorage` is not blocked (e.g. private browsing).

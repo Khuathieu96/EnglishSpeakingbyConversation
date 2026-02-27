@@ -1,6 +1,6 @@
 import { conversations } from '@/data/conversations';
 
-export const polishAssets = {
+export const dashboardAssets = {
   heroImage:
     'https://www.figma.com/api/mcp/asset/c5656166-65f1-4921-b140-1dd814362f0b',
   avatar:
@@ -53,15 +53,15 @@ const progressByConversationId: Record<string, number> = {
 const pickScenarioIcon = (category: string): string => {
   const normalized = category.toLowerCase();
 
-  if (normalized.includes('social')) return polishAssets.scenarioIcons.meeting;
+  if (normalized.includes('social')) return dashboardAssets.scenarioIcons.meeting;
   if (normalized.includes('dining') || normalized.includes('shopping')) {
-    return polishAssets.scenarioIcons.restaurant;
+    return dashboardAssets.scenarioIcons.restaurant;
   }
   if (normalized.includes('professional') || normalized.includes('technology')) {
-    return polishAssets.scenarioIcons.interview;
+    return dashboardAssets.scenarioIcons.interview;
   }
 
-  return polishAssets.scenarioIcons.flight;
+  return dashboardAssets.scenarioIcons.flight;
 };
 
 export const scenarioItems: ScenarioItem[] = conversations.map((conversation) => ({
@@ -77,3 +77,4 @@ export const scenarioItems: ScenarioItem[] = conversations.map((conversation) =>
 export const inProgressScenarioItems: ScenarioItem[] = scenarioItems.filter(
   (item) => item.progress > 0 && item.progress < 100
 );
+

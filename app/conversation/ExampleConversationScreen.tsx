@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import styles from './conversation.module.css';
 import { conversations, getConversationById } from '@/data/conversations';
 import { useConversationBot } from '@/hooks/useConversationBot';
 import { CompletionScreen } from '@/components/CompletionScreen';
 import { BrowserWarning } from '@/components/BrowserWarning';
+import { AppHeader } from '@/app/dashboard/components/AppHeader';
 
 const desktopUserImage =
   'https://www.figma.com/api/mcp/asset/182d7cc0-77f7-42a3-b9d2-239e22c20204';
@@ -28,11 +31,6 @@ const keyPhrases = [
   'Nice to meet you too',
 ];
 
-const idAliasMap: Record<string, string> = {
-  'meeting-people': 'meeting-new-people',
-  'booking-flight': 'at-the-airport',
-};
-
 interface ExampleConversationScreenProps {
   conversationId?: string;
 }
@@ -40,9 +38,10 @@ interface ExampleConversationScreenProps {
 export function ExampleConversationScreen({
   conversationId = 'meeting-new-people',
 }: ExampleConversationScreenProps) {
-  const resolvedConversationId = idAliasMap[conversationId] ?? conversationId;
-  const conversation = getConversationById(resolvedConversationId) ?? conversations[0];
+  const conversation = getConversationById(conversationId) ?? conversations[0];
   const [hasStarted, setHasStarted] = useState(false);
+  const t = useTranslations('conversation');
+  const tChat = useTranslations('chat');
 
   const {
     botState,
@@ -80,7 +79,10 @@ export function ExampleConversationScreen({
 
   const progressPercent =
     userLineCount > 0
-      ? Math.min(100, (botState.statistics.completedLines / userLineCount) * 100)
+      ? Math.min(
+          100,
+          (botState.statistics.completedLines / userLineCount) * 100,
+        )
       : 0;
 
   const hasCurrentUserTranscript =
@@ -99,7 +101,8 @@ export function ExampleConversationScreen({
     ? conversation.lines.slice(0, botState.currentLineIndex + 1)
     : conversation.lines.slice(0, botState.currentLineIndex);
 
-  const isListening = speechRecognition.isListening || audioRecorder.isRecording;
+  const isListening =
+    speechRecognition.isListening || audioRecorder.isRecording;
   const canSpeak = botState.state === 'waiting_for_user';
 
   if (botState.conversationComplete) {
@@ -120,40 +123,24 @@ export function ExampleConversationScreen({
     <>
       <div className={styles.desktopOnly}>
         <div className={styles.desktopPage}>
-          <header className={styles.desktopHeader}>
-            <div className={styles.brandWrap}>
-              <div className={styles.brandIcon}>✚</div>
-              <p className={styles.brandText}>English Practice</p>
-            </div>
-
-            <nav className={styles.desktopNav}>
-              <a href='#'>Lessons</a>
-              <a href='#'>Progress</a>
-              <a href='#'>Community</a>
-            </nav>
-
-            <div className={styles.desktopActions}>
-              <button aria-label='Settings'>
-                <span className='material-symbols-outlined'>settings</span>
-              </button>
-              <img src={desktopUserImage} alt='User profile' />
-            </div>
-          </header>
+          <AppHeader />
 
           <div className={styles.desktopMain}>
             <aside className={styles.desktopAside}>
               <div className={styles.asideTop}>
-                <span className={styles.introPill}>Introduction</span>
+                <span className={styles.introPill}>{t('introduction')}</span>
                 <h1>{conversation.title}</h1>
                 <p>{conversation.description}</p>
 
                 <div className={styles.asideSection}>
-                  <h2>Learning Objectives</h2>
+                  <h2>{t('learningObjectives')}</h2>
                   <ul>
                     {lessonObjectives.map((objective) => (
                       <li
                         key={objective.label}
-                        className={objective.done ? styles.objectiveDone : undefined}
+                        className={
+                          objective.done ? styles.objectiveDone : undefined
+                        }
                       >
                         {objective.label}
                       </li>
@@ -162,7 +149,7 @@ export function ExampleConversationScreen({
                 </div>
 
                 <div className={styles.asideSection}>
-                  <h2>Key Phrases</h2>
+                  <h2>{t('keyPhrases')}</h2>
                   <div className={styles.phrases}>
                     {keyPhrases.map((phrase) => (
                       <span key={phrase}>{phrase}</span>
@@ -176,10 +163,8 @@ export function ExampleConversationScreen({
                   <span className='material-symbols-outlined'>lightbulb</span>
                 </div>
                 <div>
-                  <p className={styles.proTipTitle}>Pro Tip</p>
-                  <p className={styles.proTipText}>
-                    Try to match the tutor&apos;s tone for better fluency scores.
-                  </p>
+                  <p className={styles.proTipTitle}>{t('proTip')}</p>
+                  <p className={styles.proTipText}>{t('proTipText')}</p>
                 </div>
               </div>
             </aside>
@@ -198,18 +183,13 @@ export function ExampleConversationScreen({
                   <div>
                     <p className={styles.tutorName}>Alex</p>
                     <p className={styles.tutorState}>
-                      {botState.state === 'ai_speaking' ? 'Speaking...' : 'Listening...'}
+                      {botState.state === 'ai_speaking'
+                        ? t('speaking')
+                        : t('listening')}
                     </p>
                   </div>
                 </div>
-                <div className={styles.chatTools}>
-                  <button aria-label='Translate'>
-                    <span className='material-symbols-outlined'>translate</span>
-                  </button>
-                  <button aria-label='Volume'>
-                    <span className='material-symbols-outlined'>volume_up</span>
-                  </button>
-                </div>
+                <div className={styles.chatTools}></div>
               </div>
 
               <div className={styles.desktopMessages}>
@@ -220,7 +200,9 @@ export function ExampleConversationScreen({
                   return (
                     <div
                       key={line.id}
-                      className={isUser ? styles.desktopRowUser : styles.desktopRowAi}
+                      className={
+                        isUser ? styles.desktopRowUser : styles.desktopRowAi
+                      }
                     >
                       {!isUser && (
                         <img
@@ -231,11 +213,17 @@ export function ExampleConversationScreen({
                       )}
 
                       <div className={styles.messageCol}>
-                        <div className={isUser ? styles.userBubble : styles.aiBubble}>
+                        <div
+                          className={
+                            isUser ? styles.userBubble : styles.aiBubble
+                          }
+                        >
                           {isUser && transcript ? transcript : line.text}
                         </div>
-                        <p className={isUser ? styles.stampUser : styles.stampAi}>
-                          {isUser ? 'You' : 'Alex'} • Just now
+                        <p
+                          className={isUser ? styles.stampUser : styles.stampAi}
+                        >
+                          {isUser ? t('you') : 'Alex'} • {t('justNow')}
                         </p>
                       </div>
 
@@ -258,16 +246,23 @@ export function ExampleConversationScreen({
                         : styles.matchError
                     }
                   >
-                    Match score: {Math.round(botState.matchingResult.similarity)}%
+                    Match score:{' '}
+                    {Math.round(botState.matchingResult.similarity)}%
                     {!botState.matchingResult.passed && (
-                      <span> • Expected: “{botState.matchingResult.expected}”</span>
+                      <span>
+                        {' '}
+                        •{' '}
+                        {t('expected', {
+                          text: botState.matchingResult.expected,
+                        })}
+                      </span>
                     )}
                   </div>
                 )}
 
                 {botState.state === 'show_answer' && currentLine && (
                   <div className={styles.answerBox}>
-                    Correct answer: “{currentLine.text}”
+                    {t('correctAnswer', { text: currentLine.text })}
                   </div>
                 )}
               </div>
@@ -276,7 +271,8 @@ export function ExampleConversationScreen({
                 <div className={styles.progressMeta}>
                   <p>{conversation.title}</p>
                   <p>
-                    {botState.statistics.completedLines}/{userLineCount} phrases
+                    {botState.statistics.completedLines}/{userLineCount}{' '}
+                    {t('phrases')}
                   </p>
                 </div>
                 <div className={styles.progressTrack}>
@@ -288,8 +284,8 @@ export function ExampleConversationScreen({
 
                 <div className={styles.hintBox}>
                   {currentLine?.speaker === 'user'
-                    ? `Say: “${currentLine.text}”`
-                    : 'Wait for AI to finish speaking...'}
+                    ? t('sayHint', { text: currentLine.text })
+                    : t('waitForAi')}
                 </div>
 
                 <div className={styles.desktopControls}>
@@ -298,23 +294,26 @@ export function ExampleConversationScreen({
                     disabled={!canSpeak || isListening}
                     className={styles.primaryBtn}
                   >
-                    {isListening ? 'Listening...' : 'Tap to Speak'}
+                    {isListening ? t('listening') : t('tapToSpeak')}
                   </button>
 
                   {isListening ? (
-                    <button onClick={handleStopSpeaking} className={styles.stopBtn}>
-                      Stop
+                    <button
+                      onClick={handleStopSpeaking}
+                      className={styles.stopBtn}
+                    >
+                      {t('stop')}
                     </button>
                   ) : (
                     <button onClick={handleSkipLine} className={styles.skipBtn}>
-                      Skip
+                      {t('skip')}
                     </button>
                   )}
                 </div>
 
                 {remainingAttempts < 3 && (
                   <p className={styles.attemptsText}>
-                    Attempts remaining: {remainingAttempts}
+                    {t('attemptsRemaining', { count: remainingAttempts })}
                   </p>
                 )}
               </div>
@@ -333,40 +332,39 @@ export function ExampleConversationScreen({
               </div>
               <div>
                 <p className={styles.mobileTutorName}>Elena</p>
-                <p className={styles.mobileTutorRole}>AI Language Tutor</p>
+                <p className={styles.mobileTutorRole}>{t('aiTutor')}</p>
               </div>
             </div>
 
-            <div className={styles.mobileTopActions}>
-              <button aria-label='Information'>
-                <span className='material-symbols-outlined'>info</span>
-              </button>
-              <button aria-label='More'>
-                <span className='material-symbols-outlined'>more_vert</span>
-              </button>
-            </div>
+            <div className={styles.mobileTopActions}></div>
           </header>
 
           <section className={styles.mobileLessonFocusWrap}>
             <details className={styles.mobileLessonFocusDetails}>
               <summary className={styles.mobileLessonFocus}>
                 <span className='material-symbols-outlined'>auto_awesome</span>
-                <span>Lesson Focus</span>
+                <span>{t('lessonFocus')}</span>
                 <span className='material-symbols-outlined'>expand_more</span>
               </summary>
 
               <div className={styles.mobileLessonPaper}>
-                <span className={styles.introPill}>Introduction</span>
-                <h2 className={styles.mobilePaperTitle}>{conversation.title}</h2>
-                <p className={styles.mobilePaperDesc}>{conversation.description}</p>
+                <span className={styles.introPill}>{t('introduction')}</span>
+                <h2 className={styles.mobilePaperTitle}>
+                  {conversation.title}
+                </h2>
+                <p className={styles.mobilePaperDesc}>
+                  {conversation.description}
+                </p>
 
                 <div className={styles.mobilePaperSection}>
-                  <h3>Learning Objectives</h3>
+                  <h3>{t('learningObjectives')}</h3>
                   <ul>
                     {lessonObjectives.map((objective) => (
                       <li
                         key={`mobile-${objective.label}`}
-                        className={objective.done ? styles.objectiveDone : undefined}
+                        className={
+                          objective.done ? styles.objectiveDone : undefined
+                        }
                       >
                         {objective.label}
                       </li>
@@ -375,7 +373,7 @@ export function ExampleConversationScreen({
                 </div>
 
                 <div className={styles.mobilePaperSection}>
-                  <h3>Key Phrases</h3>
+                  <h3>{t('keyPhrases')}</h3>
                   <div className={styles.phrases}>
                     {keyPhrases.map((phrase) => (
                       <span key={`mobile-${phrase}`}>{phrase}</span>
@@ -388,10 +386,8 @@ export function ExampleConversationScreen({
                     <span className='material-symbols-outlined'>lightbulb</span>
                   </div>
                   <div>
-                    <p className={styles.proTipTitle}>Pro Tip</p>
-                    <p className={styles.proTipText}>
-                      Try to match the tutor&apos;s tone for better fluency scores.
-                    </p>
+                    <p className={styles.proTipTitle}>{t('proTip')}</p>
+                    <p className={styles.proTipText}>{t('proTipText')}</p>
                   </div>
                 </div>
               </div>
@@ -417,16 +413,19 @@ export function ExampleConversationScreen({
                   )}
 
                   <div className={styles.mobileMessageContent}>
-                    <div className={isUser ? styles.mobileUserBubble : styles.mobileAiBubble}>
+                    <div
+                      className={
+                        isUser ? styles.mobileUserBubble : styles.mobileAiBubble
+                      }
+                    >
                       {isUser && transcript ? transcript : line.text}
-                      {!isUser && index === displayLines.length - 1 && (
-                        <button className={styles.mobileTranslationBtn}>
-                          Show Translation
-                        </button>
-                      )}
                     </div>
-                    <p className={isUser ? styles.mobileStampUser : styles.mobileStampAi}>
-                      {isUser ? 'You' : 'Elena'} • Just now
+                    <p
+                      className={
+                        isUser ? styles.mobileStampUser : styles.mobileStampAi
+                      }
+                    >
+                      {isUser ? t('you') : 'Elena'} • {t('justNow')}
                     </p>
                   </div>
 
@@ -464,20 +463,6 @@ export function ExampleConversationScreen({
           </main>
 
           <footer className={styles.mobileBottomControls}>
-            <div className={styles.mobileInputControl}>
-              <input
-                readOnly
-                placeholder={
-                  currentLine?.speaker === 'user'
-                    ? `Say: ${currentLine.text}`
-                    : 'Type your response...'
-                }
-              />
-              <button aria-label='Send message'>
-                <span className='material-symbols-outlined'>send</span>
-              </button>
-            </div>
-
             <div className={styles.mobileVoiceWrap}>
               <button
                 className={styles.mobileVoiceBtn}
@@ -487,7 +472,7 @@ export function ExampleConversationScreen({
               >
                 <span className='material-symbols-outlined'>mic</span>
               </button>
-              <p>{isListening ? 'Stop' : 'Tap to Speak'}</p>
+              <p>{isListening ? t('stop') : t('tapToSpeak')}</p>
             </div>
 
             <div className={styles.mobileProgressWrap}>
@@ -495,7 +480,7 @@ export function ExampleConversationScreen({
                 <p>
                   {botState.statistics.completedLines}/{userLineCount}
                 </p>
-                <p>Attempts: {remainingAttempts}</p>
+                <p>{t('attempts', { count: remainingAttempts })}</p>
               </div>
               <div className={styles.mobileProgressTrack}>
                 <div
@@ -506,22 +491,20 @@ export function ExampleConversationScreen({
             </div>
 
             <nav className={styles.mobileBottomNav}>
-              <a href='#' className={styles.mobileNavItem}>
+              <Link href='/' className={styles.mobileNavItem}>
                 <span className='material-symbols-outlined'>home</span>
-                <span>Home</span>
-              </a>
-              <a href='#' className={`${styles.mobileNavItem} ${styles.mobileActive}`}>
+                <span>{t('home')}</span>
+              </Link>
+              <span
+                className={`${styles.mobileNavItem} ${styles.mobileActive}`}
+              >
                 <span className='material-symbols-outlined'>chat_bubble</span>
-                <span>Practice</span>
-              </a>
-              <a href='#' className={styles.mobileNavItem}>
+                <span>{t('practice')}</span>
+              </span>
+              <Link href='/scenarios' className={styles.mobileNavItem}>
                 <span className='material-symbols-outlined'>menu_book</span>
-                <span>Library</span>
-              </a>
-              <a href='#' className={styles.mobileNavItem}>
-                <span className='material-symbols-outlined'>person</span>
-                <span>Profile</span>
-              </a>
+                <span>{t('libraryNav')}</span>
+              </Link>
             </nav>
           </footer>
         </div>

@@ -45,6 +45,56 @@ Defined in `lib/constants.ts`:
 
 Always keep browser capability checks for speech APIs and microphone access.
 
+## Internationalization (i18n)
+
+The UI supports **Vietnamese** (default) and **English** via `next-intl`.
+
+### Architecture
+
+- **`lib/locale.ts`** — `Locale` type (`'en' | 'vi'`), `DEFAULT_LOCALE = 'vi'`, `LOCALE_STORAGE_KEY = 'app-locale'`.
+- **`components/LocaleProvider.tsx`** — Wraps the app with `NextIntlClientProvider`. Reads/writes `localStorage` for persistence. Sets `document.documentElement.lang` on change.
+- **`components/LanguageToggle.tsx`** — Icon button (Material Symbols `translate`) placed in `TopNav` and `AppHeader`. Toggles between VI ↔ EN.
+- **`messages/en.json`** / **`messages/vi.json`** — Translation strings organized by namespace (~14 namespaces, ~150 keys each).
+
+### Adding a new translation key
+
+1. Add the key + English text to `messages/en.json` under the appropriate namespace.
+2. Add the key + Vietnamese text to `messages/vi.json` under the same namespace.
+3. In your component, call `useTranslations('namespace')` and use `t('key')`.
+
+### Namespaces
+
+| Namespace | Used by |
+|-----------|---------|
+| `nav` | TopNav, AppHeader |
+| `hero` | HeroSection |
+| `journey` | JourneySection, scenarios page |
+| `stats` | StatsSection |
+| `footer` | BottomFooter |
+| `mobile` | Mobile dashboard (page.tsx) |
+| `scenarios` | Scenarios page |
+| `conversation` | ExampleConversationScreen |
+| `chat` | ChatContainer, MessageBubble |
+| `voice` | VoiceRecorder |
+| `hint` | ScriptHint |
+| `matchingResult` | MatchingResultDisplay |
+| `completion` | CompletionScreen |
+| `browser` | BrowserWarning |
+| `feedback` | MatchingResultDisplay (via `getMatchingMessageKey`) |
+| `audio` | AudioPlayer |
+
+### Text matching feedback
+
+`lib/textMatching.ts` exports `getMatchingMessageKey(similarity)` which returns a translation key (e.g. `'perfect'`, `'great'`). The caller translates via `useTranslations('feedback')`.
+
+### Font
+
+**Be Vietnam Pro** (Google Font) — loaded via `<link>` in `app/layout.tsx`. Replaces the previous Spline Sans + Manrope fonts. Supports full Vietnamese character set including diacritics.
+
+### Conversation scripts
+
+Conversation dialogue scripts in `data/conversations.ts` remain in **English only** — they are learning content, not UI text.
+
 ## Development workflow
 
 ```bash

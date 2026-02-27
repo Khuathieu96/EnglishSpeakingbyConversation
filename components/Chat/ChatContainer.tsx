@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { ConversationLine, ConversationState, MatchingResult } from '@/types';
 import { MessageBubble } from './MessageBubble';
 import { VoiceRecorder } from './VoiceRecorder';
@@ -37,6 +38,7 @@ export function ChatContainer({
   isListening,
 }: ChatContainerProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('chat');
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -45,39 +47,43 @@ export function ChatContainer({
 
   // Get displayable lines - show completed lines, current AI line, or current user line if they've spoken
   // If user has already spoken for current line (transcript exists), keep showing it
-  const hasCurrentUserTranscript = currentLine?.speaker === 'user' && userTranscripts[currentLineIndex];
-  const shouldShowCurrentLine = 
+  const hasCurrentUserTranscript =
+    currentLine?.speaker === 'user' && userTranscripts[currentLineIndex];
+  const shouldShowCurrentLine =
     state === 'ai_speaking' || // Show AI speaking
     state === 'retry' || // Show user's answer during retry
     state === 'success' || // Show user's answer on success
     state === 'processing' || // Show during processing
     hasCurrentUserTranscript; // Keep showing if user has spoken for this line
-    
+
   const displayLines = shouldShowCurrentLine
     ? lines.slice(0, currentLineIndex + 1) // Include current line
     : lines.slice(0, currentLineIndex); // Only show completed lines
 
   return (
-    <div className="flex flex-col h-full">
+    <div className='flex flex-col h-full'>
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+      <div className='flex-1 overflow-y-auto px-4 py-6 space-y-4'>
         {displayLines.map((line, index) => {
           // Show transcript if it exists and it's a user line
-          const shouldShowTranscript = line.speaker === 'user' && userTranscripts[index];
-          
+          const shouldShowTranscript =
+            line.speaker === 'user' && userTranscripts[index];
+
           return (
-            <MessageBubble 
-              key={line.id} 
-              line={line} 
-              userTranscript={shouldShowTranscript ? userTranscripts[index] : undefined}
+            <MessageBubble
+              key={line.id}
+              line={line}
+              userTranscript={
+                shouldShowTranscript ? userTranscripts[index] : undefined
+              }
             />
           );
         })}
 
         {/* Show matching result */}
         {state === 'processing' && (
-          <div className="text-center text-gray-500 py-2">
-            <div className="animate-pulse">Processing your speech...</div>
+          <div className='text-center text-gray-500 py-2'>
+            <div className='animate-pulse'>{t('processing')}</div>
           </div>
         )}
 
@@ -86,12 +92,14 @@ export function ChatContainer({
         )}
 
         {state === 'show_answer' && currentLine && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <div className="text-sm font-medium text-yellow-800 mb-2">
-              💡 The correct answer is:
+          <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4'>
+            <div className='text-sm font-medium text-yellow-800 mb-2'>
+              {t('correctAnswerIs')}
             </div>
-            <p className="text-base text-yellow-900 font-medium">&quot;{currentLine.text}&quot;</p>
-            <p className="text-sm text-yellow-600 mt-2">Moving to the next line...</p>
+            <p className='text-base text-yellow-900 font-medium'>
+              &quot;{currentLine.text}&quot;
+            </p>
+            <p className='text-sm text-yellow-600 mt-2'>{t('movingNext')}</p>
           </div>
         )}
 
@@ -99,29 +107,31 @@ export function ChatContainer({
       </div>
 
       {/* User input area */}
-      {state === 'waiting_for_user' && currentLine && currentLine.speaker === 'user' && (
-        <div className="border-t border-gray-200 bg-white px-4 py-4 space-y-4">
-          <ScriptHint line={currentLine} />
-          <VoiceRecorder
-            isRecording={isRecording}
-            isListening={isListening}
-            remainingAttempts={remainingAttempts}
-            onRecord={onUserSpeak}
-            onStopSpeaking={onStopSpeaking}
-            onSkip={onSkipLine}
-          />
-        </div>
-      )}
+      {state === 'waiting_for_user' &&
+        currentLine &&
+        currentLine.speaker === 'user' && (
+          <div className='border-t border-gray-200 bg-white px-4 py-4 space-y-4'>
+            <ScriptHint line={currentLine} />
+            <VoiceRecorder
+              isRecording={isRecording}
+              isListening={isListening}
+              remainingAttempts={remainingAttempts}
+              onRecord={onUserSpeak}
+              onStopSpeaking={onStopSpeaking}
+              onSkip={onSkipLine}
+            />
+          </div>
+        )}
 
       {state === 'ai_speaking' && (
-        <div className="border-t border-gray-200 bg-white px-4 py-4 text-center text-gray-500">
-          AI is speaking...
+        <div className='border-t border-gray-200 bg-white px-4 py-4 text-center text-gray-500'>
+          {t('aiSpeaking')}
         </div>
       )}
 
       {state === 'completed' && (
-        <div className="border-t border-gray-200 bg-white px-4 py-4 text-center">
-          <p className="text-green-600 font-medium">🎉 Conversation completed!</p>
+        <div className='border-t border-gray-200 bg-white px-4 py-4 text-center'>
+          <p className='text-green-600 font-medium'>{t('completed')}</p>
         </div>
       )}
     </div>

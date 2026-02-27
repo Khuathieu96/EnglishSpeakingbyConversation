@@ -177,13 +177,13 @@ export function useSpeechRecognition() {
 
     recognition.onend = () => {
       isStartingRef.current = false;
-      
+
       // Clear timeout
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
-      
+
       setState((prev) => ({
         ...prev,
         isListening: false,

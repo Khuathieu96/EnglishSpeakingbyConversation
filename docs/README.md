@@ -2,10 +2,10 @@
 
 This folder is the single source of truth for project documentation.
 
-## Core
+ ## Core
 
 - [Getting Started](getting-started.md)
-- [Development Guide](instruction.md)
+- [Development Guide](instruction.md) — includes i18n / multilingual guide
 - [Requirements](requirement.md)
 - [Design System](design-system.md)
 - [Implementation Plan](implementation-plan.md)
