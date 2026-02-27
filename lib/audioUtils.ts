@@ -3,7 +3,7 @@
  * Uses Web Audio API for processing
  */
 
-import { AUDIO_CONFIG } from './constants';
+type AudioContextConstructor = new () => AudioContext;
 
 /**
  * Merge multiple audio blobs into a single blob
@@ -21,8 +21,9 @@ export async function mergeAudioBlobs(blobs: Blob[]): Promise<Blob> {
 
   try {
     // Create audio context
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)();
+    const AudioContextClass = (window.AudioContext ||
+      (window as unknown as { webkitAudioContext?: AudioContextConstructor }).webkitAudioContext) as AudioContextConstructor;
+    const audioContext = new AudioContextClass();
 
     // Decode all audio blobs
     const audioBuffers = await Promise.all(
@@ -57,7 +58,7 @@ export async function mergeAudioBlobs(blobs: Blob[]): Promise<Blob> {
     }
 
     // Convert buffer to blob
-    const mergedBlob = await audioBufferToBlob(mergedBuffer, audioContext);
+    const mergedBlob = await audioBufferToBlob(mergedBuffer);
 
     // Close audio context
     await audioContext.close();
@@ -73,8 +74,7 @@ export async function mergeAudioBlobs(blobs: Blob[]): Promise<Blob> {
  * Convert AudioBuffer to Blob
  */
 async function audioBufferToBlob(
-  buffer: AudioBuffer,
-  audioContext: AudioContext
+  buffer: AudioBuffer
 ): Promise<Blob> {
   const offlineContext = new OfflineAudioContext(
     buffer.numberOfChannels,

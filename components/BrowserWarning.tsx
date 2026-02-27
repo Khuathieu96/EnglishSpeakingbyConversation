@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { SUPPORTED_BROWSERS } from '@/lib/constants';
+
+type SpeechRecognitionConstructor = new () => EventTarget;
+
+type BrowserSpeechWindow = Window & {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+};
 
 export function BrowserWarning() {
   const [shouldShow, setShouldShow] = useState(false);
@@ -25,13 +31,14 @@ export function BrowserWarning() {
     setBrowserName(detectedBrowser);
 
     // Check if browser supports required APIs
-    const hasWeSpeechRecognition = !!(
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    const browserWindow = window as BrowserSpeechWindow;
+    const hasSpeechRecognitionApi = !!(
+      browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition
     );
     const hasSpeechSynthesis = !!window.speechSynthesis;
     const hasMediaRecorder = !!window.MediaRecorder;
 
-    const isFullySupported = hasWeSpeechRecognition && hasSpeechSynthesis && hasMediaRecorder;
+    const isFullySupported = hasSpeechRecognitionApi && hasSpeechSynthesis && hasMediaRecorder;
     const isRecommendedBrowser = detectedBrowser === 'Chrome' || detectedBrowser === 'Edge';
 
     if (!isFullySupported || !isRecommendedBrowser) {

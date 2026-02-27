@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { ConversationLine, ConversationState } from '@/types';
+import { ConversationLine, ConversationState, MatchingResult } from '@/types';
 import { MessageBubble } from './MessageBubble';
 import { VoiceRecorder } from './VoiceRecorder';
 import { MatchingResultDisplay } from './MatchingResult';
@@ -12,7 +12,7 @@ interface ChatContainerProps {
   currentLineIndex: number;
   currentLine?: ConversationLine;
   state: ConversationState;
-  matchingResult: any;
+  matchingResult: MatchingResult | null;
   remainingAttempts: number;
   userTranscripts: Record<number, string>;
   onUserSpeak: () => void;
