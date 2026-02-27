@@ -1,14 +1,11 @@
 import { conversations } from '@/data/conversations';
 
 export const dashboardAssets = {
-  heroImage:
-    'https://www.figma.com/api/mcp/asset/c5656166-65f1-4921-b140-1dd814362f0b',
+  heroImage: '/catalog_pic1.jpg',
   avatar:
     'https://www.figma.com/api/mcp/asset/14fac342-428c-4536-be15-2e0bfe9240a2',
-  headerLogo:
-    'https://www.figma.com/api/mcp/asset/13cd3ce9-8657-4cb3-9b2a-977f874f8509',
-  footerLogo:
-    'https://www.figma.com/api/mcp/asset/392fad73-e433-4781-9042-d2362e30605e',
+  headerLogo: '/logo.jpg',
+  footerLogo: '/logo.jpg',
   scenarioIcons: {
     meeting: 'https://www.figma.com/api/mcp/asset/554cfaeb-3304-47cb-8afd-882d5cd4468d',
     restaurant: 'https://www.figma.com/api/mcp/asset/364f3915-83ea-433b-ade2-bf8807bfdc36',
@@ -77,4 +74,22 @@ export const scenarioItems: ScenarioItem[] = conversations.map((conversation) =>
 export const inProgressScenarioItems: ScenarioItem[] = scenarioItems.filter(
   (item) => item.progress > 0 && item.progress < 100
 );
+
+const pickDeterministicItems = <T extends { id: string }>(
+  items: T[],
+  count: number,
+): T[] => {
+  if (items.length <= count) {
+    return items;
+  }
+
+  return [...items]
+    .sort((a, b) => a.id.localeCompare(b.id))
+    .slice(0, count);
+};
+
+export const journeyScenarioItems: ScenarioItem[] =
+  inProgressScenarioItems.length > 0
+    ? inProgressScenarioItems
+    : pickDeterministicItems(scenarioItems, 5);
 

@@ -5,6 +5,11 @@ import { LocaleProvider } from '@/components/LocaleProvider';
 export const metadata: Metadata = {
   title: 'English Speaking Practice',
   description: 'Practice English speaking with AI-guided conversations',
+  icons: {
+    icon: '/logo.jpg',
+    shortcut: '/logo.jpg',
+    apple: '/logo.jpg',
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +30,9 @@ export default function RootLayout({
         />
       </head>
       <body className='font-display'>
-        <LocaleProvider>{children}</LocaleProvider>
+        <LocaleProvider>
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   );

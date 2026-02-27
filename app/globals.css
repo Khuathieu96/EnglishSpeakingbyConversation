@@ -3,8 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --background: #faf8f4;
-  --foreground: #1e293b;
+  --color-bg: #F7F7F7;
+  --color-surface: #FFFFFF;
+  --color-text: #111111;
+  --color-text-muted: #555555;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+  --color-primary: #fc6c02;
+  --color-secondary: #144491;
 }
 
 * {
@@ -31,6 +38,18 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button,
+a[href],
+[role='button'],
+summary {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
 }
 
 /* Material Symbols */
@@ -151,7 +170,7 @@ input[type='range']::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--color-secondary);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -164,7 +183,7 @@ input[type='range']::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--color-secondary);
   cursor: pointer;
   border: none;
   transition: all 0.2s;

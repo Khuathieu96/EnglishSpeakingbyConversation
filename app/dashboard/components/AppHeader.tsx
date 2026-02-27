@@ -25,14 +25,7 @@ export function AppHeader() {
     <header className={styles.appHeaderWrap}>
       <div className={styles.appHeaderInner}>
         <div className={styles.brandWrap}>
-          <div className={styles.appHeaderIconShell}>
-            <img
-              src={dashboardAssets.headerLogo}
-              alt=''
-              aria-hidden='true'
-              className={styles.brandIcon}
-            />
-          </div>
+          <div className={styles.brandIconShell} aria-hidden='true' />
           <span className={styles.appHeaderBrandText}>{t('brand')}</span>
         </div>
 

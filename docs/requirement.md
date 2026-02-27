@@ -53,6 +53,7 @@ A web application that helps users practice English speaking through interactive
 | F2.2.14 | Provide Skip button to bypass difficult lines | Medium |
 | F2.2.15 | Show Stop button during active recording | High |
 | F2.2.16 | Display AI text immediately when AI starts speaking | High |
+| F2.2.17 | Skip button cancels AI speech mid-playback and advances to next line | Medium |
 
 ### 2.3 AI Bot - Speech Detection & Validation
 
@@ -94,6 +95,9 @@ A web application that helps users practice English speaking through interactive
 | F2.5.4 | Provide merged audio playback | High |
 | F2.5.5 | Option to restart conversation | Medium |
 | F2.5.6 | Option to return to conversation list | High |
+| F2.5.7 | CompletionPopup modal with statistics (total sentences, completed, retries, fluency %) | Medium |
+| F2.5.8 | Overall score progress bar in completion popup | Low |
+| F2.5.9 | "Practice Again" and "Back to Scenarios" actions in popup | Medium |
 
 ### 2.6 Multilingual UI
 
@@ -421,4 +425,4 @@ similarity = ((maxLength - levenshteinDistance) / maxLength) * 100
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2026-01-19 | - | Initial requirements document |
+| 1.0 | 2026-01-19 | - | Initial requirements document || 1.1 | 2026-02-27 | - | Add skip-during-AI-speech (F2.2.17), CompletionPopup modal (F2.5.7-F2.5.9), deterministic card ordering, unified button styling, badge removal from dashboard/scenarios |

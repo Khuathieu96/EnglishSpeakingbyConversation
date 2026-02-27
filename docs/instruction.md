@@ -11,6 +11,9 @@
 
 - `app/`: routes and page-level UI
 - `components/`: reusable UI and feature components
+  - `CompletionPopup/` — Modal popup showing completion stats (total sentences, completed, retries, fluency %, overall score)
+  - `CompletionPopupTester.tsx` — Global floating test button for CompletionPopup (dev tool, mounted in root layout)
+  - `CompletionScreen/` — Full-page completion screen with audio playback
 - `hooks/`: speech, recording, and conversation state hooks
 - `lib/`: text matching, audio utilities, constants
 - `data/`: static conversation scripts
@@ -28,6 +31,9 @@
 ## State machine
 
 `idle → ai_speaking → waiting_for_user → processing → success|retry|show_answer → completed`
+
+- **Skip during AI speech**: The Skip button is active during the `ai_speaking` state. Pressing it cancels TTS via `speechSynthesis.cancel()`, guards against stale `onEnd` callbacks, and advances directly to the next line.
+- **Deterministic card ordering**: Dashboard card selection uses alphabetical sort by `id` instead of `Math.random()` to avoid SSR hydration mismatches.
 
 ## Key constants
 
@@ -78,7 +84,7 @@ The UI supports **Vietnamese** (default) and **English** via `next-intl`.
 | `voice` | VoiceRecorder |
 | `hint` | ScriptHint |
 | `matchingResult` | MatchingResultDisplay |
-| `completion` | CompletionScreen |
+| `completion` | CompletionScreen, CompletionPopup |
 | `browser` | BrowserWarning |
 | `feedback` | MatchingResultDisplay (via `getMatchingMessageKey`) |
 | `audio` | AudioPlayer |

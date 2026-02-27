@@ -96,6 +96,11 @@ export function VoiceRecorder({
             variant='secondary'
             size='lg'
             className='px-6'
+            style={{
+              background: 'rgba(20, 68, 145, 0.14)',
+              color: '#144491',
+              border: '1px solid rgba(20, 68, 145, 0.24)',
+            }}
             title='Skip this line and move to next'
           >
             {t('skip')}

@@ -3,9 +3,6 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { Button } from '../ui/Button';
-import { AudioPlayer } from '../AudioPlayer';
-import { Card, CardBody } from '../ui/Card';
 
 interface CompletionScreenProps {
   conversationTitle: string;
@@ -15,14 +12,12 @@ interface CompletionScreenProps {
     perfectLines: number;
     totalRetries: number;
   };
-  mergedAudio: Blob | null;
   onRestart: () => void;
 }
 
 export function CompletionScreen({
   conversationTitle,
   statistics,
-  mergedAudio,
   onRestart,
 }: CompletionScreenProps) {
   const averageMatch =
@@ -37,67 +32,100 @@ export function CompletionScreen({
 
   const t = useTranslations('completion');
 
+  const progressPercent = Math.max(0, Math.min(100, averageMatch));
+
   return (
-    <div className='min-h-screen bg-gray-50 flex items-center justify-center p-4'>
-      <Card className='max-w-2xl w-full'>
-        <CardBody className='p-8 text-center space-y-6'>
-          <div className='text-6xl mb-4'>🎉</div>
-          <h1 className='text-3xl font-bold text-gray-900'>{t('title')}</h1>
-          <p className='text-xl text-gray-600'>
+    <div className='min-h-screen bg-slate-500/45 flex items-center justify-center p-4'>
+      <div className='w-full max-w-[540px] rounded-3xl border border-slate-200 bg-white shadow-2xl overflow-hidden'>
+        <div className='px-8 pt-10 pb-8 text-center'>
+          <div className='mx-auto mb-8 h-20 w-20 rounded-full bg-[rgba(20,68,145,0.1)] flex items-center justify-center'>
+            <span
+              className='material-symbols-outlined text-5xl'
+              style={{ color: 'var(--color-secondary)' }}
+            >
+              check_circle
+            </span>
+          </div>
+
+          <h1 className='text-[46px] leading-[1.06] tracking-[-0.04em] font-bold text-slate-900'>
+            {t('wellDone')}
+          </h1>
+          <p className='mt-2 text-lg text-slate-500'>{t('finished')}</p>
+          <p className='mt-1 text-sm text-slate-400'>
             {t('subtitle', { title: conversationTitle })}
           </p>
 
-          {/* Statistics */}
-          <div className='grid grid-cols-2 gap-4 my-6'>
-            <div className='bg-blue-50 rounded-lg p-4'>
-              <div className='text-3xl font-bold text-blue-600'>
+          <div className='mt-7 grid grid-cols-3 gap-3'>
+            <div className='rounded-3xl border border-slate-200 bg-slate-50 py-4'>
+              <p className='text-xs font-semibold uppercase tracking-[0.08em] text-slate-500'>
+                {t('sentences')}
+              </p>
+              <p className='mt-1 text-[34px] leading-9 font-bold text-slate-900'>
                 {statistics.completedLines}/{statistics.totalLines}
-              </div>
-              <div className='text-sm text-blue-700'>{t('linesCompleted')}</div>
+              </p>
             </div>
-            <div className='bg-green-50 rounded-lg p-4'>
-              <div className='text-3xl font-bold text-green-600'>
-                {statistics.perfectLines}
-              </div>
-              <div className='text-sm text-green-700'>{t('perfectLines')}</div>
-            </div>
-            <div className='bg-yellow-50 rounded-lg p-4'>
-              <div className='text-3xl font-bold text-yellow-600'>
+            <div className='rounded-3xl border border-slate-200 bg-slate-50 py-4'>
+              <p className='text-xs font-semibold uppercase tracking-[0.08em] text-slate-500'>
+                {t('retries')}
+              </p>
+              <p className='mt-1 text-[34px] leading-9 font-bold text-slate-900'>
                 {statistics.totalRetries}
-              </div>
-              <div className='text-sm text-yellow-700'>{t('retriesUsed')}</div>
+              </p>
             </div>
-            <div className='bg-purple-50 rounded-lg p-4'>
-              <div className='text-3xl font-bold text-purple-600'>
+            <div className='rounded-3xl border border-slate-200 bg-slate-50 py-4'>
+              <p className='text-xs font-semibold uppercase tracking-[0.08em] text-slate-500'>
+                {t('fluency')}
+              </p>
+              <p className='mt-1 text-[34px] leading-9 font-bold text-slate-900'>
                 {averageMatch}%
-              </div>
-              <div className='text-sm text-purple-700'>{t('averageMatch')}</div>
+              </p>
             </div>
           </div>
 
-          {/* Audio Player */}
-          {mergedAudio && (
-            <div className='text-left'>
-              <h3 className='text-lg font-semibold mb-3 text-gray-900'>
-                {t('listenRecording')}
-              </h3>
-              <AudioPlayer audioBlob={mergedAudio} />
+          <div className='mt-6 rounded-3xl border px-4 py-4 text-left'
+            style={{
+              borderColor: 'rgba(20, 68, 145, 0.16)',
+              backgroundColor: 'rgba(20, 68, 145, 0.06)',
+            }}
+          >
+            <div className='mb-2 flex items-center justify-between text-sm font-semibold'>
+              <span style={{ color: 'var(--color-secondary)' }}>{t('overallScore')}</span>
+              <span style={{ color: 'var(--color-secondary)' }}>{t('excellent')}</span>
             </div>
-          )}
+            <div className='h-2.5 w-full rounded-full bg-[rgba(20,68,145,0.2)]'>
+              <div
+                className='h-full rounded-full'
+                style={{
+                  width: `${progressPercent}%`,
+                  backgroundColor: 'var(--color-secondary)',
+                }}
+              />
+            </div>
+          </div>
 
-          {/* Actions */}
-          <div className='flex space-x-4 justify-center pt-6'>
-            <Button onClick={onRestart} variant='secondary' size='lg'>
-              {t('restart')}
-            </Button>
-            <Link href='/'>
-              <Button variant='primary' size='lg'>
-                {t('backToList')}
-              </Button>
+          <div className='mt-8 flex flex-col gap-3'>
+            <button
+              onClick={onRestart}
+              className='h-14 w-full rounded-3xl text-white text-[30px] leading-[1] font-bold shadow-lg hover:opacity-95'
+              style={{
+                backgroundColor: 'var(--color-primary)',
+                boxShadow: '0 10px 15px -3px rgba(252,108,2,0.22), 0 4px 6px -4px rgba(252,108,2,0.22)',
+              }}
+            >
+              {t('practiceAgain')}
+            </button>
+
+            <Link
+              href='/scenarios'
+              className='h-14 w-full rounded-3xl bg-slate-100 text-slate-700 text-[30px] leading-[1] font-bold flex items-center justify-center'
+            >
+              {t('backToScenarios')}
             </Link>
           </div>
-        </CardBody>
-      </Card>
+        </div>
+
+        <div className='h-1.5 w-full bg-gradient-to-r from-[rgba(20,68,145,0.3)] via-[#144491] to-[rgba(20,68,145,0.3)]' />
+      </div>
     </div>
   );
 }

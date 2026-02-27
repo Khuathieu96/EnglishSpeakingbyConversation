@@ -24,6 +24,14 @@
 - [x] Add `LanguageToggle` component to both headers (TopNav & AppHeader)
 - [x] Add translation files (`messages/en.json`, `messages/vi.json`)
 - [x] Refactor `getMatchingMessage` to return translation keys
+- [x] Skip button cancels AI speech mid-playback (`ai_speaking` state)
+- [x] CompletionPopup modal component (Figma-based design)
+- [x] CompletionPopupTester global floating dev button
+- [x] Fix hydration error — deterministic card ordering (replace `Math.random`)
+- [x] Dashboard card styling polish (164px image height, overflow hidden, 4-per-row grid)
+- [x] Remove difficulty badges from dashboard and scenarios cards
+- [x] Remove time badges from scenarios cards
+- [x] Unify primary button text color to white (`#fff`)
 - [ ] Add/restore reliable lint command compatible with current Next.js version
 - [ ] Add tests for text matching and state transitions
 

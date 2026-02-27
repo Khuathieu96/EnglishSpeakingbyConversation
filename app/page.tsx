@@ -9,13 +9,13 @@ import { JourneySection } from './dashboard/components/JourneySection';
 import { StatsSection } from './dashboard/components/StatsSection';
 import { BottomFooter } from './dashboard/components/BottomFooter';
 import {
-  inProgressScenarioItems,
+  journeyScenarioItems,
   dashboardAssets,
 } from './dashboard/dashboardData';
 
 export default function Home() {
   const t = useTranslations('mobile');
-  const mobileCards = inProgressScenarioItems.slice(0, 5);
+  const mobileCards = journeyScenarioItems.slice(0, 5);
 
   return (
     <div className={styles.page}>
@@ -108,17 +108,6 @@ export default function Home() {
                       alt={item.title}
                       className={styles.mobileLessonImage}
                     />
-                    <span
-                      className={
-                        item.badge === 'beginner'
-                          ? styles.mobileBadgeBeginner
-                          : item.badge === 'intermediate'
-                            ? styles.mobileBadgeIntermediate
-                            : styles.mobileBadgeAdvanced
-                      }
-                    >
-                      {item.badge}
-                    </span>
                   </div>
                   <div className={styles.mobileLessonBody}>
                     <h4>{item.title}</h4>

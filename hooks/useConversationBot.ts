@@ -58,11 +58,15 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
       speechSynthesis.speak(currentLine.text, {
         onEnd: () => {
           // Move to next line
-          setBotState((prev) => ({
-            ...prev,
-            currentLineIndex: prev.currentLineIndex + 1,
-            state: 'waiting_for_user',
-          }));
+          setBotState((prev) => {
+            if (prev.state !== 'ai_speaking') return prev;
+
+            return {
+              ...prev,
+              currentLineIndex: prev.currentLineIndex + 1,
+              state: 'waiting_for_user',
+            };
+          });
         },
       });
     }
@@ -236,20 +240,29 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
       speechSynthesis.speak(nextLine.text, {
         onEnd: () => {
           // Check if there's a user line next
-          const afterAIIndex = nextIndex + 1;
-          if (afterAIIndex < conversation.lines.length) {
-            setBotState((prev) => ({
-              ...prev,
-              currentLineIndex: afterAIIndex,
-              state: 'waiting_for_user',
-            }));
-          } else {
-            // Conversation complete
-            setBotState((prev) => ({
+          setBotState((prev) => {
+            if (prev.state !== 'ai_speaking' || prev.currentLineIndex !== nextIndex) {
+              return prev;
+            }
+
+            const afterAIIndex = nextIndex + 1;
+            if (afterAIIndex < conversation.lines.length) {
+              return {
+                ...prev,
+                currentLineIndex: afterAIIndex,
+                state: 'waiting_for_user',
+              };
+            }
+
+            return {
               ...prev,
               state: 'completed',
               conversationComplete: true,
-            }));
+            };
+          });
+
+          const afterAIIndex = nextIndex + 1;
+          if (afterAIIndex >= conversation.lines.length) {
             audioRecorder.mergeRecordings();
             onComplete?.();
           }
@@ -272,7 +285,19 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
 
   // Handle user skipping current line
   const handleSkipLine = useCallback(() => {
-    if (botState.state !== 'waiting_for_user' && botState.state !== 'retry') return;
+    if (
+      botState.state !== 'waiting_for_user' &&
+      botState.state !== 'retry' &&
+      botState.state !== 'ai_speaking'
+    ) {
+      return;
+    }
+
+    const isSkippingAiLine = currentLine?.speaker === 'ai';
+
+    if (isSkippingAiLine) {
+      speechSynthesis.cancel();
+    }
 
     // Stop any active recording/recognition
     if (audioRecorder.isRecording) {
@@ -282,22 +307,30 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
       speechRecognition.stopListening();
     }
 
-    // Mark line as skipped and move to next
-    setBotState((prev) => ({
-      ...prev,
-      state: 'success', // Treat as success to move forward
-      statistics: {
-        ...prev.statistics,
-        completedLines: prev.statistics.completedLines + 1,
-        // Don't count as perfect or add to retries
-      },
-    }));
+    if (!isSkippingAiLine) {
+      // Mark user line as skipped and move to next
+      setBotState((prev) => ({
+        ...prev,
+        state: 'success',
+        statistics: {
+          ...prev.statistics,
+          completedLines: prev.statistics.completedLines + 1,
+        },
+      }));
+    }
 
     // Move to next line after short delay
     setTimeout(() => {
       moveToNextLine();
-    }, 500);
-  }, [botState.state, audioRecorder, speechRecognition, moveToNextLine]);
+    }, isSkippingAiLine ? 100 : 500);
+  }, [
+    botState.state,
+    currentLine?.speaker,
+    speechSynthesis,
+    audioRecorder,
+    speechRecognition,
+    moveToNextLine,
+  ]);
 
   // Reset conversation
   const reset = useCallback(() => {

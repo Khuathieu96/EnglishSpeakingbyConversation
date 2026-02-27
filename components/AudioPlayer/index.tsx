@@ -110,7 +110,7 @@ export function AudioPlayer({ audioBlob, className = '' }: AudioPlayerProps) {
           onChange={handleSeek}
           className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer'
           style={{
-            background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${progress}%, #e5e7eb ${progress}%, #e5e7eb 100%)`,
+            background: `linear-gradient(to right, #144491 0%, #144491 ${progress}%, #e5e7eb ${progress}%, #e5e7eb 100%)`,
           }}
         />
       </div>

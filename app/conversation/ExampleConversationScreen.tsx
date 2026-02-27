@@ -110,7 +110,6 @@ export function ExampleConversationScreen({
       <CompletionScreen
         conversationTitle={conversation.title}
         statistics={botState.statistics}
-        mergedAudio={audioRecorder.mergedAudio}
         onRestart={() => {
           reset();
           setHasStarted(false);
@@ -465,7 +464,7 @@ export function ExampleConversationScreen({
           <footer className={styles.mobileBottomControls}>
             <div className={styles.mobileVoiceWrap}>
               <button
-                className={styles.mobileVoiceBtn}
+                className={`${styles.mobileVoiceBtn} ${isListening ? styles.mobileVoiceBtnListening : ''}`}
                 aria-label='Tap to speak'
                 onClick={isListening ? handleStopSpeaking : handleUserSpeak}
                 disabled={!canSpeak && !isListening}

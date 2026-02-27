@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import styles from '../Dashboard.module.css';
-import { inProgressScenarioItems, dashboardAssets } from '../dashboardData';
+import { journeyScenarioItems, dashboardAssets } from '../dashboardData';
 
 type LevelFilter = 'all' | 'beginner' | 'intermediate' | 'advanced';
 
@@ -13,7 +13,6 @@ function ScenarioCard({
   id,
   title,
   description,
-  badge,
   image,
   icon,
   progress,
@@ -21,7 +20,6 @@ function ScenarioCard({
   id: string;
   title: string;
   description: string;
-  badge: 'beginner' | 'intermediate' | 'advanced';
   image: string;
   icon: string;
   progress: number;
@@ -33,17 +31,6 @@ function ScenarioCard({
         <div className={styles.scenarioImageWrap}>
           <img src={image} alt={title} className={styles.scenarioImage} />
           <div className={styles.scenarioImageOverlay} />
-          <span
-            className={
-              badge === 'beginner'
-                ? styles.badgeBeginner
-                : badge === 'intermediate'
-                  ? styles.badgeIntermediate
-                  : styles.badgeAdvanced
-            }
-          >
-            {badge}
-          </span>
         </div>
 
         <div className={styles.scenarioBody}>
@@ -100,10 +87,10 @@ export function JourneySection() {
 
   const filteredItems = useMemo(() => {
     if (activeFilter === 'all') {
-      return inProgressScenarioItems;
+      return journeyScenarioItems;
     }
 
-    return inProgressScenarioItems.filter(
+    return journeyScenarioItems.filter(
       (item) => item.badge === activeFilter,
     );
   }, [activeFilter]);

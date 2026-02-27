@@ -18,14 +18,7 @@ export function TopNav() {
     <header className={styles.topNavWrap}>
       <div className={styles.topNavInner}>
         <div className={styles.brandWrap}>
-          <div className={styles.brandIconShell}>
-            <img
-              src={dashboardAssets.headerLogo}
-              alt=''
-              aria-hidden='true'
-              className={styles.brandIcon}
-            />
-          </div>
+          <div className={styles.brandIconShell} aria-hidden='true' />
           <span className={styles.brandText}>{t('brand')}</span>
         </div>
 

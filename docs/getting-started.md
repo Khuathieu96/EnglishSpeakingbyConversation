@@ -20,8 +20,10 @@ Open `http://localhost:3000`.
 2. Start a conversation.
 3. Allow microphone access.
 4. Speak responses and check matching feedback.
-5. Complete session and review summary/audio.
-6. Toggle language (VI/EN) via the translate icon in the header and verify UI updates.
+5. Press Skip during AI speech to verify TTS cancellation and line advance.
+6. Complete session and review summary/audio.
+7. Toggle language (VI/EN) via the translate icon in the header and verify UI updates.
+8. Click the floating "Test Popup" button to verify CompletionPopup renders correctly.
 
 ## Useful commands
 

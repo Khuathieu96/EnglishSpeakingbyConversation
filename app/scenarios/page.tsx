@@ -8,15 +8,6 @@ import { TopNav } from '@/app/dashboard/components/TopNav';
 import { BottomFooter } from '@/app/dashboard/components/BottomFooter';
 import styles from './scenarios.module.css';
 
-const difficultyClass: Record<
-  'beginner' | 'intermediate' | 'advanced',
-  string
-> = {
-  beginner: styles.badgeBeginner,
-  intermediate: styles.badgeIntermediate,
-  advanced: styles.badgeAdvanced,
-};
-
 const stats_keys = [
   { labelKey: 'currentStreak', value: '12 Days', delta: '' },
   { labelKey: 'totalLearningTime', value: '24h 15m', delta: '+1.6h' },
@@ -231,27 +222,21 @@ export default function ScenariosPage() {
                       alt={card.title}
                       className={styles.cardImage}
                     />
-                    <span
-                      className={`${styles.badge} ${difficultyClass[card.difficulty]}`}
-                    >
-                      {card.difficulty}
-                    </span>
-                    <span className={styles.timeBadge}>
-                      {card.estimatedTime} {t('mins')}
-                    </span>
                   </div>
 
                   <div className={styles.cardBody}>
-                    <h2>{card.title}</h2>
-                    <p className={styles.cardDescription}>{card.description}</p>
+                    <h2 title={card.title}>{card.title}</h2>
+                    <p className={styles.cardDescription} title={card.description}>{card.description}</p>
                     <p className={styles.objectiveTitle}>{t('objectives')}</p>
                     <ul>
                       {card.objectives.map((objective) => (
-                        <li key={objective}>{objective}</li>
+                        <li key={objective} title={objective}>{objective}</li>
                       ))}
                     </ul>
-                    <div className={styles.startButton}>
-                      {t('startPractice')}
+                    <div className={styles.startButtonWrap}>
+                      <div className={styles.startButton}>
+                        {t('startPractice')}
+                      </div>
                     </div>
                   </div>
                 </article>

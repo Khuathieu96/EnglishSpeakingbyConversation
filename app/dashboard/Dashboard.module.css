@@ -57,16 +57,23 @@
   width: 34px;
   height: 34px;
   border-radius: 20px;
-  background: #00d1ae;
+  background: var(--color-primary);
+  background-image: url('/logo.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   display: grid;
   place-items: center;
-  box-shadow: 0 10px 15px -3px rgba(0, 209, 174, 0.2),
-    0 4px 6px -4px rgba(0, 209, 174, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(252, 106, 1, 0.2),
+    0 4px 6px -4px rgba(252, 106, 1, 0.2);
 }
 
 .brandIcon {
   width: 18px;
   height: 16px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .brandText {
@@ -91,7 +98,7 @@
 }
 
 .activeLink {
-  color: #00d1ae;
+  color: var(--color-primary);
 }
 
 .navLink {
@@ -107,14 +114,14 @@
 .startButton {
   border: 0;
   border-radius: 24px;
-  background: #00d1ae;
-  color: #0f172a;
+  background: var(--color-primary);
+  color: #fff;
   font-weight: 700;
   font-size: 14px;
   line-height: 20px;
   padding: 8px 18px;
-  box-shadow: 0 4px 6px -1px rgba(0, 209, 174, 0.1),
-    0 2px 4px -2px rgba(0, 209, 174, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(252, 106, 1, 0.1),
+    0 2px 4px -2px rgba(252, 106, 1, 0.1);
   text-decoration: none;
 }
 
@@ -122,7 +129,7 @@
   width: 34px;
   height: 34px;
   border-radius: 999px;
-  border: 2px solid rgba(0, 209, 174, 0.3);
+  border: 2px solid rgba(252, 106, 1, 0.3);
   padding: 3px;
   box-sizing: border-box;
 }
@@ -160,10 +167,10 @@
   width: 28px;
   height: 28px;
   border-radius: 16px;
-  background: #00d1ae;
+  background: var(--color-primary);
   display: grid;
   place-items: center;
-  box-shadow: 0 6px 10px -2px rgba(0, 209, 174, 0.18);
+  box-shadow: 0 6px 10px -2px rgba(252, 106, 1, 0.18);
 }
 
 .appHeaderBrandText {
@@ -221,8 +228,8 @@
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #00d1ae;
-  box-shadow: 0 0 0 5px rgba(0, 209, 174, 0.18);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 5px rgba(252, 106, 1, 0.18);
 }
 
 .heroBadgeText {
@@ -231,7 +238,7 @@
   font-weight: 700;
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: #00d1ae;
+  color: var(--color-primary);
 }
 
 .heroTitle {
@@ -246,7 +253,7 @@
 }
 
 .heroTitle em {
-  color: #00d1ae;
+  color: var(--color-primary);
   font-style: normal;
 }
 
@@ -276,8 +283,8 @@
 }
 
 .primaryCta {
-  background: #00d1ae;
-  color: #0f172a;
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .secondaryCta {
@@ -311,7 +318,7 @@
 .heroImageOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(45deg, rgba(0, 209, 174, 0.4) 0%, rgba(0, 209, 174, 0) 100%);
+  background: linear-gradient(45deg, rgba(252, 106, 1, 0.4) 0%, rgba(252, 106, 1, 0) 100%);
   mix-blend-mode: overlay;
 }
 
@@ -360,8 +367,8 @@
 
 .levelActive {
   border: 0;
-  background: #00d1ae;
-  color: #0f172a;
+  background: var(--color-primary);
+  color: #fff;
   font-weight: 700;
 }
 
@@ -391,7 +398,8 @@
 }
 
 .cardGrid > .scenarioCardLink {
-  flex: 0 0 276px;
+  flex: 0 0 calc((100% - 72px) / 4);
+  min-width: 0;
   scroll-snap-align: start;
 }
 
@@ -412,6 +420,7 @@
 
 .scenarioCard {
   border-radius: 16px;
+  overflow: hidden;
   border: 1px solid #e2e8f0;
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -439,7 +448,7 @@
 
 .showMoreCard span {
   font-size: 36px;
-  color: #00d1ae;
+  color: var(--color-primary);
 }
 
 .showMoreCard h3 {
@@ -458,11 +467,11 @@
 }
 
 .scenarioImageWrap {
-  border-radius: 24px;
+  border-radius: 0;
   overflow: hidden;
-  height: 171px;
+  height: 164px;
   position: relative;
-  margin-bottom: 16px;
+  margin: -21px -21px 16px;
 }
 
 .scenarioImage {
@@ -474,7 +483,7 @@
 .scenarioImageOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 209, 174, 0.1);
+  background: rgba(252, 106, 1, 0.1);
 }
 
 .badgeBeginner,
@@ -503,7 +512,7 @@
 
 .badgeAdvanced {
   color: #fff;
-  background: #6366f1;
+  background: var(--color-secondary);
 }
 
 .scenarioBody {
@@ -564,7 +573,7 @@
 }
 
 .progressValue {
-  color: #00d1ae;
+  color: var(--color-primary);
   font-size: 11px;
   line-height: 16.5px;
   font-weight: 700;
@@ -585,7 +594,7 @@
 .progressFill {
   height: 100%;
   border-radius: 999px;
-  background: #00d1ae;
+  background: var(--color-primary);
 }
 
 .statsSection {
@@ -605,8 +614,8 @@
 }
 
 .stat_teal {
-  background: rgba(0, 209, 174, 0.1);
-  border-color: rgba(0, 209, 174, 0.2);
+  background: rgba(252, 106, 1, 0.1);
+  border-color: rgba(252, 106, 1, 0.2);
 }
 
 .stat_indigo {
@@ -628,13 +637,13 @@
 }
 
 .statIcon_teal {
-  background: #00d1ae;
-  box-shadow: 0 10px 15px -3px rgba(0, 209, 174, 0.2),
-    0 4px 6px -4px rgba(0, 209, 174, 0.2);
+  background: var(--color-primary);
+  box-shadow: 0 10px 15px -3px rgba(252, 106, 1, 0.2),
+    0 4px 6px -4px rgba(252, 106, 1, 0.2);
 }
 
 .statIcon_indigo {
-  background: #6366f1;
+  background: var(--color-secondary);
   box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2),
     0 4px 6px -4px rgba(99, 102, 241, 0.2);
 }
@@ -775,7 +784,7 @@
     width: 10px;
     height: 10px;
     border-radius: 999px;
-    background: #10b981;
+    background: var(--color-secondary);
     box-shadow: 0 0 0 2px #ffffff;
   }
 
@@ -856,8 +865,8 @@
   .mobileLevelCard {
     margin-top: 16px;
     border-radius: 24px;
-    border: 1px solid rgba(0, 209, 174, 0.2);
-    background: rgba(0, 209, 174, 0.1);
+    border: 1px solid rgba(252, 106, 1, 0.2);
+    background: rgba(252, 106, 1, 0.1);
     padding: 13px;
     display: flex;
     align-items: center;
@@ -868,7 +877,7 @@
     width: 40px;
     height: 40px;
     border-radius: 16px;
-    background: #00d1ae;
+    background: var(--color-primary);
     color: #fff;
     display: grid;
     place-items: center;
@@ -881,7 +890,7 @@
     letter-spacing: 0.05em;
     text-transform: uppercase;
     font-weight: 700;
-    color: #00d1ae;
+    color: var(--color-primary);
   }
 
   .mobileLevelValue {
@@ -957,7 +966,7 @@
     background: transparent;
     font-size: 14px;
     line-height: 20px;
-    color: #00d1ae;
+    color: var(--color-primary);
     font-weight: 700;
   }
 
@@ -990,7 +999,7 @@
   .mobileLessonImageWrap {
     height: 128px;
     position: relative;
-    background: rgba(0, 209, 174, 0.2);
+    background: rgba(252, 106, 1, 0.2);
   }
 
   .mobileLessonImage {
@@ -1024,7 +1033,7 @@
   }
 
   .mobileBadgeAdvanced {
-    background: #6366f1;
+    background: var(--color-secondary);
   }
 
   .mobileLessonBody {
@@ -1062,7 +1071,7 @@
   .mobileLessonProgressFill {
     height: 100%;
     border-radius: inherit;
-    background: #00d1ae;
+    background: var(--color-primary);
   }
 
   .mobileLessonProgressRow span {
@@ -1076,15 +1085,15 @@
     margin-top: 12px;
     height: 48px;
     border-radius: 24px;
-    background: #00d1ae;
+    background: var(--color-primary);
     color: #fff;
     display: grid;
     place-items: center;
     font-size: 16px;
     line-height: 24px;
     font-weight: 700;
-    box-shadow: 0 10px 15px -3px rgba(0, 209, 174, 0.2),
-      0 4px 6px -4px rgba(0, 209, 174, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(252, 106, 1, 0.2),
+      0 4px 6px -4px rgba(252, 106, 1, 0.2);
   }
 
   .mobileGoalCard {
@@ -1118,7 +1127,7 @@
 
   .mobileShowMoreCard span {
     font-size: 34px;
-    color: #00d1ae;
+    color: var(--color-primary);
   }
 
   .mobileShowMoreCard strong {
@@ -1158,7 +1167,7 @@
   .mobileGoalValueRow strong {
     font-size: 36px;
     line-height: 40px;
-    color: #00d1ae;
+    color: var(--color-primary);
   }
 
   .mobileGoalValueRow span {
