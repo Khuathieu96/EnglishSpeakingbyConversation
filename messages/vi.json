@@ -3,6 +3,7 @@
     "brand": "PCT - Mrs. Linh - SEC Anh Ngữ",
     "home": "Trang chủ",
     "scenarios": "Thư viện hội thoại",
+    "documentary": "Tài liệu",
     "startLearning": "Bắt đầu học"
   },
   "hero": {
@@ -174,5 +175,228 @@
   },
   "progressBar": {
     "progress": "Tiến độ"
+  },
+  "documentary": {
+    "hero": {
+      "titleLine1": "SEC English",
+      "titleLine2": "Learning Resources",
+      "description": "Your centralized hub for mastering English. Access curated materials, grammar guides, and recommended tools designed to accelerate your learning journey from beginner to advanced."
+    },
+    "rules": {
+      "sectionTitle": "NỘI QUY VÀ TÀI LIỆU",
+      "guideTitle": "Hướng dẫn sử dụng file BTVN",
+      "guideParagraph1": "File này để tổng hợp toàn bộ BTVN trong khoá, sau mỗi buổi file BTVN sẽ được cập nhật, link sẽ được gửi lại vào trong nhóm Zalo lớp.",
+      "guideParagraph2": "Anh chị cần tham gia nhóm Wayground và Facebook của lớp ngay sau buổi 1 để thao tác được dễ dàng hơn.",
+      "bullet1": "Link lớp Wayground và Facebook đã được gửi trong nhóm Zalo lớp.",
+      "bullet2": "Yêu cầu hoàn thành BTVN theo các mục của từng buổi.",
+      "guideCtaLabel": "Hướng dẫn tham gia lớp và làm BTVN",
+      "guideCtaHref": "https://youtu.be/b5vbRbyMfx0",
+      "materialTitles": {
+        "textbook": "Giáo trình",
+        "video": "Video",
+        "quizlet": "Quizlet",
+        "guide": "Hướng dẫn sử dụng"
+      },
+      "materials": {
+        "textbook": [
+          {
+            "label": "Phần 1: PCT_Giáo trình_2025_Phần 1.pdf",
+            "href": "https://drive.google.com/file/d/1QMb-J_YaeNFMjYgQqAqclcPOzscj71OJ/view"
+          },
+          {
+            "label": "Phần 2: PCT - TÀI LIỆU GIAO TIẾP",
+            "href": "https://docs.google.com/document/d/1Bm8Hc5k24pYEipPGZfwJ0IuwKe82YMNLfiJEqe-9kaU/edit?tab=t.0"
+          }
+        ],
+        "video": [
+          {
+            "label": "Khóa video - Chuẩn Hóa Phát Âm (giọng Anh Mỹ)",
+            "href": "http://tinyurl.com/chuanhoaphatamMy"
+          },
+          {
+            "label": "Video phần hiện tượng âm trong câu",
+            "href": "http://tinyurl.com/amtrongcau"
+          }
+        ],
+        "quizlet": [
+          {
+            "label": "Phát âm",
+            "href": "https://quizlet.com/join/5eYAj5xyV?i=4na5aj&x=1bqt"
+          },
+          {
+            "label": "Giao tiếp",
+            "href": "https://quizlet.com/user/GiangVienSec/folders/pct-updated-2025"
+          },
+          {
+            "label": "Hướng dẫn học từ vựng Quizlet",
+            "href": "https://www.youtube.com/shorts/wdIvX2zb-rw"
+          }
+        ],
+        "guides": [
+          {
+            "label": "Hướng dẫn làm bài trên Quizizz - PCT",
+            "href": "https://docs.google.com/document/d/1qlPSyW7WPyHVgGVAo_jgs2R9D9LdgEeQDbogFMHTdiY/edit?tab=t.0"
+          },
+          {
+            "label": "Hướng dẫn học thẻ: Hướng dẫn học từ vựng khoá PCT",
+            "href": "https://docs.google.com/document/d/1vPF1zS9WtoEfPbKrXL5WyTvyQISIsE6K2_c8AYAnwWI/edit?usp=sharing"
+          },
+          {
+            "label": "Hướng dẫn sử dụng bộ công cụ",
+            "href": "https://docs.google.com/document/d/1p71WAgCJUrQOa5Tt9XGzHzZCx52mxVIcaeUkfJNoxVc/edit?tab=t.0"
+          }
+        ]
+      },
+      "classRuleLine": "Nội quy lớp học: Cách học và nội qui KTN On-Off (update 01.10.2025) .pptx",
+      "classRuleHref": "https://docs.google.com/presentation/d/1s8ktgjoE20JRtPDhP5lu2ZorgXlh1cfF/edit?slide=id.p2#slide=id.p2"
+    },
+    "additionalSection": {
+      "title": "TÀI LIỆU THAM KHẢO KHÁC",
+      "description": "Tài liệu tham khảo thêm dành cho khóa học."
+    },
+    "additionalResources": [
+      {
+        "title": "Từ vựng phát âm sai",
+        "description": "Từ vựng thông dụng người Việt thường phát âm sai.",
+        "action": "Mở tài liệu",
+        "href": "http://tinyurl.com/tuhaysaiIPA",
+        "icon": "record_voice_over"
+      },
+      {
+        "title": "Khóa phát âm Anh Mỹ",
+        "description": "Khóa video chuẩn hóa phát âm giọng Anh Mỹ.",
+        "action": "Mở khóa học",
+        "href": "http://tinyurl.com/chuanhoaphatamMy",
+        "icon": "mic"
+      },
+      {
+        "title": "IPA Cheat Sheet",
+        "description": "Tóm lược bảng IPA - IPA Cheat sheet.",
+        "action": "Xem ngay",
+        "href": "http://tinyurl.com/IPACheatsheet",
+        "icon": "article"
+      },
+      {
+        "title": "Bài hát luyện tiếng Anh",
+        "description": "Một số bài hát luyện tiếng Anh.",
+        "action": "Mở playlist",
+        "href": "http://tinyurl.com/hochatTA",
+        "icon": "music_note"
+      }
+    ],
+    "recommendedWebsites": {
+      "title": "Những trang web khuyên dùng",
+      "items": [
+        {
+          "title": "Oxford Learner’s Dictionaries",
+          "description": "Để tra phiên âm + nghĩa tiếng Anh",
+          "href": "https://www.oxfordlearnersdictionaries.com/",
+          "icon": "language"
+        },
+        {
+          "title": "ToPhonetics",
+          "description": "Để tra phiên âm cả câu/đoạn",
+          "href": "https://tophonetics.com/",
+          "icon": "menu_book"
+        },
+        {
+          "title": "TraCau",
+          "description": "Để tra từ, cụm, câu gợi ý",
+          "href": "https://tracau.vn/",
+          "icon": "smart_display"
+        },
+        {
+          "title": "YouGlish",
+          "description": "Để tra cách nói của người bản xứ",
+          "href": "https://youglish.com/",
+          "icon": "campaign"
+        },
+        {
+          "title": "Games to Learn English",
+          "description": "Trang web chơi game để học từ vựng",
+          "href": "https://www.gamestolearnenglish.com/",
+          "icon": "stadia_controller"
+        },
+        {
+          "title": "Google Ngrams",
+          "description": "Để tìm tần suất xuất hiện của 1 từ",
+          "href": "https://books.google.com/ngrams/",
+          "icon": "query_stats"
+        },
+        {
+          "title": "Etymonline",
+          "description": "Để tra gốc từ",
+          "href": "https://www.etymonline.com/",
+          "icon": "history_edu"
+        },
+        {
+          "title": "NaturalReaders",
+          "description": "Tạo audio để tự nghe",
+          "href": "https://www.naturalreaders.com/",
+          "icon": "graphic_eq"
+        }
+      ],
+      "collinsTitle": "Cách tìm phát âm Collins",
+      "collinsQuery": "how to pronounce [từ] in American English Collins"
+    },
+    "dictionary": {
+      "tag": "TUTORIAL",
+      "titleLine1": "Cài đặt từ điển",
+      "titleLine2": "Oxford và Lingoes",
+      "description": "Cả lớp cùng tải xuống và cài đặt để hỗ trợ việc học, đặc biệt từ điển Oxford và Lingoes.",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Từ điển Oxford",
+          "description": "Bản online cho điện thoại iPhone: Oxford Learner’s Dictionaries (khuyến nghị dùng online)."
+        },
+        {
+          "step": 2,
+          "title": "Từ điển Lingoes",
+          "description": "Tra song ngữ Anh - Việt, Việt - Anh bằng 1 click, tích hợp Oxford, Longman, Cambridge."
+        },
+        {
+          "step": 3,
+          "title": "Hướng dẫn cài đặt",
+          "description": "Xem video hướng dẫn đầy đủ cài đặt và sử dụng từ điển Lingoes."
+        }
+      ],
+      "buttonLabel": "Oxford Learner’s Dictionaries",
+      "buttonHref": "https://www.oxfordlearnersdictionaries.com/"
+    },
+    "community": {
+      "title": "Kênh truyền thông SEC",
+      "description": "Cùng follow các kênh truyền thông của SEC để nhận thêm thông tin và bài học hữu ích.",
+      "items": [
+        {
+          "title": "Page SEC",
+          "label": "sec.tienganhdongian",
+          "href": "https://www.facebook.com/sec.tienganhdongian",
+          "badge": "youtube",
+          "iconText": "▶"
+        },
+        {
+          "title": "Nhóm SEC",
+          "label": "anhngusec2022",
+          "href": "https://www.facebook.com/anhngusec2022",
+          "badge": "facebook",
+          "iconText": "f"
+        },
+        {
+          "title": "TikTok SEC 1",
+          "label": "@toeic900cungsec",
+          "href": "https://www.tiktok.com/@toeic900cungsec?is_from_webapp=1&sender_device=pc",
+          "badge": "tiktok",
+          "iconText": "♪"
+        },
+        {
+          "title": "TikTok SEC 2",
+          "label": "@toeicdoclacungsec",
+          "href": "https://www.tiktok.com/@toeicdoclacungsec?is_from_webapp=1&sender_device=pc",
+          "badge": "tiktok",
+          "iconText": "♪"
+        }
+      ]
+    }
   }
 }

@@ -3,6 +3,7 @@
     "brand": "PCT - Mrs. Linh - SEC Anh Ngữ",
     "home": "Home",
     "scenarios": "Scenarios",
+    "documentary": "Documentary",
     "startLearning": "Start Learning"
   },
   "hero": {
@@ -174,5 +175,228 @@
   },
   "progressBar": {
     "progress": "Progress"
+  },
+  "documentary": {
+    "hero": {
+      "titleLine1": "SEC English",
+      "titleLine2": "Learning Resources",
+      "description": "Your centralized hub for mastering English. Access curated materials, grammar guides, and recommended tools designed to accelerate your learning journey from beginner to advanced."
+    },
+    "rules": {
+      "sectionTitle": "RULES & MATERIALS",
+      "guideTitle": "How to use the BTVN file",
+      "guideParagraph1": "This file compiles all homework tasks for the course. After each lesson, the BTVN file is updated and resent in the class Zalo group.",
+      "guideParagraph2": "Please join the class Wayground and Facebook groups right after session 1 for easier practice.",
+      "bullet1": "Wayground and Facebook class links are shared in the class Zalo group.",
+      "bullet2": "Complete homework according to each lesson's checklist.",
+      "guideCtaLabel": "Guide to joining class & doing homework",
+      "guideCtaHref": "https://youtu.be/b5vbRbyMfx0",
+      "materialTitles": {
+        "textbook": "Textbook",
+        "video": "Video",
+        "quizlet": "Quizlet",
+        "guide": "Guides"
+      },
+      "materials": {
+        "textbook": [
+          {
+            "label": "Part 1: PCT_Giáo trình_2025_Phần 1.pdf",
+            "href": "https://drive.google.com/file/d/1QMb-J_YaeNFMjYgQqAqclcPOzscj71OJ/view"
+          },
+          {
+            "label": "Part 2: PCT - COMMUNICATION MATERIAL",
+            "href": "https://docs.google.com/document/d/1Bm8Hc5k24pYEipPGZfwJ0IuwKe82YMNLfiJEqe-9kaU/edit?tab=t.0"
+          }
+        ],
+        "video": [
+          {
+            "label": "Pronunciation Standardization Course (American accent)",
+            "href": "http://tinyurl.com/chuanhoaphatamMy"
+          },
+          {
+            "label": "Connected-speech phenomena in sentences",
+            "href": "http://tinyurl.com/amtrongcau"
+          }
+        ],
+        "quizlet": [
+          {
+            "label": "Pronunciation",
+            "href": "https://quizlet.com/join/5eYAj5xyV?i=4na5aj&x=1bqt"
+          },
+          {
+            "label": "Communication",
+            "href": "https://quizlet.com/user/GiangVienSec/folders/pct-updated-2025"
+          },
+          {
+            "label": "Quizlet vocabulary guide",
+            "href": "https://www.youtube.com/shorts/wdIvX2zb-rw"
+          }
+        ],
+        "guides": [
+          {
+            "label": "Quizizz homework guide - PCT",
+            "href": "https://docs.google.com/document/d/1qlPSyW7WPyHVgGVAo_jgs2R9D9LdgEeQDbogFMHTdiY/edit?tab=t.0"
+          },
+          {
+            "label": "Card-learning guide: PCT vocabulary",
+            "href": "https://docs.google.com/document/d/1vPF1zS9WtoEfPbKrXL5WyTvyQISIsE6K2_c8AYAnwWI/edit?usp=sharing"
+          },
+          {
+            "label": "Toolkit usage guide",
+            "href": "https://docs.google.com/document/d/1p71WAgCJUrQOa5Tt9XGzHzZCx52mxVIcaeUkfJNoxVc/edit?tab=t.0"
+          }
+        ]
+      },
+      "classRuleLine": "Class Rules: Cách học và nội qui KTN On-Off (update 01.10.2025) .pptx",
+      "classRuleHref": "https://docs.google.com/presentation/d/1s8ktgjoE20JRtPDhP5lu2ZorgXlh1cfF/edit?slide=id.p2#slide=id.p2"
+    },
+    "additionalSection": {
+      "title": "ADDITIONAL REFERENCES",
+      "description": "Extra references for the course."
+    },
+    "additionalResources": [
+      {
+        "title": "Common mispronounced vocabulary",
+        "description": "Frequently mispronounced words by Vietnamese learners.",
+        "action": "Open material",
+        "href": "http://tinyurl.com/tuhaysaiIPA",
+        "icon": "record_voice_over"
+      },
+      {
+        "title": "American pronunciation course",
+        "description": "Video course to standardize American pronunciation.",
+        "action": "Open course",
+        "href": "http://tinyurl.com/chuanhoaphatamMy",
+        "icon": "mic"
+      },
+      {
+        "title": "IPA Cheat Sheet",
+        "description": "Quick IPA summary for pronunciation review.",
+        "action": "View now",
+        "href": "http://tinyurl.com/IPACheatsheet",
+        "icon": "article"
+      },
+      {
+        "title": "English practice songs",
+        "description": "Recommended songs for listening and speaking practice.",
+        "action": "Open playlist",
+        "href": "http://tinyurl.com/hochatTA",
+        "icon": "music_note"
+      }
+    ],
+    "recommendedWebsites": {
+      "title": "Recommended websites",
+      "items": [
+        {
+          "title": "Oxford Learner’s Dictionaries",
+          "description": "Look up IPA and English meanings",
+          "href": "https://www.oxfordlearnersdictionaries.com/",
+          "icon": "language"
+        },
+        {
+          "title": "ToPhonetics",
+          "description": "Convert full sentence/paragraph to phonetics",
+          "href": "https://tophonetics.com/",
+          "icon": "menu_book"
+        },
+        {
+          "title": "TraCau",
+          "description": "Look up word/phrase/sentence suggestions",
+          "href": "https://tracau.vn/",
+          "icon": "smart_display"
+        },
+        {
+          "title": "YouGlish",
+          "description": "Hear native usage for words and phrases",
+          "href": "https://youglish.com/",
+          "icon": "campaign"
+        },
+        {
+          "title": "Games to Learn English",
+          "description": "Vocabulary games for practice",
+          "href": "https://www.gamestolearnenglish.com/",
+          "icon": "stadia_controller"
+        },
+        {
+          "title": "Google Ngrams",
+          "description": "Check frequency of a word over time",
+          "href": "https://books.google.com/ngrams/",
+          "icon": "query_stats"
+        },
+        {
+          "title": "Etymonline",
+          "description": "Lookup word origins",
+          "href": "https://www.etymonline.com/",
+          "icon": "history_edu"
+        },
+        {
+          "title": "NaturalReaders",
+          "description": "Create audio for self-listening",
+          "href": "https://www.naturalreaders.com/",
+          "icon": "graphic_eq"
+        }
+      ],
+      "collinsTitle": "How to search Collins pronunciation",
+      "collinsQuery": "how to pronounce [word] in American English Collins"
+    },
+    "dictionary": {
+      "tag": "TUTORIAL",
+      "titleLine1": "Install dictionaries",
+      "titleLine2": "Oxford & Lingoes",
+      "description": "Install these dictionaries to support daily learning effectively.",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Oxford dictionary",
+          "description": "For iPhone, use Oxford Learner’s Dictionaries online version."
+        },
+        {
+          "step": 2,
+          "title": "Lingoes dictionary",
+          "description": "One-click EN-VI / VI-EN lookup with integrated popular dictionaries."
+        },
+        {
+          "step": 3,
+          "title": "Installation guide",
+          "description": "Watch full setup and usage guide for Lingoes."
+        }
+      ],
+      "buttonLabel": "Oxford Learner’s Dictionaries",
+      "buttonHref": "https://www.oxfordlearnersdictionaries.com/"
+    },
+    "community": {
+      "title": "SEC Media Channels",
+      "description": "Follow SEC channels for more useful updates and lessons.",
+      "items": [
+        {
+          "title": "SEC Page",
+          "label": "sec.tienganhdongian",
+          "href": "https://www.facebook.com/sec.tienganhdongian",
+          "badge": "youtube",
+          "iconText": "▶"
+        },
+        {
+          "title": "SEC Group",
+          "label": "anhngusec2022",
+          "href": "https://www.facebook.com/anhngusec2022",
+          "badge": "facebook",
+          "iconText": "f"
+        },
+        {
+          "title": "TikTok SEC 1",
+          "label": "@toeic900cungsec",
+          "href": "https://www.tiktok.com/@toeic900cungsec?is_from_webapp=1&sender_device=pc",
+          "badge": "tiktok",
+          "iconText": "♪"
+        },
+        {
+          "title": "TikTok SEC 2",
+          "label": "@toeicdoclacungsec",
+          "href": "https://www.tiktok.com/@toeicdoclacungsec?is_from_webapp=1&sender_device=pc",
+          "badge": "tiktok",
+          "iconText": "♪"
+        }
+      ]
+    }
   }
 }

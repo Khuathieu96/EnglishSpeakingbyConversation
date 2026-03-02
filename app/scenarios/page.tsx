@@ -101,7 +101,8 @@ export default function ScenariosPage() {
       <TopNav />
 
       <main className={styles.main}>
-        <section className={styles.statsGrid}>
+        <div className={styles.container}>
+          <section className={styles.statsGrid}>
           {stats_keys.map((stat) => (
             <article key={stat.labelKey} className={styles.statCard}>
               <div className={styles.statLabel}>{t(stat.labelKey)}</div>
@@ -111,9 +112,9 @@ export default function ScenariosPage() {
               </div>
             </article>
           ))}
-        </section>
+          </section>
 
-        <section className={styles.librarySection}>
+          <section className={styles.librarySection}>
           <div className={styles.libraryHeader}>
             <div>
               <h1>{t('libraryTitle')}</h1>
@@ -250,7 +251,8 @@ export default function ScenariosPage() {
               </Link>
             ))}
           </div>
-        </section>
+          </section>
+        </div>
       </main>
 
       <BottomFooter />

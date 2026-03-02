@@ -1,7 +1,8 @@
 .page {
+  background: #faf8f4;
   min-height: 100vh;
-  background: #f5f8f7;
-  color: #0f172a;
+  color: #1e293b;
+  font-family: 'Be Vietnam Pro', sans-serif;
 }
 
 .topBar {
@@ -121,9 +122,13 @@
 }
 
 .main {
-  max-width: 1240px;
+  padding-top: 69px;
+}
+
+.container {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 98px 20px 18px;
+  padding: 32px 24px;
 }
 
 .statsGrid {

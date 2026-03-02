@@ -20,6 +20,7 @@ export function AppHeader() {
 
   const isHome = pathname === '/';
   const isScenarios = pathname === '/scenarios';
+  const isDocumentary = pathname === '/documentary';
 
   return (
     <header className={styles.appHeaderWrap}>
@@ -41,6 +42,12 @@ export function AppHeader() {
             className={isScenarios ? styles.activeLink : styles.navLink}
           >
             {t('scenarios')}
+          </Link>
+          <Link
+            href='/documentary'
+            className={isDocumentary ? styles.activeLink : styles.navLink}
+          >
+            {t('documentary')}
           </Link>
         </nav>
 
