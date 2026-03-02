@@ -34,7 +34,6 @@ export function CompletionPopupTester() {
       <CompletionPopup
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        userName='Alex'
         statistics={{
           totalSentences: 6,
           completedSentences: 6,
