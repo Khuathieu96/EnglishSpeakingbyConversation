@@ -264,8 +264,8 @@ function extractConversations(markdownContent: string): Conversation[] {
     const meta = topicMetadata[topicName] || {
       description: `Practice English conversation about ${topicName.toLowerCase()}.`,
       difficulty: parseInt(topicNumber) <= 4 ? 'beginner' as const
-                : parseInt(topicNumber) <= 9 ? 'intermediate' as const
-                : 'advanced' as const,
+        : parseInt(topicNumber) <= 9 ? 'intermediate' as const
+          : 'advanced' as const,
       category: 'General',
     };
 

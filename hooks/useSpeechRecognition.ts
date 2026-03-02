@@ -65,11 +65,49 @@ export function useSpeechRecognition() {
     isProcessing: false,
     error: null,
     result: null,
+    silenceTimeoutReached: false,
   });
 
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
   const isStartingRef = useRef(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const clearSilenceTimeout = useCallback(() => {
+    if (silenceTimeoutRef.current) {
+      clearTimeout(silenceTimeoutRef.current);
+      silenceTimeoutRef.current = null;
+    }
+  }, []);
+
+  const stopForSilence = useCallback((markNoSpeech: boolean) => {
+    setState((prev) => ({
+      ...prev,
+      silenceTimeoutReached: markNoSpeech,
+      result:
+        prev.result && !prev.result.isFinal
+          ? {
+              ...prev.result,
+              isFinal: true,
+            }
+          : prev.result,
+      isProcessing: !!prev.result,
+    }));
+
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  }, []);
+
+  const scheduleSilenceTimeout = useCallback(
+    (durationMs: number, markNoSpeech: boolean) => {
+      clearSilenceTimeout();
+
+      silenceTimeoutRef.current = setTimeout(() => {
+        stopForSilence(markNoSpeech);
+      }, durationMs);
+    },
+    [clearSilenceTimeout, stopForSilence],
+  );
 
   // Check if speech recognition is supported
   const isSupported = useCallback(() => {
@@ -105,17 +143,11 @@ export function useSpeechRecognition() {
         isListening: true,
         isProcessing: false,
         error: null,
+        silenceTimeoutReached: false,
       }));
 
-      // Start 5-second timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => {
-        if (recognitionRef.current) {
-          recognitionRef.current.stop();
-        }
-      }, 5000); // 5 seconds
+      // Start initial no-speech timeout (no recognized words)
+      scheduleSilenceTimeout(3000, true);
     };
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -128,6 +160,13 @@ export function useSpeechRecognition() {
         confidence: alternative.confidence,
         isFinal: lastResult.isFinal,
       };
+
+      const hasWords = alternative.transcript.trim().length > 0;
+
+      // While user is speaking, keep listening; stop only when silent for 2 seconds
+      if (hasWords) {
+        scheduleSilenceTimeout(2000, false);
+      }
 
       setState((prev) => ({
         ...prev,
@@ -178,11 +217,7 @@ export function useSpeechRecognition() {
     recognition.onend = () => {
       isStartingRef.current = false;
 
-      // Clear timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
+      clearSilenceTimeout();
 
       setState((prev) => ({
         ...prev,
@@ -194,14 +229,12 @@ export function useSpeechRecognition() {
     recognitionRef.current = recognition;
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      clearSilenceTimeout();
       if (recognitionRef.current) {
         recognitionRef.current.abort();
       }
     };
-  }, [isSupported]);
+  }, [clearSilenceTimeout, isSupported, scheduleSilenceTimeout]);
 
   // Start listening
   const startListening = useCallback(() => {
@@ -213,6 +246,7 @@ export function useSpeechRecognition() {
         ...prev,
         error: null,
         result: null,
+        silenceTimeoutReached: false,
       }));
       recognitionRef.current.start();
     } catch (error) {
@@ -229,11 +263,7 @@ export function useSpeechRecognition() {
   const stopListening = useCallback(() => {
     if (!recognitionRef.current) return;
 
-    // Clear timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+    clearSilenceTimeout();
 
     // If there's an interim result, mark it as final before stopping
     setState((prev) => {
@@ -254,7 +284,7 @@ export function useSpeechRecognition() {
     } catch (error) {
       console.error('Error stopping recognition:', error);
     }
-  }, []);
+  }, [clearSilenceTimeout]);
 
   // Reset state
   const reset = useCallback(() => {
@@ -263,6 +293,7 @@ export function useSpeechRecognition() {
       isProcessing: false,
       error: null,
       result: null,
+      silenceTimeoutReached: false,
     });
   }, []);
 

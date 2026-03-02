@@ -1,6 +1,6 @@
 // Types
 export interface ConversationLine {
-  id:  string;
+  id: string;
   speaker: 'ai' | 'user';
   text: string;
   hint?: string;
@@ -10,7 +10,7 @@ export interface Conversation {
   id: string;
   title: string;
   description: string;
-  difficulty:  'beginner' | 'intermediate' | 'advanced';
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
   category: string;
   thumbnail: string;
   estimatedTime: number; // in minutes
@@ -37,7 +37,7 @@ export const getConversationsByDifficulty = (
 
 export const getConversationsByCategory = (category: string): Conversation[] => {
   return conversations.filter(
-    (conv) => conv.category. toLowerCase() === category.toLowerCase()
+    (conv) => conv.category.toLowerCase() === category.toLowerCase()
   );
 };
 
@@ -54,5 +54,5 @@ export const getAllDifficulties = (): string[] => {
 export const getUserLinesCount = (conversationId: string): number => {
   const conversation = getConversationById(conversationId);
   if (!conversation) return 0;
-  return conversation.lines. filter((line) => line.speaker === 'user').length;
+  return conversation.lines.filter((line) => line.speaker === 'user').length;
 };

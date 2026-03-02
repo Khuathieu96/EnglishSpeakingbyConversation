@@ -89,6 +89,7 @@
     "stop": "Stop",
     "skip": "Skip",
     "attemptsRemaining": "Attempts remaining: {count}",
+    "voiceDetected": "Voice detected",
     "phrases": "phrases",
     "lessonFocus": "Lesson Focus",
     "aiTutor": "AI Language Tutor",

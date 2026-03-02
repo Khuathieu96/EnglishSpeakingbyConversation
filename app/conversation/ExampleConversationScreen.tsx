@@ -1,21 +1,21 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import styles from './conversation.module.css';
 import { conversations, getConversationById } from '@/data/conversations';
 import { useConversationBot } from '@/hooks/useConversationBot';
 import { CompletionScreen } from '@/components/CompletionScreen';
 import { BrowserWarning } from '@/components/BrowserWarning';
 import { AppHeader } from '@/app/dashboard/components/AppHeader';
+import { configureUtteranceVoice } from '@/lib/speechVoice';
+import { dashboardAssets } from '@/app/dashboard/dashboardData';
 
-const desktopUserImage =
-  'https://www.figma.com/api/mcp/asset/182d7cc0-77f7-42a3-b9d2-239e22c20204';
-const desktopAiImage =
-  'https://www.figma.com/api/mcp/asset/bf818f5e-3134-418e-b3df-dea74ded9c0c';
-const mobileTutorImage =
-  'https://www.figma.com/api/mcp/asset/ea609369-ebd2-48c4-be63-616a0d14ac04';
+const desktopUserImage = dashboardAssets.avatar;
+const desktopAiImage = '/ava_teacher.png';
+const mobileTutorImage = '/ava_teacher.png';
+const aiDisplayName = 'Mrs. Hoai Linh';
 
 const lessonObjectives = [
   { label: 'Use "Nice to meet you"', done: true },
@@ -40,8 +40,13 @@ export function ExampleConversationScreen({
 }: ExampleConversationScreenProps) {
   const conversation = getConversationById(conversationId) ?? conversations[0];
   const [hasStarted, setHasStarted] = useState(false);
+  const [activeAudioLineId, setActiveAudioLineId] = useState<string | null>(null);
+  const [isSentenceAudioPaused, setIsSentenceAudioPaused] = useState(false);
+  const locale = useLocale();
   const t = useTranslations('conversation');
   const tChat = useTranslations('chat');
+  const sentenceUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const lineTimestampRef = useRef<Record<string, string>>({});
 
   const {
     botState,
@@ -101,9 +106,463 @@ export function ExampleConversationScreen({
     ? conversation.lines.slice(0, botState.currentLineIndex + 1)
     : conversation.lines.slice(0, botState.currentLineIndex);
 
+  const timeFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale || 'en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    [locale],
+  );
+
+  const getLineTimestamp = useCallback(
+    (lineId: string) => {
+      if (!lineTimestampRef.current[lineId]) {
+        lineTimestampRef.current[lineId] = timeFormatter.format(new Date());
+      }
+
+      return lineTimestampRef.current[lineId];
+    },
+    [timeFormatter],
+  );
+
   const isListening =
     speechRecognition.isListening || audioRecorder.isRecording;
   const canSpeak = botState.state === 'waiting_for_user';
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const levelFrameRef = useRef<number | null>(null);
+  const desktopWaveBarsRef = useRef<Array<HTMLSpanElement | null>>([]);
+  const mobileWaveBarsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const desktopBarLevelsRef = useRef<number[]>([]);
+  const mobileBarLevelsRef = useRef<number[]>([]);
+  const desktopFilledRef = useRef(0);
+  const mobileFilledRef = useRef(0);
+  const noiseFloorRef = useRef(0.012);
+  const peakLevelRef = useRef(0.08);
+  const gatedLevelRef = useRef(0);
+  const tailHoldFramesRef = useRef(0);
+
+  // Voice-detected flag: true when the recogniser has picked up speech
+  const voiceDetected = isListening && !!speechRecognition.result?.transcript;
+
+  // Countdown timer (seconds remaining while listening)
+  const LISTEN_DURATION = 5;
+  const [countdown, setCountdown] = useState(LISTEN_DURATION);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const desktopMessagesRef = useRef<HTMLDivElement | null>(null);
+  const mobileMessagesRef = useRef<HTMLElement | null>(null);
+
+  // Equaliser bar helpers
+  const MOBILE_BARS = 16;
+  const desktopBarsCount = 64;
+  const baseWaveLevel = 0.06;
+  const getWaveBarHeight = useCallback(
+    (
+      level: number,
+      index: number,
+      totalBars: number,
+      minHeight: number,
+      maxHeight: number,
+      levelBoost = 1,
+    ) => {
+      const center = (totalBars - 1) / 2;
+      const distanceFromCenter = Math.abs(index - center) / Math.max(center, 1);
+      const centerWeight = Math.cos((distanceFromCenter * Math.PI) / 2);
+      const barWeight = 0.26 + 0.74 * Math.pow(centerWeight, 1.15);
+      const barOffset = distanceFromCenter * 0.015;
+      const effectiveLevel = Math.max(
+        0,
+        Math.min(1, level * levelBoost - barOffset),
+      );
+      const height =
+        minHeight + effectiveLevel * (maxHeight - minHeight) * barWeight;
+
+      return `${Math.max(minHeight, Math.min(maxHeight, height))}px`;
+    },
+    [],
+  );
+
+  const setWaveHeights = useCallback(
+    (desktopLevels: number[], mobileLevels: number[]) => {
+      desktopWaveBarsRef.current.forEach((bar, index) => {
+        if (!bar) return;
+        bar.style.height = getWaveBarHeight(
+          desktopLevels[index] ?? 0,
+          index,
+          desktopBarsCount,
+          4,
+          32,
+          1.25,
+        );
+      });
+
+      mobileWaveBarsRef.current.forEach((bar, index) => {
+        if (!bar) return;
+        bar.style.height = getWaveBarHeight(
+          mobileLevels[index] ?? 0,
+          index,
+          MOBILE_BARS,
+          4,
+          28,
+          1.15,
+        );
+      });
+    },
+    [getWaveBarHeight],
+  );
+
+  useEffect(() => {
+    if (isListening) {
+      setCountdown(LISTEN_DURATION);
+      countdownRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            if (countdownRef.current) clearInterval(countdownRef.current);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      setCountdown(LISTEN_DURATION);
+    }
+    return () => {
+      if (countdownRef.current) clearInterval(countdownRef.current);
+    };
+  }, [isListening]);
+
+  const stopLevelMeter = useCallback(() => {
+    if (levelFrameRef.current) {
+      cancelAnimationFrame(levelFrameRef.current);
+      levelFrameRef.current = null;
+    }
+
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+
+    analyserRef.current = null;
+    desktopBarLevelsRef.current = new Array(desktopBarsCount).fill(0);
+    mobileBarLevelsRef.current = new Array(MOBILE_BARS).fill(0);
+    desktopFilledRef.current = 0;
+    mobileFilledRef.current = 0;
+    setWaveHeights(desktopBarLevelsRef.current, mobileBarLevelsRef.current);
+    noiseFloorRef.current = 0.012;
+    peakLevelRef.current = 0.08;
+    gatedLevelRef.current = 0;
+    tailHoldFramesRef.current = 0;
+
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+  }, [MOBILE_BARS, desktopBarsCount, setWaveHeights]);
+
+  useEffect(() => {
+    if (!isListening) {
+      stopLevelMeter();
+      return;
+    }
+
+    let cancelled = false;
+
+    const startLevelMeter = async () => {
+      try {
+        if (!navigator.mediaDevices?.getUserMedia) return;
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            noiseSuppression: true,
+            echoCancellation: true,
+            autoGainControl: false,
+            channelCount: 1,
+          },
+        });
+
+        if (cancelled) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
+        const audioContext = new window.AudioContext();
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 1024;
+        analyser.smoothingTimeConstant = 0.85;
+
+        const source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        audioContextRef.current = audioContext;
+        analyserRef.current = analyser;
+        mediaStreamRef.current = stream;
+        desktopBarLevelsRef.current = new Array(desktopBarsCount).fill(baseWaveLevel);
+        mobileBarLevelsRef.current = new Array(MOBILE_BARS).fill(baseWaveLevel);
+        desktopFilledRef.current = 0;
+        mobileFilledRef.current = 0;
+        gatedLevelRef.current = baseWaveLevel;
+        tailHoldFramesRef.current = 0;
+        setWaveHeights(desktopBarLevelsRef.current, mobileBarLevelsRef.current);
+
+        const data = new Uint8Array(analyser.frequencyBinCount);
+
+        const sample = () => {
+          if (cancelled || !analyserRef.current) return;
+
+          analyserRef.current.getByteFrequencyData(data);
+
+          const floorStartBin = 2;
+          const floorEndBin = Math.min(220, data.length);
+          let totalEnergy = 0;
+
+          for (let i = floorStartBin; i < floorEndBin; i += 1) {
+            totalEnergy += data[i] / 255;
+          }
+
+          const rawLevel =
+            floorEndBin > floorStartBin
+              ? totalEnergy / (floorEndBin - floorStartBin)
+              : 0;
+          const noiseFloor = noiseFloorRef.current;
+          const nextNoiseFloor = rawLevel < noiseFloor
+            ? noiseFloor * 0.92 + rawLevel * 0.08
+            : noiseFloor * 0.995 + rawLevel * 0.005;
+          noiseFloorRef.current = nextNoiseFloor;
+
+          peakLevelRef.current = Math.max(
+            rawLevel,
+            peakLevelRef.current * 0.99,
+            nextNoiseFloor + 0.03,
+          );
+
+          const dynamicRange = Math.max(0.02, peakLevelRef.current - nextNoiseFloor);
+          const normalizedLevel = Math.max(
+            0,
+            Math.min(1, (rawLevel - nextNoiseFloor) / dynamicRange),
+          );
+
+          const binWidth = audioContext.sampleRate / analyser.fftSize;
+          const getBandEnergy = (startHz: number, endHz: number) => {
+            const startBin = Math.max(2, Math.floor(startHz / binWidth));
+            const endBin = Math.min(data.length - 1, Math.ceil(endHz / binWidth));
+            if (endBin <= startBin) return 0;
+
+            let sum = 0;
+            let count = 0;
+            for (let i = startBin; i <= endBin; i += 1) {
+              sum += data[i] / 255;
+              count += 1;
+            }
+
+            return count > 0 ? sum / count : 0;
+          };
+
+          const speechBandEnergy = getBandEnergy(250, 3600);
+          const lowNoiseEnergy = getBandEnergy(40, 180);
+          const highNoiseEnergy = getBandEnergy(5000, 9000);
+          const noiseBandEnergy = lowNoiseEnergy * 0.58 + highNoiseEnergy * 0.42;
+
+          const speechContrast = Math.max(0, speechBandEnergy - noiseBandEnergy * 0.78);
+          const speechPresence = Math.max(
+            0,
+            Math.min(1, speechContrast / Math.max(0.06, speechBandEnergy + 0.01)),
+          );
+
+          let filteredLevel = normalizedLevel * (0.4 + speechPresence * 0.9);
+
+          const softGateThreshold = 0.15;
+          if (filteredLevel < softGateThreshold) {
+            const gateRatio = filteredLevel / softGateThreshold;
+            filteredLevel = filteredLevel * (0.34 + 0.66 * gateRatio);
+          }
+
+          const previousLevel = gatedLevelRef.current;
+          if (filteredLevel < previousLevel) {
+            if (previousLevel > 0.09 && tailHoldFramesRef.current < 7) {
+              tailHoldFramesRef.current += 1;
+              filteredLevel = previousLevel * 0.9;
+            } else {
+              tailHoldFramesRef.current = 0;
+              filteredLevel = previousLevel * 0.76 + filteredLevel * 0.24;
+            }
+          } else {
+            tailHoldFramesRef.current = 0;
+            filteredLevel = previousLevel * 0.42 + filteredLevel * 0.58;
+          }
+
+          filteredLevel = Math.max(baseWaveLevel, Math.min(1, filteredLevel));
+          gatedLevelRef.current = filteredLevel;
+
+          const nextDesktop = [...desktopBarLevelsRef.current];
+          const nextMobile = [...mobileBarLevelsRef.current];
+
+          const desktopIndex = Math.max(
+            0,
+            desktopBarsCount - 1 - desktopFilledRef.current,
+          );
+          const mobileIndex = Math.max(
+            0,
+            MOBILE_BARS - 1 - mobileFilledRef.current,
+          );
+
+          const desktopCurrent =
+            desktopFilledRef.current < desktopBarsCount
+              ? nextDesktop[desktopIndex] ?? baseWaveLevel
+              : nextDesktop[0] ?? baseWaveLevel;
+          const mobileCurrent =
+            mobileFilledRef.current < MOBILE_BARS
+              ? nextMobile[mobileIndex] ?? baseWaveLevel
+              : nextMobile[0] ?? baseWaveLevel;
+
+          const desktopTarget = Math.max(baseWaveLevel, filteredLevel * 1.15);
+          const mobileTarget = Math.max(baseWaveLevel, filteredLevel * 1.05);
+
+          const desktopNextValue =
+            desktopTarget >= desktopCurrent
+              ? desktopCurrent * 0.42 + desktopTarget * 0.58
+              : desktopCurrent * 0.7 + desktopTarget * 0.3;
+
+          const mobileNextValue =
+            mobileTarget >= mobileCurrent
+              ? mobileCurrent * 0.45 + mobileTarget * 0.55
+              : mobileCurrent * 0.72 + mobileTarget * 0.28;
+
+          if (desktopFilledRef.current < desktopBarsCount) {
+            nextDesktop[desktopIndex] = desktopNextValue;
+            desktopFilledRef.current += 1;
+          } else {
+            nextDesktop.pop();
+            nextDesktop.unshift(desktopNextValue);
+          }
+
+          if (mobileFilledRef.current < MOBILE_BARS) {
+            nextMobile[mobileIndex] = mobileNextValue;
+            mobileFilledRef.current += 1;
+          } else {
+            nextMobile.pop();
+            nextMobile.unshift(mobileNextValue);
+          }
+
+          desktopBarLevelsRef.current = nextDesktop;
+          mobileBarLevelsRef.current = nextMobile;
+          setWaveHeights(nextDesktop, nextMobile);
+          levelFrameRef.current = requestAnimationFrame(sample);
+        };
+
+        sample();
+      } catch {
+        desktopBarLevelsRef.current = new Array(desktopBarsCount).fill(0);
+        mobileBarLevelsRef.current = new Array(MOBILE_BARS).fill(0);
+        desktopFilledRef.current = 0;
+        mobileFilledRef.current = 0;
+        gatedLevelRef.current = 0;
+        tailHoldFramesRef.current = 0;
+        setWaveHeights(desktopBarLevelsRef.current, mobileBarLevelsRef.current);
+      }
+    };
+
+    void startLevelMeter();
+
+    return () => {
+      cancelled = true;
+      stopLevelMeter();
+    };
+  }, [isListening, stopLevelMeter]);
+
+  const scrollChatsToBottom = useCallback(() => {
+    if (desktopMessagesRef.current) {
+      desktopMessagesRef.current.scrollTop =
+        desktopMessagesRef.current.scrollHeight;
+    }
+
+    if (mobileMessagesRef.current) {
+      mobileMessagesRef.current.scrollTop =
+        mobileMessagesRef.current.scrollHeight;
+    }
+  }, []);
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(scrollChatsToBottom);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [
+    scrollChatsToBottom,
+    displayLines.length,
+    botState.currentLineIndex,
+    botState.state,
+    botState.matchingResult,
+    botState.userTranscripts,
+  ]);
+
+  const stopSentenceAudio = useCallback(() => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
+    window.speechSynthesis.cancel();
+    sentenceUtteranceRef.current = null;
+    setActiveAudioLineId(null);
+    setIsSentenceAudioPaused(false);
+  }, []);
+
+  const handleSentenceAudioToggle = useCallback(
+    (lineId: string, text: string) => {
+      if (typeof window === 'undefined' || !window.speechSynthesis || !text.trim()) {
+        return;
+      }
+
+      const synth = window.speechSynthesis;
+
+      if (activeAudioLineId === lineId) {
+        if (synth.speaking && !synth.paused) {
+          synth.pause();
+          setIsSentenceAudioPaused(true);
+          return;
+        }
+
+        if (synth.paused) {
+          synth.resume();
+          setIsSentenceAudioPaused(false);
+          return;
+        }
+      }
+
+      synth.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.92;
+      utterance.pitch = 0.95;
+      utterance.volume = 1;
+      configureUtteranceVoice(utterance, synth.getVoices());
+      utterance.onend = () => {
+        sentenceUtteranceRef.current = null;
+        setActiveAudioLineId(null);
+        setIsSentenceAudioPaused(false);
+      };
+      utterance.onerror = () => {
+        sentenceUtteranceRef.current = null;
+        setActiveAudioLineId(null);
+        setIsSentenceAudioPaused(false);
+      };
+
+      sentenceUtteranceRef.current = utterance;
+      setActiveAudioLineId(lineId);
+      setIsSentenceAudioPaused(false);
+      synth.speak(utterance);
+    },
+    [activeAudioLineId],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const isAiSpeakingNow = botState.state === 'ai_speaking';
 
   if (botState.conversationComplete) {
     return (
@@ -180,7 +639,7 @@ export function ExampleConversationScreen({
                     <span className={styles.onlineDot} />
                   </div>
                   <div>
-                    <p className={styles.tutorName}>Alex</p>
+                    <p className={styles.tutorName}>{aiDisplayName}</p>
                     <p className={styles.tutorState}>
                       {botState.state === 'ai_speaking'
                         ? t('speaking')
@@ -191,10 +650,17 @@ export function ExampleConversationScreen({
                 <div className={styles.chatTools}></div>
               </div>
 
-              <div className={styles.desktopMessages}>
+              <div className={styles.desktopMessages} ref={desktopMessagesRef}>
                 {displayLines.map((line, index) => {
                   const transcript = botState.userTranscripts[index];
                   const isUser = line.speaker === 'user';
+                  const sentenceText = isUser && transcript ? transcript : line.text;
+                  const lineTime = getLineTimestamp(line.id);
+                  const isActiveSentence = activeAudioLineId === line.id;
+                  const sentenceIcon =
+                    isActiveSentence && !isSentenceAudioPaused
+                      ? 'pause'
+                      : 'play_arrow';
 
                   return (
                     <div
@@ -217,12 +683,48 @@ export function ExampleConversationScreen({
                             isUser ? styles.userBubble : styles.aiBubble
                           }
                         >
-                          {isUser && transcript ? transcript : line.text}
+                          <div
+                            className={`${styles.bubbleSentenceRow} ${isUser ? styles.bubbleSentenceRowUser : styles.bubbleSentenceRowAi}`}
+                          >
+                            {!isUser && (
+                              <button
+                                className={styles.sentenceAudioBtn}
+                                onClick={() =>
+                                  handleSentenceAudioToggle(line.id, sentenceText)
+                                }
+                                aria-label='Play or pause sentence audio'
+                                disabled={isAiSpeakingNow}
+                              >
+                                <span className='material-symbols-outlined'>
+                                  {sentenceIcon}
+                                </span>
+                              </button>
+                            )}
+
+                            <div className={styles.bubbleSentenceText}>
+                              {sentenceText}
+                            </div>
+
+                            {isUser && (
+                              <button
+                                className={styles.sentenceAudioBtn}
+                                onClick={() =>
+                                  handleSentenceAudioToggle(line.id, sentenceText)
+                                }
+                                aria-label='Play or pause sentence audio'
+                                disabled={isAiSpeakingNow}
+                              >
+                                <span className='material-symbols-outlined'>
+                                  {sentenceIcon}
+                                </span>
+                              </button>
+                            )}
+                          </div>
                         </div>
                         <p
                           className={isUser ? styles.stampUser : styles.stampAi}
                         >
-                          {isUser ? t('you') : 'Alex'} • {t('justNow')}
+                          {isUser ? t('you') : aiDisplayName} • {lineTime}
                         </p>
                       </div>
 
@@ -259,11 +761,6 @@ export function ExampleConversationScreen({
                   </div>
                 )}
 
-                {botState.state === 'show_answer' && currentLine && (
-                  <div className={styles.answerBox}>
-                    {t('correctAnswer', { text: currentLine.text })}
-                  </div>
-                )}
               </div>
 
               <div className={styles.desktopComposer}>
@@ -289,25 +786,33 @@ export function ExampleConversationScreen({
 
                 <div className={styles.desktopControls}>
                   <button
-                    onClick={handleUserSpeak}
-                    disabled={!canSpeak || isListening}
+                    onClick={isListening ? handleStopSpeaking : handleUserSpeak}
+                    disabled={!canSpeak && !isListening}
                     className={styles.primaryBtn}
+                    aria-label={isListening ? t('stop') : t('tapToSpeak')}
                   >
-                    {isListening ? t('listening') : t('tapToSpeak')}
+                    {isListening ? (
+                      <span className={styles.tapSpeakWave}>
+                        {Array.from({ length: desktopBarsCount }).map((_, i) => (
+                          <span
+                            key={i}
+                            className={styles.tapSpeakWaveBar}
+                            ref={(node) => {
+                              desktopWaveBarsRef.current[i] = node;
+                            }}
+                          />
+                        ))}
+                      </span>
+                    ) : (
+                      t('tapToSpeak')
+                    )}
                   </button>
-
-                  {isListening ? (
-                    <button
-                      onClick={handleStopSpeaking}
-                      className={styles.stopBtn}
-                    >
-                      {t('stop')}
-                    </button>
-                  ) : (
-                    <button onClick={handleSkipLine} className={styles.skipBtn}>
-                      {t('skip')}
-                    </button>
-                  )}
+                  <button
+                    onClick={handleSkipLine}
+                    className={styles.skipBtn}
+                  >
+                    {t('skip')}
+                  </button>
                 </div>
 
                 {remainingAttempts < 3 && (
@@ -326,11 +831,11 @@ export function ExampleConversationScreen({
           <header className={styles.mobileTopBar}>
             <div className={styles.mobileTutorInfo}>
               <div className={styles.mobileTutorAvatarWrap}>
-                <img src={mobileTutorImage} alt='Elena AI tutor' />
+                <img src={mobileTutorImage} alt={`${aiDisplayName} AI tutor`} />
                 <span className={styles.onlineDot} />
               </div>
               <div>
-                <p className={styles.mobileTutorName}>Elena</p>
+                <p className={styles.mobileTutorName}>{aiDisplayName}</p>
                 <p className={styles.mobileTutorRole}>{t('aiTutor')}</p>
               </div>
             </div>
@@ -393,12 +898,13 @@ export function ExampleConversationScreen({
             </details>
           </section>
 
-          <main className={styles.mobileChatArea}>
+          <main className={styles.mobileChatArea} ref={mobileMessagesRef}>
             <div className={styles.mobileTimestamp}>Today, 10:45 AM</div>
 
             {displayLines.map((line, index) => {
               const transcript = botState.userTranscripts[index];
               const isUser = line.speaker === 'user';
+              const lineTime = getLineTimestamp(line.id);
 
               return (
                 <div
@@ -424,7 +930,7 @@ export function ExampleConversationScreen({
                         isUser ? styles.mobileStampUser : styles.mobileStampAi
                       }
                     >
-                      {isUser ? t('you') : 'Elena'} • {t('justNow')}
+                      {isUser ? t('you') : aiDisplayName} • {lineTime}
                     </p>
                   </div>
 
@@ -464,14 +970,36 @@ export function ExampleConversationScreen({
           <footer className={styles.mobileBottomControls}>
             <div className={styles.mobileVoiceWrap}>
               <button
-                className={`${styles.mobileVoiceBtn} ${isListening ? styles.mobileVoiceBtnListening : ''}`}
+                className={`${styles.mobileVoiceBtn} ${isListening ? styles.mobileVoiceBtnListening : ''} ${voiceDetected ? styles.mobileVoiceBtnVoiceDetected : ''}`}
                 aria-label='Tap to speak'
                 onClick={isListening ? handleStopSpeaking : handleUserSpeak}
                 disabled={!canSpeak && !isListening}
               >
                 <span className='material-symbols-outlined'>mic</span>
               </button>
-              <p>{isListening ? t('stop') : t('tapToSpeak')}</p>
+
+              {isListening ? (
+                <>
+                  {/* Mini equalizer waveform */}
+                  <div className={styles.mobileWaveformRow}>
+                    {Array.from({ length: MOBILE_BARS }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`${styles.mobileWaveformBar} ${voiceDetected ? styles.waveActive : ''}`}
+                        ref={(node) => {
+                          mobileWaveBarsRef.current[i] = node;
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <span className={styles.mobileCountdownText}>
+                    {countdown}s
+                  </span>
+                  <p>{voiceDetected ? t('voiceDetected') : t('stop')}</p>
+                </>
+              ) : (
+                <p>{t('tapToSpeak')}</p>
+              )}
             </div>
 
             <div className={styles.mobileProgressWrap}>

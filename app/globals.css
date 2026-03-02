@@ -32,7 +32,6 @@ body {
   font-family: 'Be Vietnam Pro', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: max(884px, 100dvh);
 }
 
 a {

@@ -69,11 +69,16 @@ A web application that helps users practice English speaking through interactive
 | F2.3.8 | Show correct answer after 3 failed attempts | High |
 | F2.3.9 | Automatically continue to next line after success/show answer | High |
 | F2.3.10 | Provide encouraging feedback messages | Medium |
-| F2.3.11 | Auto-stop recording after 5 seconds of listening | High |
+| F2.3.11 | Stop recording after 2 seconds of user silence (silence-based endpoint) | High |
+| F2.3.11a | Initial no-speech timeout of 3 seconds before detecting voice | High |
 | F2.3.12 | Process interim speech results when Stop is clicked | High |
 | F2.3.13 | Display pulsing microphone animation during recording | High |
 | F2.3.14 | Show user transcript in message bubble after speaking | High |
 | F2.3.15 | Persist wrong answers in conversation history | High |
+| F2.3.16 | Display match feedback for 5 seconds | Medium |
+| F2.3.17 | Play/pause button per sentence for TTS playback | Medium |
+| F2.3.18 | Use natural female voice for AI TTS (neural/natural preferred) | Medium |
+| F2.3.19 | AI persona named "Mrs. Hoai Linh" with dedicated avatar | Low |
 
 ### 2.4 Voice Recording & Playback
 
@@ -121,8 +126,9 @@ A web application that helps users practice English speaking through interactive
 |----|-------------|--------|
 | NF3.1.1 | Page load time | < 2 seconds |
 | NF3.1.2 | Speech recognition response time | < 1 second |
-| NF3.1.2a | Speech recognition auto-stop timeout | 5 seconds |
-| NF3.1.2b | Stop button speech processing time | Immediate |
+| NF3.1.2a | Speech recognition silence-based stop | 2 seconds |
+| NF3.1.2b | Initial no-speech timeout | 3 seconds |
+| NF3.1.2c | Stop button speech processing time | Immediate |
 | NF3.1.3 | Text matching calculation | < 100ms |
 | NF3.1.4 | Audio merge processing | < 5 seconds |
 

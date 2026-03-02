@@ -49,6 +49,14 @@ Source: [Shared palette](https://imagecolorpicker.com/en/user/shared-palette?id=
 - Completion screen uses compact stats cards and audio playback block
 - CompletionPopup modal: fixed overlay `z-[1000]`, white card, check_circle icon, 3-column stats grid, overall score progress bar, two action buttons
 
+### Sentence audio buttons
+
+- 20×20px circular buttons inside message bubbles
+- AI bubbles: border `1px solid currentColor`, no background
+- User bubbles: white border and icon color
+- Play/pause toggle using Material Symbols (`play_arrow` / `pause`)
+- Positioned at bottom of bubble content
+
 ### Primary buttons
 
 - Background: `var(--color-primary)` (orange)
@@ -68,6 +76,35 @@ Source: [Shared palette](https://imagecolorpicker.com/en/user/shared-palette?id=
 - Press states: `active:scale-95`
 - Soft transitions: `transition-all` or `transition-transform`
 - Use Material Symbols for consistent icon style
+
+## Wave animation (Voice Recorder)
+
+- Desktop: 64 bars, gap 2px
+- Mobile: 50 bars
+- Running waveform effect: fills right-to-left, then scrolls
+- Real audio frequency-based visualization using AudioContext + AnalyserNode
+- Noise filtering with soft gate (`baseWaveLevel = 0.06`) and tail hold (150ms)
+- Frequency bands 2-12 mapped to voice range
+- Smooth envelope: 20% attack, 50% decay
+
+## AI voice configuration
+
+- Persona: "Mrs. Hoai Linh"
+- Avatar: `/ava_teacher.png`
+- Voice selection priority:
+  1. Natural/Neural female English voices (e.g., "Microsoft AvaMultilingual Online (Natural)")
+  2. Female voices with "Online" in name
+  3. Any female English voice
+  4. Fallback to default
+- Speech rate: 0.9 (slightly slower for clarity)
+- Pitch: 1.0
+
+### Message timestamps
+
+- Real locale-aware timestamps using `Intl.DateTimeFormat`
+- Vietnamese format example: "10:30 SA, 02 thg 3"
+- English format example: "10:30 AM, Mar 2"
+- No uppercase transformation
 
 ## Scope guardrails
 

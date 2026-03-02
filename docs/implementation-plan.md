@@ -32,6 +32,15 @@
 - [x] Remove difficulty badges from dashboard and scenarios cards
 - [x] Remove time badges from scenarios cards
 - [x] Unify primary button text color to white (`#fff`)
+- [x] Wave animation with real audio frequency visualization (64 bars, right-to-left running effect)
+- [x] Noise-filtered audio with soft gate and tail hold for English ending sounds
+- [x] Play/pause TTS button per sentence (inside message bubbles)
+- [x] Natural female voice selection helper (`lib/speechVoice.ts`)
+- [x] AI renamed to "Mrs. Hoai Linh" with avatar `/ava_teacher.png`
+- [x] Real locale-aware timestamps for messages (replaced hardcoded text)
+- [x] Silence-based speech endpoint detection (2s silence stop, replaces fixed 5s timeout)
+- [x] 5-second match feedback duration
+- [x] Removed answer box ("Đáp án đúng" component)
 - [ ] Add/restore reliable lint command compatible with current Next.js version
 - [ ] Add tests for text matching and state transitions
 

@@ -23,6 +23,8 @@ interface UseConversationBotProps {
   onComplete?: () => void;
 }
 
+const MATCH_FEEDBACK_DURATION_MS = 5000;
+
 export function useConversationBot({ conversation, onComplete }: UseConversationBotProps) {
   const [botState, setBotState] = useState<ConversationBotState>({
     state: 'idle',
@@ -142,7 +144,7 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
         // Move to next line after delay
         setTimeout(() => {
           moveToNextLine();
-        }, 1500);
+        }, MATCH_FEEDBACK_DURATION_MS);
       } else {
         // Failed - check retry count
         const newAttemptCount = botState.attemptCount + 1;
@@ -167,7 +169,7 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
           // Auto-proceed after showing answer
           setTimeout(() => {
             moveToNextLine();
-          }, 3000);
+          }, MATCH_FEEDBACK_DURATION_MS);
         } else {
           // Retry
           setBotState((prev) => ({
@@ -193,7 +195,7 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
             }));
             speechRecognition.reset();
             isProcessingRef.current = false;
-          }, 2000);
+          }, MATCH_FEEDBACK_DURATION_MS);
         }
       }
 
@@ -330,6 +332,34 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
     audioRecorder,
     speechRecognition,
     moveToNextLine,
+  ]);
+
+  // If no words are detected within 3 seconds, stop current capture but stay on the same user turn
+  useEffect(() => {
+    if (
+      !speechRecognition.silenceTimeoutReached ||
+      botState.state !== 'waiting_for_user' ||
+      isProcessingRef.current
+    ) {
+      return;
+    }
+
+    if (audioRecorder.isRecording) {
+      audioRecorder.stopRecording();
+    }
+
+    setBotState((prev) => ({
+      ...prev,
+      state: 'waiting_for_user',
+      matchingResult: null,
+    }));
+
+    speechRecognition.reset();
+  }, [
+    speechRecognition.silenceTimeoutReached,
+    botState.state,
+    audioRecorder,
+    speechRecognition,
   ]);
 
   // Reset conversation

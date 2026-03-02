@@ -226,11 +226,18 @@ export default function ScenariosPage() {
 
                   <div className={styles.cardBody}>
                     <h2 title={card.title}>{card.title}</h2>
-                    <p className={styles.cardDescription} title={card.description}>{card.description}</p>
+                    <p
+                      className={styles.cardDescription}
+                      title={card.description}
+                    >
+                      {card.description}
+                    </p>
                     <p className={styles.objectiveTitle}>{t('objectives')}</p>
                     <ul>
                       {card.objectives.map((objective) => (
-                        <li key={objective} title={objective}>{objective}</li>
+                        <li key={objective} title={objective}>
+                          {objective}
+                        </li>
                       ))}
                     </ul>
                     <div className={styles.startButtonWrap}>

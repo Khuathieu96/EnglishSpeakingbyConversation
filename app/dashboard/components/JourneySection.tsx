@@ -90,9 +90,7 @@ export function JourneySection() {
       return journeyScenarioItems;
     }
 
-    return journeyScenarioItems.filter(
-      (item) => item.badge === activeFilter,
-    );
+    return journeyScenarioItems.filter((item) => item.badge === activeFilter);
   }, [activeFilter]);
 
   const visibleItems = filteredItems.slice(0, 5);

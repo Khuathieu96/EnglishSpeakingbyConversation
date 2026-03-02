@@ -82,15 +82,20 @@ export function CompletionScreen({
             </div>
           </div>
 
-          <div className='mt-6 rounded-3xl border px-4 py-4 text-left'
+          <div
+            className='mt-6 rounded-3xl border px-4 py-4 text-left'
             style={{
               borderColor: 'rgba(20, 68, 145, 0.16)',
               backgroundColor: 'rgba(20, 68, 145, 0.06)',
             }}
           >
             <div className='mb-2 flex items-center justify-between text-sm font-semibold'>
-              <span style={{ color: 'var(--color-secondary)' }}>{t('overallScore')}</span>
-              <span style={{ color: 'var(--color-secondary)' }}>{t('excellent')}</span>
+              <span style={{ color: 'var(--color-secondary)' }}>
+                {t('overallScore')}
+              </span>
+              <span style={{ color: 'var(--color-secondary)' }}>
+                {t('excellent')}
+              </span>
             </div>
             <div className='h-2.5 w-full rounded-full bg-[rgba(20,68,145,0.2)]'>
               <div
@@ -109,7 +114,8 @@ export function CompletionScreen({
               className='h-14 w-full rounded-3xl text-white text-[30px] leading-[1] font-bold shadow-lg hover:opacity-95'
               style={{
                 backgroundColor: 'var(--color-primary)',
-                boxShadow: '0 10px 15px -3px rgba(252,108,2,0.22), 0 4px 6px -4px rgba(252,108,2,0.22)',
+                boxShadow:
+                  '0 10px 15px -3px rgba(252,108,2,0.22), 0 4px 6px -4px rgba(252,108,2,0.22)',
               }}
             >
               {t('practiceAgain')}

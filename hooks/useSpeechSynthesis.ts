@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { SPEECH_LANG, SPEECH_RATE, SPEECH_PITCH } from '@/lib/constants';
+import { configureUtteranceVoice } from '@/lib/speechVoice';
 
 interface SpeechSynthesisState {
   isSpeaking: boolean;
@@ -63,6 +64,7 @@ export function useSpeechSynthesis() {
       utterance.lang = SPEECH_LANG;
       utterance.rate = SPEECH_RATE;
       utterance.pitch = SPEECH_PITCH;
+      configureUtteranceVoice(utterance, synthRef.current.getVoices());
 
       utterance.onstart = () => {
         setState((prev) => ({ ...prev, isSpeaking: true, error: null }));

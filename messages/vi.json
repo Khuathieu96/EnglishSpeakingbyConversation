@@ -89,6 +89,7 @@
     "stop": "Dừng",
     "skip": "Bỏ qua",
     "attemptsRemaining": "Số lần thử còn lại: {count}",
+    "voiceDetected": "Đã phát hiện giọng nói",
     "phrases": "cụm từ",
     "lessonFocus": "Trọng tâm bài học",
     "aiTutor": "Gia sư AI",

@@ -30,9 +30,7 @@ export default function RootLayout({
         />
       </head>
       <body className='font-display'>
-        <LocaleProvider>
-          {children}
-        </LocaleProvider>
+        <LocaleProvider>{children}</LocaleProvider>
       </body>
     </html>
   );

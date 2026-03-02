@@ -40,6 +40,7 @@ export interface SpeechRecognitionState {
   isProcessing: boolean;
   error: string | null;
   result: SpeechRecognitionResult | null;
+  silenceTimeoutReached: boolean;
 }
 
 // Text matching

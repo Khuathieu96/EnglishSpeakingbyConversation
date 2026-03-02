@@ -4,8 +4,8 @@ export const MAX_RETRY_ATTEMPTS = 3; // Maximum attempts before showing answer
 
 // Speech configuration
 export const SPEECH_LANG = 'en-US';
-export const SPEECH_RATE = 0.9; // Slightly slower for clarity
-export const SPEECH_PITCH = 1.0;
+export const SPEECH_RATE = 0.92;
+export const SPEECH_PITCH = 0.95;
 
 // Recognition configuration
 export const RECOGNITION_CONFIG = {
