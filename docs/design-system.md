@@ -111,3 +111,35 @@ Source: [Shared palette](https://imagecolorpicker.com/en/user/shared-palette?id=
 - Reuse current Tailwind primitives and app tokens.
 - Avoid introducing new color systems or custom shadows outside existing style language.
 - Prefer minimal, clear UI over adding extra controls.
+
+## Session update summary (Mar 2026)
+
+### Feedback landing page
+
+- Added full `/feedback` route implementation with existing landing header/footer reuse.
+- Feedback image carousel now loads all assets dynamically from `public/feedbacks` via `GET /api/feedback-images`.
+- Student stories section supports auto-loop card motion and includes expanded sample stories.
+- Story form moved into the Student Success Stories section with required validation:
+  - Name: max 40 chars
+  - Achievement: max 40 chars
+  - Story: max 150 chars
+- Story submissions persist to `public/user-stories/student-success-stories.json` via `POST /api/user-stories`.
+- CTA block was redesigned to match provided Figma direction, with external target links and daily-reset countdown persistence using `localStorage`.
+
+### Completion flow and dialog
+
+- Conversation completion switched from full-page summary to modal popup overlay.
+- Popup uses portal rendering, high z-index fixed backdrop, and body scroll lock for reliable layering.
+- Completion dialog styling aligned with provided Figma sample dialog direction (white surface, primary color actions).
+- Added `Listen Again` behavior to replay conversation sequence using speech synthesis.
+
+### Internationalization updates
+
+- Implemented/extended `next-intl` coverage for feedback and conversation completion surfaces.
+- Removed remaining hardcoded labels in conversation UI areas touched during this session (avatar alts, aria labels, phrase/objective text, timestamps, matching labels).
+- Added missing locale keys in both English and Vietnamese message files, including completion playback toggle text.
+
+### Metadata and assets
+
+- App icon metadata set to use `logo.jpg`.
+- OpenGraph/Twitter preview metadata configured to `catalog_pic1.jpg`.

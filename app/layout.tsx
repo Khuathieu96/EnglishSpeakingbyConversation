@@ -10,6 +10,17 @@ export const metadata: Metadata = {
     shortcut: '/logo.jpg',
     apple: '/logo.jpg',
   },
+  openGraph: {
+    title: 'English Speaking Practice',
+    description: 'Practice English speaking with AI-guided conversations',
+    images: ['/catalog_pic1.jpg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'English Speaking Practice',
+    description: 'Practice English speaking with AI-guided conversations',
+    images: ['/catalog_pic1.jpg'],
+  },
 };
 
 export default function RootLayout({

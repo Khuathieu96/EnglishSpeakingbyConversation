@@ -4,6 +4,7 @@
     "home": "Trang chủ",
     "scenarios": "Thư viện hội thoại",
     "documentary": "Tài liệu",
+    "feedback": "Phản hồi",
     "startLearning": "Bắt đầu học"
   },
   "hero": {
@@ -101,7 +102,18 @@
     "libraryNav": "Thư viện",
     "objective1": "Sử dụng \"Nice to meet you\"",
     "objective2": "Đặt 3 câu hỏi tiếp nối",
-    "objective3": "Luyện thì hiện tại đơn"
+    "objective3": "Luyện thì hiện tại đơn",
+    "keyPhrase1": "How's it going?",
+    "keyPhrase2": "Pleasure to meet you",
+    "keyPhrase3": "What do you do for fun?",
+    "keyPhrase4": "Likewise!",
+    "keyPhrase5": "Nice to meet you too",
+    "aiDisplayName": "Mrs. Hoai Linh",
+    "tutorAvatarAlt": "Ảnh đại diện gia sư",
+    "aiAvatarAlt": "Ảnh đại diện AI",
+    "userAvatarAlt": "Ảnh đại diện người dùng",
+    "sentenceAudioAria": "Phát hoặc tạm dừng âm thanh câu nói",
+    "mobileTimestamp": "Hôm nay, 10:45 SA"
   },
   "chat": {
     "processing": "Đang xử lý giọng nói...",
@@ -128,7 +140,7 @@
   },
   "completion": {
     "title": "Chúc mừng!",
-    "wellDone": "Làm tốt lắm, Alex!",
+    "wellDone": "Làm tốt lắm",
     "finished": "Hoàn thành hội thoại",
     "subtitle": "Bạn đã hoàn thành \"{title}\"",
     "sentences": "Số câu",
@@ -142,7 +154,8 @@
     "perfectLines": "Câu hoàn hảo",
     "retriesUsed": "Số lần thử lại",
     "averageMatch": "Điểm khớp TB",
-    "listenRecording": "🔊 Nghe lại bản ghi âm",
+    "listenRecording": "Nghe lại bản ghi âm",
+    "pause": "Tạm dừng",
     "restart": "🔄 Làm lại",
     "backToList": "📋 Về danh sách"
   },
@@ -159,6 +172,56 @@
     "almost": "Gần đạt rồi! Thử lại nhé.",
     "notQuite": "Chưa đúng lắm. Thử lại lần nữa!",
     "tryAgain": "Hãy thử lại câu đó. Từ từ thôi."
+  },
+  "feedbackPage": {
+    "hero": {
+      "badge": "Khai phá tiềm năng của bạn",
+      "titlePrefix": "Góc",
+      "titleHighlight": "Học viên",
+      "description": "Tham gia cùng hơn 5.000 học viên thành công tại SEC English. Lộ trình cá nhân hóa và môi trường học thực chiến giúp bạn cải thiện tiếng Anh rõ rệt.",
+      "cta": "Bắt đầu học thử miễn phí"
+    },
+    "feedbackSection": {
+      "title": "Phản hồi học viên",
+      "previousAriaLabel": "Xem phản hồi trước",
+      "nextAriaLabel": "Xem phản hồi tiếp theo",
+      "cardImageAlt": "Thẻ phản hồi học viên"
+    },
+    "stories": {
+      "title": "Câu chuyện thành công của học viên",
+      "subtitle": "Phản hồi thực tế từ học viên đã đạt mục tiêu nhờ phương pháp học đặc trưng của SEC English."
+    },
+    "form": {
+      "title": "Chia sẻ câu chuyện thành công",
+      "subtitle": "Truyền cảm hứng cho cộng đồng bằng thành quả của bạn.",
+      "fullNameLabel": "Họ và tên",
+      "fullNamePlaceholder": "Nguyễn Văn A",
+      "achievementLabel": "Thành tích tiếng Anh",
+      "achievementPlaceholder": "Ví dụ: IELTS 8.5",
+      "storyLabel": "Câu chuyện của bạn",
+      "storyPlaceholder": "Hãy chia sẻ hành trình học cùng SEC English...",
+      "submitButton": "Gửi câu chuyện",
+      "submitting": "Đang gửi...",
+      "submitSuccess": "Cảm ơn bạn! Câu chuyện của bạn đã được chia sẻ thành công.",
+      "submitError": "Hiện chưa thể lưu câu chuyện. Vui lòng thử lại sau."
+    },
+    "offer": {
+      "imageAlt": "Ảnh giảng viên",
+      "title": "Ưu đãi học phí 40%",
+      "line1Prefix": "Tặng bộ từ, video chuẩn hóa âm trị giá",
+      "line1Value": "2,7 triệu",
+      "line2Prefix": "Tặng khóa 8 buổi luyện âm online/off trị giá",
+      "line2Value": "1,2 triệu",
+      "topButton": "NHẬN ƯU ĐÃI",
+      "headline": "CHINH PHỤC TIẾNG ANH CHỈ VỚI 3 CÔNG THỨC",
+      "mainButton": "NHẬN ƯU ĐÃI NGAY",
+      "timer": {
+        "day": "NGÀY",
+        "hour": "GIỜ",
+        "min": "PHÚT",
+        "sec": "GIÂY"
+      }
+    }
   },
   "audio": {
     "pause": "⏸️ Tạm dừng",

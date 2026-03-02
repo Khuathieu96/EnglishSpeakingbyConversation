@@ -14,6 +14,7 @@ export function TopNav() {
   const isHome = pathname === '/';
   const isScenarios = pathname === '/scenarios';
   const isDocumentary = pathname === '/documentary';
+  const isFeedback = pathname === '/feedback';
 
   return (
     <header className={styles.topNavWrap}>
@@ -41,6 +42,12 @@ export function TopNav() {
             className={isDocumentary ? styles.activeLink : styles.navLink}
           >
             {t('documentary')}
+          </Link>
+          <Link
+            href='/feedback'
+            className={isFeedback ? styles.activeLink : styles.navLink}
+          >
+            {t('feedback')}
           </Link>
         </nav>
 

@@ -4,6 +4,7 @@
     "home": "Home",
     "scenarios": "Scenarios",
     "documentary": "Documentary",
+    "feedback": "Feedback",
     "startLearning": "Start Learning"
   },
   "hero": {
@@ -101,7 +102,18 @@
     "libraryNav": "Library",
     "objective1": "Use \"Nice to meet you\"",
     "objective2": "Ask 3 follow-up questions",
-    "objective3": "Practice present simple tense"
+    "objective3": "Practice present simple tense",
+    "keyPhrase1": "How's it going?",
+    "keyPhrase2": "Pleasure to meet you",
+    "keyPhrase3": "What do you do for fun?",
+    "keyPhrase4": "Likewise!",
+    "keyPhrase5": "Nice to meet you too",
+    "aiDisplayName": "Mrs. Hoai Linh",
+    "tutorAvatarAlt": "Tutor avatar",
+    "aiAvatarAlt": "AI avatar",
+    "userAvatarAlt": "User avatar",
+    "sentenceAudioAria": "Play or pause sentence audio",
+    "mobileTimestamp": "Today, 10:45 AM"
   },
   "chat": {
     "processing": "Processing your speech...",
@@ -128,7 +140,7 @@
   },
   "completion": {
     "title": "Congratulations!",
-    "wellDone": "Well Done, Alex!",
+    "wellDone": "Well Done",
     "finished": "Conversation Finished",
     "subtitle": "You completed \"{title}\"",
     "sentences": "Sentences",
@@ -143,6 +155,7 @@
     "retriesUsed": "Retries Used",
     "averageMatch": "Average Match",
     "listenRecording": "🔊 Listen to Your Recording",
+    "pause": "Pause",
     "restart": "🔄 Restart",
     "backToList": "📋 Back to List"
   },
@@ -159,6 +172,56 @@
     "almost": "Almost there! Try again.",
     "notQuite": "Not quite. Give it another try!",
     "tryAgain": "Let's try that again. Take your time."
+  },
+  "feedbackPage": {
+    "hero": {
+      "badge": "Unlock Your Potential",
+      "titlePrefix": "Student",
+      "titleHighlight": "Showcase",
+      "description": "Join 5,000+ successful students at SEC English. Our personalized coaching and immersive environment guarantee results for global English learners.",
+      "cta": "Start Free Trial Today"
+    },
+    "feedbackSection": {
+      "title": "Student Feedback",
+      "previousAriaLabel": "Previous feedbacks",
+      "nextAriaLabel": "Next feedbacks",
+      "cardImageAlt": "Student feedback card"
+    },
+    "stories": {
+      "title": "Student Success Stories",
+      "subtitle": "Real feedback from real students who achieved their dream scores with our unique methodology."
+    },
+    "form": {
+      "title": "Share Your Success Story",
+      "subtitle": "Inspire the community with your achievements.",
+      "fullNameLabel": "Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "achievementLabel": "English Achievement",
+      "achievementPlaceholder": "e.g., IELTS 8.5",
+      "storyLabel": "Your Story",
+      "storyPlaceholder": "Tell us about your journey with SEC English...",
+      "submitButton": "Submit My Story",
+      "submitting": "Submitting...",
+      "submitSuccess": "Thank you! Your story has been shared successfully.",
+      "submitError": "Could not save your story right now. Please try again."
+    },
+    "offer": {
+      "imageAlt": "Teacher profile",
+      "title": "40% Tuition Offer",
+      "line1Prefix": "Receive vocabulary and pronunciation videos worth",
+      "line1Value": "2.7 million",
+      "line2Prefix": "Receive 8 online/offline pronunciation sessions worth",
+      "line2Value": "1.2 million",
+      "topButton": "GET OFFER",
+      "headline": "MASTER ENGLISH WITH JUST 3 FORMULAS",
+      "mainButton": "CLAIM OFFER NOW",
+      "timer": {
+        "day": "DAY",
+        "hour": "HOUR",
+        "min": "MIN",
+        "sec": "SEC"
+      }
+    }
   },
   "audio": {
     "pause": "⏸️ Pause",

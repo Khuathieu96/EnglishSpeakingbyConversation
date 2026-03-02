@@ -1,0 +1,751 @@
+.page {
+  min-height: 100vh;
+  background: #f9fafb;
+  color: #111827;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.main {
+  padding-top: 69px;
+}
+
+.heroSection {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+  padding: 80px 24px 64px;
+}
+
+.heroBadge {
+  background: color-mix(in srgb, var(--color-secondary) 14%, white);
+  color: var(--color-secondary);
+  border-radius: 9999px;
+  padding: 6px 16px;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: 64px;
+  line-height: 72px;
+  font-weight: 800;
+  letter-spacing: -1.3px;
+}
+
+.heroTitle span {
+  color: var(--color-secondary);
+}
+
+.heroDescription {
+  margin: 0;
+  max-width: 680px;
+  color: #4b5563;
+  font-size: 20px;
+  line-height: 32px;
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+.primaryButton,
+.secondaryButton,
+.ctaButton {
+  border: 0;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.primaryButton {
+  background: var(--color-secondary);
+  color: #fff;
+  box-shadow: 0 10px 15px -3px rgba(20, 68, 145, 0.2),
+    0 4px 6px -4px rgba(20, 68, 145, 0.2);
+}
+
+.secondaryButton {
+  background: #fff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.feedbackSection {
+  padding: 64px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  align-items: center;
+}
+
+.feedbackSection h2,
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.carouselWrap {
+  width: 100%;
+  max-width: 1280px;
+  position: relative;
+  padding: 0 16px;
+}
+
+.carouselTrack {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 0;
+}
+
+.carouselTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.feedbackCard {
+  width: calc((100% - 48px) / 3);
+  min-width: calc((100% - 48px) / 3);
+  height: 430px;
+  background: #fff;
+  border: 1px solid #f3f4f6;
+  border-radius: 16px;
+  padding: 1px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.feedbackCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.carouselArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  border: 0;
+  background: #fff;
+  color: #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+
+.leftArrow {
+  left: 8px;
+}
+
+.rightArrow {
+  right: 8px;
+}
+
+.storiesSection {
+  background: #fff;
+  padding: 96px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  align-items: center;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.sectionHeader p {
+  margin: 0;
+  max-width: 672px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.storiesLoopViewport {
+  width: 100%;
+  max-width: 1280px;
+  overflow: hidden;
+}
+
+.storiesLoopTrack {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  animation: storiesLoop 42s linear infinite reverse;
+}
+
+.storyCard {
+  width: 374px;
+  min-width: 374px;
+  min-height: 300px;
+  border: 1px solid #f3f4f6;
+  background: #f9fafb;
+  border-radius: 24px;
+  padding: 33px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.storyRating {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.storyQuote {
+  margin: 0;
+  color: #374151;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.storyAuthor {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+  margin-top: auto;
+}
+
+@keyframes storiesLoop {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .storiesLoopTrack {
+    animation: none;
+  }
+}
+
+.storyAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-secondary) 22%, white);
+  color: var(--color-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.storyName {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+}
+
+.storyAchievement {
+  margin: 0;
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
+.formCard {
+  width: 100%;
+  max-width: 768px;
+  border-radius: 32px;
+  background: #fff;
+  box-shadow: 0 25px 50px -12px rgba(229, 231, 235, 0.5);
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-top: 16px;
+}
+
+.storyForm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.rowInputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formField span {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.formField input,
+.formField textarea {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 15px 17px;
+  font-size: 16px;
+  line-height: 24px;
+  font-family: inherit;
+  color: #111827;
+  outline: none;
+}
+
+.formField input:focus,
+.formField textarea:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-secondary) 20%, transparent);
+}
+
+.formField textarea {
+  min-height: 124px;
+  resize: vertical;
+}
+
+.submitSuccess,
+.submitError {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.submitSuccess {
+  color: var(--color-primary);
+}
+
+.submitError {
+  color: #dc2626;
+}
+
+.storyForm button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.ctaSection {
+  padding: 0 24px 80px;
+}
+
+.offerCard {
+  max-width: 1280px;
+  margin: 0 auto;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 26px 40px -24px rgba(0, 0, 0, 0.35);
+  background: var(--color-surface);
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.offerTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 34px 48px 30px;
+  background: color-mix(in srgb, var(--color-bg) 86%, white);
+}
+
+.offerInfo {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.offerAvatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.offerTitle {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 800;
+}
+
+.offerLine {
+  margin: 4px 0 0;
+  color: #1f2937;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+.offerLine span {
+  color: var(--color-primary);
+}
+
+.offerTopButton,
+.offerMainButton {
+  border-radius: 9999px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.offerTopButton {
+  min-width: 154px;
+  height: 46px;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-size: 18px;
+  line-height: 24px;
+  box-shadow: 0 10px 14px -8px rgba(0, 0, 0, 0.25);
+}
+
+.offerMainArea {
+  background: var(--color-primary);
+  padding: 48px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 42px;
+}
+
+.offerTimer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.offerTimeUnit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.offerTimeValue {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 32px;
+  line-height: 64px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.offerTimeLabel {
+  color: var(--color-surface);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+.offerHeadlineBox {
+  width: min(100%, 920px);
+  border-radius: 18px;
+  background: var(--color-surface);
+  padding: 34px 24px;
+  box-shadow: 0 16px 24px -16px rgba(0, 0, 0, 0.35);
+}
+
+.offerHeadlineBox h3 {
+  margin: 0;
+  color: var(--color-primary);
+  text-align: center;
+  font-size: clamp(24px, 2.8vw, 40px);
+  line-height: 1.12;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+
+.offerMainButton {
+  min-width: 248px;
+  height: 54px;
+  padding: 0 24px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 22px;
+  line-height: 28px;
+}
+
+@media (max-width: 1279px) {
+  .heroTitle {
+    font-size: 56px;
+    line-height: 64px;
+  }
+
+  .storiesLoopTrack {
+    animation-duration: 36s;
+  }
+
+  .ctaSection {
+    padding: 0 24px 64px;
+  }
+
+  .offerTitle {
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  .offerLine {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .offerTopButton {
+    min-width: 146px;
+    height: 44px;
+    font-size: 17px;
+    line-height: 22px;
+  }
+
+  .offerMainButton {
+    min-width: 236px;
+    font-size: 21px;
+    line-height: 26px;
+  }
+}
+
+@media (max-width: 991px) {
+  .heroSection {
+    padding: 64px 16px 48px;
+  }
+
+  .heroTitle {
+    font-size: 44px;
+    line-height: 52px;
+  }
+
+  .heroDescription {
+    font-size: 18px;
+    line-height: 30px;
+  }
+
+  .heroActions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .feedbackSection {
+    gap: 32px;
+    padding: 48px 0;
+  }
+
+  .feedbackCard {
+    width: calc((100% - 24px) / 2);
+    min-width: calc((100% - 24px) / 2);
+    height: 380px;
+  }
+
+  .storiesSection {
+    padding: 64px 16px;
+    gap: 40px;
+  }
+
+  .storyCard {
+    width: 320px;
+    min-width: 320px;
+  }
+
+  .rowInputs {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .formCard {
+    border-radius: 24px;
+    padding: 28px 20px;
+  }
+
+  .ctaSection {
+    padding: 0 16px 56px;
+  }
+
+  .offerTopBar {
+    padding: 22px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .offerTopButton {
+    align-self: flex-end;
+  }
+
+  .offerTitle {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .offerLine {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .offerMainArea {
+    padding: 34px 18px;
+    gap: 28px;
+  }
+
+  .offerTimer {
+    gap: 12px;
+  }
+
+  .offerTimeValue {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+    line-height: 56px;
+  }
+
+  .offerTimeLabel {
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .offerMainButton {
+    min-width: 220px;
+    height: 50px;
+    font-size: 18px;
+    line-height: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .storiesLoopTrack {
+    gap: 16px;
+    animation-duration: 30s;
+  }
+
+  .storyCard {
+    width: 280px;
+    min-width: 280px;
+    min-height: 280px;
+    padding: 24px;
+  }
+
+  .feedbackCard {
+    width: 280px;
+    min-width: 280px;
+    height: 300px;
+  }
+
+  .carouselArrow {
+    display: none;
+  }
+
+  .feedbackSection h2,
+  .sectionHeader h2 {
+    font-size: 30px;
+    line-height: 36px;
+  }
+
+  .offerInfo {
+    gap: 12px;
+  }
+
+  .offerAvatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .offerTitle {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  .offerLine {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .offerTopButton {
+    min-width: 128px;
+    height: 40px;
+    font-size: 15px;
+    line-height: 20px;
+  }
+
+  .offerTimer {
+    gap: 8px;
+  }
+
+  .offerTimeValue {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    font-size: 24px;
+    line-height: 50px;
+  }
+
+  .offerTimeLabel {
+    font-size: 10px;
+    line-height: 14px;
+  }
+
+  .offerHeadlineBox {
+    border-radius: 14px;
+    padding: 20px 16px;
+  }
+
+  .offerMainButton {
+    min-width: 186px;
+    height: 42px;
+    font-size: 16px;
+    line-height: 20px;
+  }
+}

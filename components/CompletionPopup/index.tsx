@@ -1,18 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
+import sampleStyles from './CompletionPopup.module.css';
 
 interface CompletionPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  userName?: string;
   statistics: {
     totalSentences: number;
     completedSentences: number;
     retries: number;
     fluency: number;
   };
+  onListenAgain?: () => void;
+  isListeningAgain?: boolean;
   onPracticeAgain?: () => void;
   onBackToScenarios?: () => void;
 }
@@ -20,127 +23,126 @@ interface CompletionPopupProps {
 export function CompletionPopup({
   isOpen,
   onClose,
-  userName = 'Alex',
   statistics,
+  onListenAgain,
+  isListeningAgain = false,
   onPracticeAgain,
   onBackToScenarios,
 }: CompletionPopupProps) {
   const t = useTranslations('completion');
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) {
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || !isOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen, mounted]);
+
+  if (!isOpen || !mounted) {
     return null;
   }
 
   const progressPercent = Math.max(0, Math.min(100, statistics.fluency));
 
-  return (
-    <div className='fixed inset-0 z-[1000] flex items-center justify-center bg-slate-800/40 p-4'>
-      <div className='relative w-full max-w-[540px] overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-2xl'>
-        <button
-          aria-label='Close completion popup'
-          onClick={onClose}
-          className='absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100'
-        >
-          <span className='material-symbols-outlined'>close</span>
-        </button>
-
-        <div className='px-8 pb-8 pt-10 text-center'>
-          <div
-            className='mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full'
-            style={{ backgroundColor: 'rgba(20, 68, 145, 0.1)' }}
-          >
-            <span
-              className='material-symbols-outlined text-5xl'
-              style={{ color: 'var(--color-secondary)' }}
-            >
-              check_circle
-            </span>
+  const modalContent = (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 2147483647,
+        backgroundColor: 'rgba(148, 153, 164, 0.92)',
+        overflowY: 'auto',
+        padding: '20px',
+        isolation: 'isolate',
+      }}
+    >
+      <div className='flex min-h-full items-center justify-center'>
+        <section className={sampleStyles.dialog} aria-label='Completion dialog'>
+          <div className={sampleStyles.iconShell}>
+            <div className={sampleStyles.iconCircle}>
+              <span className='material-symbols-outlined'>check</span>
+            </div>
           </div>
 
-          <h2 className='text-[52px] font-bold leading-[1.02] tracking-[-0.03em] text-slate-900'>
-            {t('wellDone', { name: userName })}
-          </h2>
-          <p className='mt-2 text-[36px] font-semibold leading-tight text-slate-500'>
-            {t('finished')}
-          </p>
+          <h2 className={sampleStyles.title}>{t('wellDone')}</h2>
+          <p className={sampleStyles.subtitle}>{t('finished')}</p>
 
-          <div className='mt-7 grid grid-cols-3 gap-3'>
-            <div className='rounded-3xl border border-slate-200 bg-slate-50 py-4'>
-              <p className='text-xs font-semibold uppercase tracking-[0.08em] text-slate-500'>
-                {t('sentences')}
-              </p>
-              <p className='mt-1 text-[34px] font-bold leading-9 text-slate-900'>
+          <div className={sampleStyles.statsGrid}>
+            <article className={sampleStyles.statCard}>
+              <span className={`material-symbols-outlined ${sampleStyles.statIcon}`}>
+                chat
+              </span>
+              <p className={sampleStyles.statLabel}>{t('sentences')}</p>
+              <p className={sampleStyles.statValue}>
                 {statistics.completedSentences}/{statistics.totalSentences}
               </p>
-            </div>
-            <div className='rounded-3xl border border-slate-200 bg-slate-50 py-4'>
-              <p className='text-xs font-semibold uppercase tracking-[0.08em] text-slate-500'>
-                {t('retries')}
-              </p>
-              <p className='mt-1 text-[34px] font-bold leading-9 text-slate-900'>
-                {statistics.retries}
-              </p>
-            </div>
-            <div className='rounded-3xl border border-slate-200 bg-slate-50 py-4'>
-              <p className='text-xs font-semibold uppercase tracking-[0.08em] text-slate-500'>
-                {t('fluency')}
-              </p>
-              <p className='mt-1 text-[34px] font-bold leading-9 text-slate-900'>
-                {statistics.fluency}%
-              </p>
-            </div>
-          </div>
+            </article>
 
-          <div
-            className='mt-6 rounded-3xl border px-4 py-4 text-left'
-            style={{
-              borderColor: 'rgba(20, 68, 145, 0.16)',
-              backgroundColor: 'rgba(20, 68, 145, 0.06)',
-            }}
-          >
-            <div className='mb-2 flex items-center justify-between text-sm font-semibold'>
-              <span style={{ color: 'var(--color-secondary)' }}>
-                {t('overallScore')}
+            <article className={sampleStyles.statCard}>
+              <span className={`material-symbols-outlined ${sampleStyles.statIcon}`}>
+                autorenew
               </span>
-              <span style={{ color: 'var(--color-secondary)' }}>
-                {t('excellent')}
+              <p className={sampleStyles.statLabel}>{t('retries')}</p>
+              <p className={sampleStyles.statValue}>{statistics.retries}</p>
+            </article>
+
+            <article className={sampleStyles.statCard}>
+              <span className={`material-symbols-outlined ${sampleStyles.statIcon}`}>
+                flash_on
               </span>
-            </div>
-            <div className='h-2.5 w-full rounded-full bg-[rgba(20,68,145,0.2)]'>
-              <div
-                className='h-full rounded-full'
-                style={{
-                  width: `${progressPercent}%`,
-                  backgroundColor: 'var(--color-secondary)',
-                }}
-              />
-            </div>
+              <p className={sampleStyles.statLabel}>{t('fluency')}</p>
+              <p className={sampleStyles.statValue}>{statistics.fluency}%</p>
+            </article>
           </div>
 
-          <div className='mt-8 flex flex-col gap-3'>
-            <button
-              onClick={onPracticeAgain ?? onClose}
-              className='h-14 w-full rounded-3xl text-[34px] font-bold leading-none text-white'
-              style={{
-                backgroundColor: 'var(--color-secondary)',
-                boxShadow:
-                  '0 10px 15px -3px rgba(20,68,145,0.22), 0 4px 6px -4px rgba(20,68,145,0.22)',
-              }}
-            >
-              {t('practiceAgain')}
-            </button>
+          <section className={sampleStyles.scorePanel}>
+            <div className={sampleStyles.scoreHeader}>
+              <span>{t('overallScore')}</span>
+              <span>{t('excellent')}</span>
+            </div>
+            <div className={sampleStyles.scoreTrack}>
+              <div className={sampleStyles.scoreFill} style={{ width: `${progressPercent}%` }} />
+            </div>
+          </section>
 
+          {onListenAgain ? (
             <button
-              onClick={onBackToScenarios ?? onClose}
-              className='h-14 w-full rounded-3xl bg-slate-100 text-[34px] font-bold leading-none text-slate-700'
+              type='button'
+              className={sampleStyles.listenBtn}
+              onClick={onListenAgain}
             >
-              {t('backToScenarios')}
+              <span className='material-symbols-outlined'>volume_up</span>
+              {isListeningAgain ? t('pause') : t('listenRecording')}
             </button>
-          </div>
-        </div>
+          ) : null}
 
-        <div className='h-1.5 w-full bg-gradient-to-r from-[rgba(20,68,145,0.3)] via-[#144491] to-[rgba(20,68,145,0.3)]' />
+          <button type='button' className={sampleStyles.primaryBtn} onClick={onPracticeAgain ?? onClose}>
+            <span className='material-symbols-outlined'>autorenew</span>
+            {t('practiceAgain')}
+          </button>
+
+          <button type='button' className={sampleStyles.secondaryBtn} onClick={onBackToScenarios ?? onClose}>
+            <span className='material-symbols-outlined'>library_books</span>
+            {t('backToScenarios')}
+          </button>
+
+          <div className={sampleStyles.bottomLine} />
+        </section>
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

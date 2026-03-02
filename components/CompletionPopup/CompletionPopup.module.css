@@ -1,0 +1,177 @@
+.dialog {
+  width: 360px;
+  border-radius: 18px;
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text) 8%, white);
+  box-shadow: 0 24px 40px -22px rgba(0, 0, 0, 0.45);
+  padding: 30px 24px 22px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.iconShell {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 18px;
+  border-radius: 9999px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--color-primary) 14%, white);
+}
+
+.iconCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  border: 3px solid var(--color-primary);
+  display: grid;
+  place-items: center;
+}
+
+.iconCircle span {
+  font-size: 20px;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.title {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 90%, #0f172a);
+  font-size: 41px;
+  line-height: 43px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: color-mix(in srgb, var(--color-text) 55%, white);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.statsGrid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.statCard {
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 7%, white);
+  background: color-mix(in srgb, var(--color-bg) 75%, white);
+  padding: 10px 6px 12px;
+}
+
+.statIcon {
+  font-size: 16px;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.statLabel {
+  margin: 6px 0 0;
+  color: color-mix(in srgb, var(--color-text) 55%, white);
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.statValue {
+  margin: 8px 0 0;
+  color: color-mix(in srgb, var(--color-text) 90%, #0f172a);
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.scorePanel {
+  margin-top: 18px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, white);
+  background: color-mix(in srgb, var(--color-primary) 10%, white);
+  padding: 12px 12px 10px;
+  text-align: left;
+}
+
+.scoreHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.scoreTrack {
+  height: 8px;
+  width: 100%;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-primary) 24%, white);
+}
+
+.scoreFill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--color-primary);
+}
+
+.primaryBtn,
+.listenBtn,
+.secondaryBtn {
+  margin-top: 12px;
+  width: 100%;
+  border: 0;
+  border-radius: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.listenBtn {
+  height: 42px;
+  background: color-mix(in srgb, var(--color-primary) 14%, white);
+  color: var(--color-primary);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.primaryBtn {
+  height: 42px;
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.secondaryBtn {
+  height: 42px;
+  background: color-mix(in srgb, var(--color-bg) 80%, white);
+  color: color-mix(in srgb, var(--color-text) 80%, white);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.primaryBtn span,
+.secondaryBtn span {
+  font-size: 16px;
+}
+
+.bottomLine {
+  height: 4px;
+  width: calc(100% + 48px);
+  margin: 20px -24px -22px;
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-primary) 35%, white),
+    var(--color-primary),
+    color-mix(in srgb, var(--color-primary) 35%, white)
+  );
+}

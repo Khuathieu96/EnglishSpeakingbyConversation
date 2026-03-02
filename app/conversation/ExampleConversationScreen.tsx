@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import styles from './conversation.module.css';
 import { conversations, getConversationById } from '@/data/conversations';
 import { useConversationBot } from '@/hooks/useConversationBot';
-import { CompletionScreen } from '@/components/CompletionScreen';
+import { CompletionPopup } from '@/components/CompletionPopup';
 import { BrowserWarning } from '@/components/BrowserWarning';
 import { AppHeader } from '@/app/dashboard/components/AppHeader';
 import { configureUtteranceVoice } from '@/lib/speechVoice';
@@ -15,21 +15,6 @@ import { dashboardAssets } from '@/app/dashboard/dashboardData';
 const desktopUserImage = dashboardAssets.avatar;
 const desktopAiImage = '/ava_teacher.png';
 const mobileTutorImage = '/ava_teacher.png';
-const aiDisplayName = 'Mrs. Hoai Linh';
-
-const lessonObjectives = [
-  { label: 'Use "Nice to meet you"', done: true },
-  { label: 'Ask 3 follow-up questions', done: false },
-  { label: 'Practice present simple tense', done: false },
-];
-
-const keyPhrases = [
-  "How's it going?",
-  'Pleasure to meet you',
-  'What do you do for fun?',
-  'Likewise!',
-  'Nice to meet you too',
-];
 
 interface ExampleConversationScreenProps {
   conversationId?: string;
@@ -44,9 +29,29 @@ export function ExampleConversationScreen({
   const [isSentenceAudioPaused, setIsSentenceAudioPaused] = useState(false);
   const locale = useLocale();
   const t = useTranslations('conversation');
-  const tChat = useTranslations('chat');
+  const aiDisplayName = t('aiDisplayName');
+  const lessonObjectives = useMemo(
+    () => [
+      { label: t('objective1'), done: true },
+      { label: t('objective2'), done: false },
+      { label: t('objective3'), done: false },
+    ],
+    [t],
+  );
+  const keyPhrases = useMemo(
+    () => [
+      t('keyPhrase1'),
+      t('keyPhrase2'),
+      t('keyPhrase3'),
+      t('keyPhrase4'),
+      t('keyPhrase5'),
+    ],
+    [t],
+  );
   const sentenceUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const lineTimestampRef = useRef<Record<string, string>>({});
+  const replayCancelledRef = useRef(false);
+  const [isReplayPlaying, setIsReplayPlaying] = useState(false);
 
   const {
     botState,
@@ -564,18 +569,95 @@ export function ExampleConversationScreen({
 
   const isAiSpeakingNow = botState.state === 'ai_speaking';
 
-  if (botState.conversationComplete) {
-    return (
-      <CompletionScreen
-        conversationTitle={conversation.title}
-        statistics={botState.statistics}
-        onRestart={() => {
-          reset();
-          setHasStarted(false);
-        }}
-      />
-    );
-  }
+  const completionFluency =
+    botState.statistics.totalLines > 0
+      ? Math.round(
+          ((botState.statistics.perfectLines +
+            (botState.statistics.completedLines -
+              botState.statistics.perfectLines) *
+              0.85) /
+            botState.statistics.totalLines) *
+            100,
+        )
+      : 0;
+
+  const handleRestartConversation = () => {
+    replayCancelledRef.current = true;
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsReplayPlaying(false);
+    reset();
+    setHasStarted(false);
+  };
+
+  const replayLines = useMemo(
+    () =>
+      conversation.lines
+        .map((line, index) => {
+          if (line.speaker === 'user') {
+            return {
+              ...line,
+              text: botState.userTranscripts[index] ?? line.text,
+            };
+          }
+
+          return line;
+        })
+        .filter((line) => line.text.trim().length > 0),
+    [conversation.lines, botState.userTranscripts],
+  );
+
+  const stopReplay = useCallback(() => {
+    replayCancelledRef.current = true;
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsReplayPlaying(false);
+  }, []);
+
+  const handleListenAgain = useCallback(async () => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) {
+      return;
+    }
+
+    if (isReplayPlaying) {
+      stopReplay();
+      return;
+    }
+
+    replayCancelledRef.current = false;
+    setIsReplayPlaying(true);
+
+    const synth = window.speechSynthesis;
+    synth.cancel();
+
+    for (const line of replayLines) {
+      if (replayCancelledRef.current) {
+        break;
+      }
+
+      await new Promise<void>((resolve) => {
+        const utterance = new SpeechSynthesisUtterance(line.text);
+        utterance.lang = 'en-US';
+        utterance.rate = line.speaker === 'ai' ? 0.9 : 0.95;
+        utterance.pitch = line.speaker === 'ai' ? 1 : 1.05;
+        utterance.volume = 1;
+        configureUtteranceVoice(utterance, synth.getVoices());
+        utterance.onend = () => resolve();
+        utterance.onerror = () => resolve();
+        synth.speak(utterance);
+      });
+    }
+
+    setIsReplayPlaying(false);
+  }, [isReplayPlaying, replayLines, stopReplay]);
+
+  useEffect(() => {
+    return () => {
+      stopReplay();
+    };
+  }, [stopReplay]);
 
   return (
     <>
@@ -635,7 +717,7 @@ export function ExampleConversationScreen({
               <div className={styles.desktopChatHeader}>
                 <div className={styles.tutorWrap}>
                   <div className={styles.tutorAvatarWrap}>
-                    <img src={mobileTutorImage} alt='Tutor avatar' />
+                    <img src={mobileTutorImage} alt={t('tutorAvatarAlt')} />
                     <span className={styles.onlineDot} />
                   </div>
                   <div>
@@ -672,7 +754,7 @@ export function ExampleConversationScreen({
                       {!isUser && (
                         <img
                           src={desktopAiImage}
-                          alt='AI avatar'
+                          alt={t('aiAvatarAlt')}
                           className={styles.messageAvatar}
                         />
                       )}
@@ -692,7 +774,7 @@ export function ExampleConversationScreen({
                                 onClick={() =>
                                   handleSentenceAudioToggle(line.id, sentenceText)
                                 }
-                                aria-label='Play or pause sentence audio'
+                                aria-label={t('sentenceAudioAria')}
                                 disabled={isAiSpeakingNow}
                               >
                                 <span className='material-symbols-outlined'>
@@ -711,7 +793,7 @@ export function ExampleConversationScreen({
                                 onClick={() =>
                                   handleSentenceAudioToggle(line.id, sentenceText)
                                 }
-                                aria-label='Play or pause sentence audio'
+                                aria-label={t('sentenceAudioAria')}
                                 disabled={isAiSpeakingNow}
                               >
                                 <span className='material-symbols-outlined'>
@@ -731,7 +813,7 @@ export function ExampleConversationScreen({
                       {isUser && (
                         <img
                           src={desktopUserImage}
-                          alt='User avatar'
+                          alt={t('userAvatarAlt')}
                           className={styles.messageAvatar}
                         />
                       )}
@@ -747,8 +829,9 @@ export function ExampleConversationScreen({
                         : styles.matchError
                     }
                   >
-                    Match score:{' '}
-                    {Math.round(botState.matchingResult.similarity)}%
+                    {t('matchScore', {
+                      score: Math.round(botState.matchingResult.similarity),
+                    })}
                     {!botState.matchingResult.passed && (
                       <span>
                         {' '}
@@ -899,7 +982,7 @@ export function ExampleConversationScreen({
           </section>
 
           <main className={styles.mobileChatArea} ref={mobileMessagesRef}>
-            <div className={styles.mobileTimestamp}>Today, 10:45 AM</div>
+            <div className={styles.mobileTimestamp}>{t('mobileTimestamp')}</div>
 
             {displayLines.map((line, index) => {
               const transcript = botState.userTranscripts[index];
@@ -951,7 +1034,7 @@ export function ExampleConversationScreen({
                     : styles.mobileMatchError
                 }
               >
-                Match: {Math.round(botState.matchingResult.similarity)}%
+                {t('match', { score: Math.round(botState.matchingResult.similarity) })}
               </div>
             )}
 
@@ -971,7 +1054,7 @@ export function ExampleConversationScreen({
             <div className={styles.mobileVoiceWrap}>
               <button
                 className={`${styles.mobileVoiceBtn} ${isListening ? styles.mobileVoiceBtnListening : ''} ${voiceDetected ? styles.mobileVoiceBtnVoiceDetected : ''}`}
-                aria-label='Tap to speak'
+                aria-label={t('tapToSpeak')}
                 onClick={isListening ? handleStopSpeaking : handleUserSpeak}
                 disabled={!canSpeak && !isListening}
               >
@@ -1036,6 +1119,20 @@ export function ExampleConversationScreen({
           </footer>
         </div>
       </div>
+
+      <CompletionPopup
+        isOpen={botState.conversationComplete}
+        onClose={handleRestartConversation}
+        statistics={{
+          totalSentences: botState.statistics.totalLines,
+          completedSentences: botState.statistics.completedLines,
+          retries: botState.statistics.totalRetries,
+          fluency: completionFluency,
+        }}
+        onListenAgain={replayLines.length > 0 ? handleListenAgain : undefined}
+        isListeningAgain={isReplayPlaying}
+        onPracticeAgain={handleRestartConversation}
+      />
     </>
   );
 }
