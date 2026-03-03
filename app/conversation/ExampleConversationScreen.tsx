@@ -55,7 +55,10 @@ export function ExampleConversationScreen({
   const recordingCountRef = useRef(0);
   const lineTimestampRef = useRef<Record<string, string>>({});
   const replayCancelledRef = useRef(false);
-  const [isReplayPlaying, setIsReplayPlaying] = useState(false);
+  const replayAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [activeReplayMode, setActiveReplayMode] = useState<
+    'none' | 'user-track' | 'full-dialogue'
+  >('none');
   const [userLineRecordingUrls, setUserLineRecordingUrls] = useState<
     Record<number, string>
   >({});
@@ -561,48 +564,101 @@ export function ExampleConversationScreen({
     (lineId: string, text: string, isUser: boolean, lineIndex: number) => {
       if (isUser) {
         const recordedUrl = userLineRecordingUrls[lineIndex];
-        if (!recordedUrl) {
+
+        if (recordedUrl) {
+          if (typeof window !== 'undefined' && window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+            sentenceUtteranceRef.current = null;
+          }
+
+          if (activeAudioLineId === lineId && sentenceAudioElementRef.current) {
+            if (!sentenceAudioElementRef.current.paused) {
+              sentenceAudioElementRef.current.pause();
+              setIsSentenceAudioPaused(true);
+              return;
+            }
+
+            void sentenceAudioElementRef.current.play();
+            setIsSentenceAudioPaused(false);
+            return;
+          }
+
+          if (sentenceAudioElementRef.current) {
+            sentenceAudioElementRef.current.pause();
+            sentenceAudioElementRef.current.currentTime = 0;
+          }
+
+          const audio = new Audio(recordedUrl);
+          audio.onended = () => {
+            sentenceAudioElementRef.current = null;
+            setActiveAudioLineId(null);
+            setIsSentenceAudioPaused(false);
+          };
+          audio.onerror = () => {
+            sentenceAudioElementRef.current = null;
+            setActiveAudioLineId(null);
+            setIsSentenceAudioPaused(false);
+          };
+
+          sentenceAudioElementRef.current = audio;
+          setActiveAudioLineId(lineId);
+          setIsSentenceAudioPaused(false);
+          void audio.play();
           return;
         }
 
-        if (typeof window !== 'undefined' && window.speechSynthesis) {
-          window.speechSynthesis.cancel();
-          sentenceUtteranceRef.current = null;
+        // Fallback for skipped user lines: read expected text with AI TTS.
+        if (!text.trim()) {
+          return;
         }
 
-        if (activeAudioLineId === lineId && sentenceAudioElementRef.current) {
-          if (!sentenceAudioElementRef.current.paused) {
-            sentenceAudioElementRef.current.pause();
+        if (typeof window === 'undefined' || !window.speechSynthesis) {
+          return;
+        }
+
+        const synth = window.speechSynthesis;
+
+        if (activeAudioLineId === lineId) {
+          if (synth.speaking && !synth.paused) {
+            synth.pause();
             setIsSentenceAudioPaused(true);
             return;
           }
 
-          void sentenceAudioElementRef.current.play();
+          if (synth.paused) {
+            synth.resume();
+            setIsSentenceAudioPaused(false);
+            return;
+          }
+        }
+
+        synth.cancel();
+
+        const fallbackUtterance = new SpeechSynthesisUtterance(text);
+        fallbackUtterance.lang = 'en-US';
+        fallbackUtterance.rate = 0.9;
+        fallbackUtterance.pitch = 1;
+        fallbackUtterance.volume = 1;
+
+        configureUtteranceVoice(fallbackUtterance, synth.getVoices());
+
+        fallbackUtterance.onstart = () => {
+          setActiveAudioLineId(lineId);
           setIsSentenceAudioPaused(false);
-          return;
-        }
+        };
 
-        if (sentenceAudioElementRef.current) {
-          sentenceAudioElementRef.current.pause();
-          sentenceAudioElementRef.current.currentTime = 0;
-        }
-
-        const audio = new Audio(recordedUrl);
-        audio.onended = () => {
-          sentenceAudioElementRef.current = null;
+        fallbackUtterance.onend = () => {
           setActiveAudioLineId(null);
           setIsSentenceAudioPaused(false);
         };
-        audio.onerror = () => {
-          sentenceAudioElementRef.current = null;
+
+        fallbackUtterance.onerror = () => {
           setActiveAudioLineId(null);
           setIsSentenceAudioPaused(false);
         };
 
-        sentenceAudioElementRef.current = audio;
-        setActiveAudioLineId(lineId);
-        setIsSentenceAudioPaused(false);
-        void audio.play();
+        sentenceUtteranceRef.current = fallbackUtterance;
+        synth.speak(fallbackUtterance);
         return;
       }
 
@@ -691,7 +747,12 @@ export function ExampleConversationScreen({
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
-    setIsReplayPlaying(false);
+    if (replayAudioRef.current) {
+      replayAudioRef.current.pause();
+      replayAudioRef.current.currentTime = 0;
+      replayAudioRef.current = null;
+    }
+    setActiveReplayMode('none');
     if (sentenceAudioElementRef.current) {
       sentenceAudioElementRef.current.pause();
       sentenceAudioElementRef.current = null;
@@ -710,9 +771,12 @@ export function ExampleConversationScreen({
       conversation.lines
         .map((line, index) => {
           if (line.speaker === 'user') {
+            const transcript = botState.userTranscripts[index];
+
             return {
               ...line,
-              text: botState.userTranscripts[index] ?? line.text,
+              text: transcript ?? line.text,
+              speaker: transcript ? line.speaker : 'ai',
             };
           }
 
@@ -722,50 +786,158 @@ export function ExampleConversationScreen({
     [conversation.lines, botState.userTranscripts],
   );
 
+  const userTrackSegments = useMemo(
+    () =>
+      conversation.lines.reduce<
+        Array<{
+          id: string;
+          text: string;
+          recordedUrl?: string;
+          useTts: boolean;
+        }>
+      >((segments, line, index) => {
+        if (line.speaker !== 'user') {
+          return segments;
+        }
+
+        const recordedUrl = userLineRecordingUrls[index];
+        const transcript = botState.userTranscripts[index];
+        const text = transcript ?? line.text;
+
+        if (!text.trim()) {
+          return segments;
+        }
+
+        segments.push({
+          id: line.id,
+          text,
+          recordedUrl,
+          useTts: !recordedUrl,
+        });
+
+        return segments;
+      }, []),
+    [conversation.lines, botState.userTranscripts, userLineRecordingUrls],
+  );
+
   const stopReplay = useCallback(() => {
     replayCancelledRef.current = true;
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
-    setIsReplayPlaying(false);
+    if (replayAudioRef.current) {
+      replayAudioRef.current.pause();
+      replayAudioRef.current.currentTime = 0;
+      replayAudioRef.current = null;
+    }
+    setActiveReplayMode('none');
   }, []);
 
-  const handleListenAgain = useCallback(async () => {
+  const playReplaySegments = useCallback(
+    async (
+      mode: 'user-track' | 'full-dialogue',
+      segments: Array<{
+        text: string;
+        speaker: 'ai' | 'user';
+        recordedUrl?: string;
+        useTts?: boolean;
+      }>,
+    ) => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) {
+        return;
+      }
+
+      if (activeReplayMode === mode) {
+        stopReplay();
+        return;
+      }
+
+      stopReplay();
+      replayCancelledRef.current = false;
+      setActiveReplayMode(mode);
+
+      const synth = window.speechSynthesis;
+      synth.cancel();
+
+      for (const segment of segments) {
+        if (replayCancelledRef.current) {
+          break;
+        }
+
+        if (segment.recordedUrl && !segment.useTts) {
+          await new Promise<void>((resolve) => {
+            const audio = new Audio(segment.recordedUrl);
+            replayAudioRef.current = audio;
+            audio.onended = () => {
+              replayAudioRef.current = null;
+              resolve();
+            };
+            audio.onerror = () => {
+              replayAudioRef.current = null;
+              resolve();
+            };
+            void audio.play().catch(() => {
+              replayAudioRef.current = null;
+              resolve();
+            });
+          });
+          continue;
+        }
+
+        await new Promise<void>((resolve) => {
+          const utterance = new SpeechSynthesisUtterance(segment.text);
+          utterance.lang = 'en-US';
+          utterance.rate = segment.speaker === 'ai' ? 0.9 : 0.95;
+          utterance.pitch = segment.speaker === 'ai' ? 1 : 1.05;
+          utterance.volume = 1;
+          configureUtteranceVoice(utterance, synth.getVoices());
+          utterance.onend = () => resolve();
+          utterance.onerror = () => resolve();
+          synth.speak(utterance);
+        });
+      }
+
+      setActiveReplayMode('none');
+    },
+    [activeReplayMode, stopReplay],
+  );
+
+  const handleListenUserTrack = useCallback(async () => {
+    const segments = userTrackSegments.map((segment) => ({
+      text: segment.text,
+      speaker: 'ai' as const,
+      recordedUrl: segment.recordedUrl,
+      useTts: segment.useTts,
+    }));
+
+    await playReplaySegments('user-track', segments);
+  }, [playReplaySegments, userTrackSegments]);
+
+  const handleListenFullDialogue = useCallback(async () => {
     if (typeof window === 'undefined' || !window.speechSynthesis) {
       return;
     }
 
-    if (isReplayPlaying) {
-      stopReplay();
-      return;
-    }
-
-    replayCancelledRef.current = false;
-    setIsReplayPlaying(true);
-
-    const synth = window.speechSynthesis;
-    synth.cancel();
-
-    for (const line of replayLines) {
-      if (replayCancelledRef.current) {
-        break;
+    const segments = replayLines.map((line, index) => {
+      if (line.speaker === 'user') {
+        const recordedUrl = userLineRecordingUrls[index];
+        return {
+          text: line.text,
+          speaker: 'ai' as const,
+          recordedUrl,
+          useTts: !recordedUrl,
+        };
       }
 
-      await new Promise<void>((resolve) => {
-        const utterance = new SpeechSynthesisUtterance(line.text);
-        utterance.lang = 'en-US';
-        utterance.rate = line.speaker === 'ai' ? 0.9 : 0.95;
-        utterance.pitch = line.speaker === 'ai' ? 1 : 1.05;
-        utterance.volume = 1;
-        configureUtteranceVoice(utterance, synth.getVoices());
-        utterance.onend = () => resolve();
-        utterance.onerror = () => resolve();
-        synth.speak(utterance);
-      });
-    }
+      return {
+        text: line.text,
+        speaker: 'ai' as const,
+        useTts: true,
+      };
+    });
 
-    setIsReplayPlaying(false);
-  }, [isReplayPlaying, replayLines, stopReplay]);
+    await playReplaySegments('full-dialogue', segments);
+  }, [playReplaySegments, replayLines, userLineRecordingUrls]);
 
   useEffect(() => {
     return () => {
@@ -1268,8 +1440,14 @@ export function ExampleConversationScreen({
           retries: botState.statistics.totalRetries,
           fluency: completionFluency,
         }}
-        onListenAgain={replayLines.length > 0 ? handleListenAgain : undefined}
-        isListeningAgain={isReplayPlaying}
+        onListenUserTrack={
+          userTrackSegments.length > 0 ? handleListenUserTrack : undefined
+        }
+        onListenFullDialogue={
+          replayLines.length > 0 ? handleListenFullDialogue : undefined
+        }
+        isListeningUserTrack={activeReplayMode === 'user-track'}
+        isListeningFullDialogue={activeReplayMode === 'full-dialogue'}
         onPracticeAgain={handleRestartConversation}
       />
     </>

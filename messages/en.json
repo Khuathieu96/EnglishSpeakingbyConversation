@@ -158,6 +158,8 @@
     "retriesUsed": "Retries Used",
     "averageMatch": "Average Match",
     "listenRecording": "🔊 Listen to Your Recording",
+    "listenUserTrack": "🔊 User Voice Track",
+    "listenFullDialogue": "🎧 Full Dialogue Replay",
     "pause": "Pause",
     "restart": "🔄 Restart",
     "backToList": "📋 Back to List"

@@ -14,8 +14,10 @@ interface CompletionPopupProps {
     retries: number;
     fluency: number;
   };
-  onListenAgain?: () => void;
-  isListeningAgain?: boolean;
+  onListenUserTrack?: () => void;
+  onListenFullDialogue?: () => void;
+  isListeningUserTrack?: boolean;
+  isListeningFullDialogue?: boolean;
   onPracticeAgain?: () => void;
   onBackToScenarios?: () => void;
 }
@@ -24,8 +26,10 @@ export function CompletionPopup({
   isOpen,
   onClose,
   statistics,
-  onListenAgain,
-  isListeningAgain = false,
+  onListenUserTrack,
+  onListenFullDialogue,
+  isListeningUserTrack = false,
+  isListeningFullDialogue = false,
   onPracticeAgain,
   onBackToScenarios,
 }: CompletionPopupProps) {
@@ -117,14 +121,25 @@ export function CompletionPopup({
             </div>
           </section>
 
-          {onListenAgain ? (
+          {onListenUserTrack ? (
             <button
               type='button'
               className={sampleStyles.listenBtn}
-              onClick={onListenAgain}
+              onClick={onListenUserTrack}
             >
               <span className='material-symbols-outlined'>volume_up</span>
-              {isListeningAgain ? t('pause') : t('listenRecording')}
+              {isListeningUserTrack ? t('pause') : t('listenUserTrack')}
+            </button>
+          ) : null}
+
+          {onListenFullDialogue ? (
+            <button
+              type='button'
+              className={sampleStyles.listenBtn}
+              onClick={onListenFullDialogue}
+            >
+              <span className='material-symbols-outlined'>graphic_eq</span>
+              {isListeningFullDialogue ? t('pause') : t('listenFullDialogue')}
             </button>
           ) : null}
 

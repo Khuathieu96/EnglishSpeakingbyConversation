@@ -391,9 +391,9 @@ export function useSpeechRecognition() {
       const finalizedResult =
         prev.result && !prev.result.isFinal
           ? {
-              ...prev.result,
-              isFinal: true,
-            }
+            ...prev.result,
+            isFinal: true,
+          }
           : prev.result;
 
       if (prev.result && !prev.result.isFinal) {

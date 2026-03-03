@@ -158,6 +158,8 @@
     "retriesUsed": "Số lần thử lại",
     "averageMatch": "Điểm khớp TB",
     "listenRecording": "Nghe lại bản ghi âm",
+    "listenUserTrack": "Nghe track giọng học viên",
+    "listenFullDialogue": "Nghe lại hội thoại đầy đủ",
     "pause": "Tạm dừng",
     "restart": "🔄 Làm lại",
     "backToList": "📋 Về danh sách"
