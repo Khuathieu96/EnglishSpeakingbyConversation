@@ -65,6 +65,9 @@ export function VoiceRecorder({
             {t('recording')}
           </div>
           <div className='text-sm text-gray-500 mt-1'>{t('speakClearly')}</div>
+          <div className='text-xs text-gray-500 mt-1'>
+            {t('autoStopSilence')}
+          </div>
         </div>
       )}
 

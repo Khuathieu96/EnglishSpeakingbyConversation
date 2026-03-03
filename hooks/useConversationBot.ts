@@ -99,6 +99,7 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
     if (
       !speechRecognition.result ||
       !speechRecognition.result.isFinal ||
+      speechRecognition.isListening ||
       botState.state !== 'waiting_for_user' ||
       isProcessingRef.current
     ) {
@@ -203,7 +204,14 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
     };
 
     processResult();
-  }, [speechRecognition.result, botState.state, botState.attemptCount, currentLine, audioRecorder]);
+  }, [
+    speechRecognition.result,
+    speechRecognition.isListening,
+    botState.state,
+    botState.attemptCount,
+    currentLine,
+    audioRecorder,
+  ]);
 
   // Move to next line
   const moveToNextLine = useCallback(() => {
@@ -334,7 +342,7 @@ export function useConversationBot({ conversation, onComplete }: UseConversation
     moveToNextLine,
   ]);
 
-  // If no words are detected within 3 seconds, stop current capture but stay on the same user turn
+  // If silence auto-stop is triggered (2s inactivity + 3s countdown), stay on the same user turn
   useEffect(() => {
     if (
       !speechRecognition.silenceTimeoutReached ||

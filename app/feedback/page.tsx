@@ -145,52 +145,57 @@ export default function FeedbackPage() {
 
   const renderedStories = useMemo(() => [...stories, ...stories], [stories]);
 
-  const loadFeedbackImages = useCallback(async (offset: number, limit: number) => {
-    if (isLoadingFeedbackImagesRef.current) {
-      return;
-    }
-
-    isLoadingFeedbackImagesRef.current = true;
-    setIsLoadingFeedbackImages(true);
-
-    try {
-      const response = await fetch(
-        `/api/feedback-images?offset=${offset}&limit=${limit}`,
-      );
-
-      if (!response.ok) {
+  const loadFeedbackImages = useCallback(
+    async (offset: number, limit: number) => {
+      if (isLoadingFeedbackImagesRef.current) {
         return;
       }
 
-      const json = (await response.json()) as FeedbackImagesResponse | string[];
+      isLoadingFeedbackImagesRef.current = true;
+      setIsLoadingFeedbackImages(true);
 
-      const incomingImages = Array.isArray(json) ? json : json.images;
-      const nextOffset = Array.isArray(json)
-        ? offset + incomingImages.length
-        : json.offset + incomingImages.length;
-      const hasMore = Array.isArray(json)
-        ? incomingImages.length === limit
-        : json.hasMore;
+      try {
+        const response = await fetch(
+          `/api/feedback-images?offset=${offset}&limit=${limit}`,
+        );
 
-      if (incomingImages.length > 0) {
-        setFeedbackImages((prevImages) => {
-          const imageSet = new Set(prevImages);
-          incomingImages.forEach((image) => imageSet.add(image));
-          return Array.from(imageSet);
-        });
+        if (!response.ok) {
+          return;
+        }
+
+        const json = (await response.json()) as
+          | FeedbackImagesResponse
+          | string[];
+
+        const incomingImages = Array.isArray(json) ? json : json.images;
+        const nextOffset = Array.isArray(json)
+          ? offset + incomingImages.length
+          : json.offset + incomingImages.length;
+        const hasMore = Array.isArray(json)
+          ? incomingImages.length === limit
+          : json.hasMore;
+
+        if (incomingImages.length > 0) {
+          setFeedbackImages((prevImages) => {
+            const imageSet = new Set(prevImages);
+            incomingImages.forEach((image) => imageSet.add(image));
+            return Array.from(imageSet);
+          });
+        }
+
+        setFeedbackOffset(nextOffset);
+        setHasMoreFeedbackImages(hasMore);
+      } catch {
+        if (offset === 0) {
+          setFeedbackImages([]);
+        }
+      } finally {
+        isLoadingFeedbackImagesRef.current = false;
+        setIsLoadingFeedbackImages(false);
       }
-
-      setFeedbackOffset(nextOffset);
-      setHasMoreFeedbackImages(hasMore);
-    } catch {
-      if (offset === 0) {
-        setFeedbackImages([]);
-      }
-    } finally {
-      isLoadingFeedbackImagesRef.current = false;
-      setIsLoadingFeedbackImages(false);
-    }
-  }, []);
+    },
+    [],
+  );
 
   useEffect(() => {
     void loadFeedbackImages(0, INITIAL_FEEDBACK_IMAGE_LIMIT);
@@ -230,7 +235,8 @@ export default function FeedbackPage() {
       return;
     }
 
-    const firstCard = carouselRef.current.firstElementChild as HTMLElement | null;
+    const firstCard = carouselRef.current
+      .firstElementChild as HTMLElement | null;
     const cardWidth = firstCard?.getBoundingClientRect().width ?? 0;
     const gap = 24;
     const distance = cardWidth + gap;
@@ -399,19 +405,24 @@ export default function FeedbackPage() {
           <div className={styles.storiesLoopViewport}>
             <div className={styles.storiesLoopTrack}>
               {renderedStories.map((story, index) => (
-                <article key={`${story.id}-${index}`} className={styles.storyCard}>
-                <p className={styles.storyRating}>{'★'.repeat(story.rating)}</p>
-                <p className={styles.storyQuote}>&quot;{story.quote}&quot;</p>
+                <article
+                  key={`${story.id}-${index}`}
+                  className={styles.storyCard}
+                >
+                  <p className={styles.storyRating}>
+                    {'★'.repeat(story.rating)}
+                  </p>
+                  <p className={styles.storyQuote}>&quot;{story.quote}&quot;</p>
 
-                <div className={styles.storyAuthor}>
-                  <div className={styles.storyAvatar}>{story.initials}</div>
-                  <div>
-                    <p className={styles.storyName}>{story.name}</p>
-                    <p className={styles.storyAchievement}>
-                      {story.achievement}
-                    </p>
+                  <div className={styles.storyAuthor}>
+                    <div className={styles.storyAvatar}>{story.initials}</div>
+                    <div>
+                      <p className={styles.storyName}>{story.name}</p>
+                      <p className={styles.storyAchievement}>
+                        {story.achievement}
+                      </p>
+                    </div>
                   </div>
-                </div>
                 </article>
               ))}
             </div>
@@ -502,24 +513,31 @@ export default function FeedbackPage() {
                     <span>{t('offer.line1Value')}</span>
                   </p>
                   <p className={styles.offerLine}>
-                    {t('offer.line2Prefix')} <span>{t('offer.line2Value')}</span>
+                    {t('offer.line2Prefix')}{' '}
+                    <span>{t('offer.line2Value')}</span>
                   </p>
                 </div>
               </div>
 
-              <Link href='https://anhngusec.edu.vn/mshoailinh' className={styles.offerTopButton}>
+              <Link
+                href='https://anhngusec.edu.vn/mshoailinh'
+                className={styles.offerTopButton}
+              >
                 {t('offer.topButton')}
               </Link>
             </div>
 
             <div className={styles.offerMainArea}>
-                <OfferCountdown labels={countdownLabels} />
+              <OfferCountdown labels={countdownLabels} />
 
               <div className={styles.offerHeadlineBox}>
                 <h3>{t('offer.headline')}</h3>
               </div>
 
-              <Link href='https://anhngusec.edu.vn/mshoailinh' className={styles.offerMainButton}>
+              <Link
+                href='https://anhngusec.edu.vn/mshoailinh'
+                className={styles.offerMainButton}
+              >
                 {t('offer.mainButton')}
               </Link>
             </div>
@@ -595,7 +613,10 @@ function OfferCountdown({ labels }: OfferCountdownProps) {
         persistState(activeDayKey, endTime);
       }
 
-      const secondsLeft = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      const secondsLeft = Math.max(
+        0,
+        Math.floor((endTime - Date.now()) / 1000),
+      );
       setRemainingSeconds(secondsLeft);
     };
 

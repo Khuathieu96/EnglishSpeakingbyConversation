@@ -113,7 +113,9 @@
     "aiAvatarAlt": "AI avatar",
     "userAvatarAlt": "User avatar",
     "sentenceAudioAria": "Play or pause sentence audio",
-    "mobileTimestamp": "Today, 10:45 AM"
+    "mobileTimestamp": "Today, 10:45 AM",
+    "autoStopNotice": "Auto stop after 5s of silence or press to stop",
+    "autoStopShort": "5s auto-stop"
   },
   "chat": {
     "processing": "Processing your speech...",
@@ -133,6 +135,7 @@
     "tapToSpeak": "🎤 Tap to Speak",
     "recording": "🔴 Recording...",
     "speakClearly": "Speak clearly into your microphone",
+    "autoStopSilence": "Auto stop after 5s of silence or press to stop",
     "stop": "⏹️ Stop",
     "skip": "⏭️ Skip",
     "attemptsRemaining": "Attempts remaining: {count}",

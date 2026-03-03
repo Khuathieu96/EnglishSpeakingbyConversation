@@ -122,7 +122,7 @@
 
 .asideTop h1 {
   margin-top: -8px;
-  font-size: 52px;
+  font-size: 40px;
   line-height: 1.04;
   letter-spacing: -0.02em;
 }
@@ -497,6 +497,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .primaryBtn:disabled {
@@ -511,6 +512,23 @@
   justify-content: center;
   gap: 2px;
   height: 36px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tapSpeakInlineNotice {
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 600;
+  color: #cbd5e1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .tapSpeakWaveBar {
@@ -1079,6 +1097,26 @@
   gap: 2px;
   height: 32px;
   margin-top: 4px;
+}
+
+.mobileWaveStatusRow {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileInlineNotice {
+  font-size: 8px;
+  line-height: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  position: absolute;
+  right: 0;
 }
 
 .mobileWaveformBar {

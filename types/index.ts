@@ -41,6 +41,7 @@ export interface SpeechRecognitionState {
   error: string | null;
   result: SpeechRecognitionResult | null;
   silenceTimeoutReached: boolean;
+  silenceCountdownRemaining: number | null;
 }
 
 // Text matching

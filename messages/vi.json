@@ -113,7 +113,9 @@
     "aiAvatarAlt": "Ảnh đại diện AI",
     "userAvatarAlt": "Ảnh đại diện người dùng",
     "sentenceAudioAria": "Phát hoặc tạm dừng âm thanh câu nói",
-    "mobileTimestamp": "Hôm nay, 10:45 SA"
+    "mobileTimestamp": "Hôm nay, 10:45 SA",
+    "autoStopNotice": "Tự dừng sau 5 giây im lặng hoặc nhấn để dừng",
+    "autoStopShort": "Ấn để dừng hoặc tự dừng sau 5s"
   },
   "chat": {
     "processing": "Đang xử lý giọng nói...",
@@ -133,6 +135,7 @@
     "tapToSpeak": "🎤 Nhấn để nói",
     "recording": "🔴 Đang ghi âm...",
     "speakClearly": "Nói rõ ràng vào micro",
+    "autoStopSilence": "Tự dừng sau 5 giây im lặng hoặc nhấn để dừng",
     "stop": "⏹️ Dừng",
     "skip": "⏭️ Bỏ qua",
     "attemptsRemaining": "Số lần thử còn lại: {count}",

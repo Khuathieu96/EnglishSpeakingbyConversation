@@ -60,35 +60,72 @@ declare global {
 }
 
 export function useSpeechRecognition() {
+  const INACTIVITY_WINDOW_MS = 2000;
+  const AUTO_STOP_COUNTDOWN_MS = 3000;
+
   const [state, setState] = useState<SpeechRecognitionState>({
     isListening: false,
     isProcessing: false,
     error: null,
     result: null,
     silenceTimeoutReached: false,
+    silenceCountdownRemaining: null,
   });
 
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
   const isStartingRef = useRef(false);
-  const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isRecognitionActiveRef = useRef(false);
+  const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const restartTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const stopReasonRef = useRef<'none' | 'manual' | 'silence'>('none');
+  const hasDetectedSpeechRef = useRef(false);
 
-  const clearSilenceTimeout = useCallback(() => {
-    if (silenceTimeoutRef.current) {
-      clearTimeout(silenceTimeoutRef.current);
-      silenceTimeoutRef.current = null;
+  const clearInactivityTimeout = useCallback(() => {
+    if (inactivityTimeoutRef.current) {
+      clearTimeout(inactivityTimeoutRef.current);
+      inactivityTimeoutRef.current = null;
+    }
+  }, []);
+
+  const clearCountdown = useCallback(() => {
+    if (countdownTimeoutRef.current) {
+      clearTimeout(countdownTimeoutRef.current);
+      countdownTimeoutRef.current = null;
+    }
+
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
+
+    setState((prev) => ({
+      ...prev,
+      silenceCountdownRemaining: null,
+    }));
+  }, []);
+
+  const clearRestartTimeout = useCallback(() => {
+    if (restartTimeoutRef.current) {
+      clearTimeout(restartTimeoutRef.current);
+      restartTimeoutRef.current = null;
     }
   }, []);
 
   const stopForSilence = useCallback((markNoSpeech: boolean) => {
+    stopReasonRef.current = 'silence';
+
     setState((prev) => ({
       ...prev,
       silenceTimeoutReached: markNoSpeech,
+      silenceCountdownRemaining: null,
       result:
         prev.result && !prev.result.isFinal
           ? {
-              ...prev.result,
-              isFinal: true,
-            }
+            ...prev.result,
+            isFinal: true,
+          }
           : prev.result,
       isProcessing: !!prev.result,
     }));
@@ -98,16 +135,42 @@ export function useSpeechRecognition() {
     }
   }, []);
 
-  const scheduleSilenceTimeout = useCallback(
-    (durationMs: number, markNoSpeech: boolean) => {
-      clearSilenceTimeout();
+  const startCountdownToAutoStop = useCallback(
+    (markNoSpeech: boolean) => {
+      clearCountdown();
 
-      silenceTimeoutRef.current = setTimeout(() => {
+      setState((prev) => ({
+        ...prev,
+        silenceCountdownRemaining: 3,
+      }));
+
+      countdownIntervalRef.current = setInterval(() => {
+        setState((prev) => ({
+          ...prev,
+          silenceCountdownRemaining:
+            prev.silenceCountdownRemaining === null
+              ? null
+              : Math.max(prev.silenceCountdownRemaining - 1, 0),
+        }));
+      }, 1000);
+
+      countdownTimeoutRef.current = setTimeout(() => {
+        clearCountdown();
         stopForSilence(markNoSpeech);
-      }, durationMs);
+      }, AUTO_STOP_COUNTDOWN_MS);
     },
-    [clearSilenceTimeout, stopForSilence],
+    [AUTO_STOP_COUNTDOWN_MS, clearCountdown, stopForSilence],
   );
+
+  const scheduleInactivityWindow = useCallback(() => {
+    clearInactivityTimeout();
+
+    inactivityTimeoutRef.current = setTimeout(() => {
+      if (stopReasonRef.current !== 'none') return;
+      const markNoSpeech = !hasDetectedSpeechRef.current;
+      startCountdownToAutoStop(markNoSpeech);
+    }, INACTIVITY_WINDOW_MS);
+  }, [INACTIVITY_WINDOW_MS, clearInactivityTimeout, startCountdownToAutoStop]);
 
   // Check if speech recognition is supported
   const isSupported = useCallback(() => {
@@ -138,16 +201,18 @@ export function useSpeechRecognition() {
 
     recognition.onstart = () => {
       isStartingRef.current = false;
+      isRecognitionActiveRef.current = true;
       setState((prev) => ({
         ...prev,
         isListening: true,
         isProcessing: false,
         error: null,
         silenceTimeoutReached: false,
+        silenceCountdownRemaining: null,
       }));
 
-      // Start initial no-speech timeout (no recognized words)
-      scheduleSilenceTimeout(3000, true);
+      // Start 2s inactivity window; if no text arrives, begin 3s countdown.
+      scheduleInactivityWindow();
     };
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -163,9 +228,11 @@ export function useSpeechRecognition() {
 
       const hasWords = alternative.transcript.trim().length > 0;
 
-      // While user is speaking, keep listening; stop only when silent for 2 seconds
+      // New text cancels countdown and restarts the 2s inactivity window.
       if (hasWords) {
-        scheduleSilenceTimeout(2000, false);
+        hasDetectedSpeechRef.current = true;
+        clearCountdown();
+        scheduleInactivityWindow();
       }
 
       setState((prev) => ({
@@ -177,25 +244,25 @@ export function useSpeechRecognition() {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       isStartingRef.current = false;
+      if (event.error === 'aborted') {
+        isRecognitionActiveRef.current = false;
+      }
       let errorMessage = MESSAGES.SPEECH_RECOGNITION_ERROR;
 
       if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+        stopReasonRef.current = 'manual';
         errorMessage = MESSAGES.MICROPHONE_PERMISSION_DENIED;
       } else if (event.error === 'no-speech') {
-        // Don't treat no-speech as a fatal error - just let it end naturally
-        // The user can try again by clicking the button
-        setState((prev) => ({
-          ...prev,
-          isListening: false,
-          isProcessing: false,
-          error: null, // Clear error for no-speech - not critical
-        }));
+        // Keep session alive for no-speech; onend will auto-restart until timeout.
         return;
       } else if (event.error === 'audio-capture') {
+        stopReasonRef.current = 'manual';
         errorMessage = 'No microphone found. Please check your device.';
       } else if (event.error === 'network') {
+        stopReasonRef.current = 'manual';
         errorMessage = 'Network error occurred. Please check your connection.';
       } else if (event.error === 'aborted') {
+        stopReasonRef.current = 'manual';
         // Aborted is normal when user stops manually
         setState((prev) => ({
           ...prev,
@@ -204,6 +271,8 @@ export function useSpeechRecognition() {
           error: null,
         }));
         return;
+      } else {
+        stopReasonRef.current = 'manual';
       }
 
       setState((prev) => ({
@@ -216,8 +285,38 @@ export function useSpeechRecognition() {
 
     recognition.onend = () => {
       isStartingRef.current = false;
+      isRecognitionActiveRef.current = false;
 
-      clearSilenceTimeout();
+      clearInactivityTimeout();
+      clearRestartTimeout();
+      clearCountdown();
+
+      if (stopReasonRef.current === 'none' && recognitionRef.current) {
+        restartTimeoutRef.current = setTimeout(() => {
+          if (
+            !recognitionRef.current ||
+            isStartingRef.current ||
+            isRecognitionActiveRef.current ||
+            stopReasonRef.current !== 'none'
+          ) {
+            return;
+          }
+
+          try {
+            isStartingRef.current = true;
+            recognitionRef.current.start();
+          } catch {
+            isStartingRef.current = false;
+            setState((prev) => ({
+              ...prev,
+              isListening: false,
+              isProcessing: false,
+            }));
+          }
+        }, 120);
+
+        return;
+      }
 
       setState((prev) => ({
         ...prev,
@@ -229,24 +328,42 @@ export function useSpeechRecognition() {
     recognitionRef.current = recognition;
 
     return () => {
-      clearSilenceTimeout();
+      clearInactivityTimeout();
+      clearRestartTimeout();
+      clearCountdown();
       if (recognitionRef.current) {
         recognitionRef.current.abort();
       }
     };
-  }, [clearSilenceTimeout, isSupported, scheduleSilenceTimeout]);
+  }, [
+    clearCountdown,
+    clearInactivityTimeout,
+    clearRestartTimeout,
+    isSupported,
+    scheduleInactivityWindow,
+  ]);
 
   // Start listening
   const startListening = useCallback(() => {
-    if (!recognitionRef.current || isStartingRef.current) return;
+    if (
+      !recognitionRef.current ||
+      isStartingRef.current ||
+      isRecognitionActiveRef.current
+    )
+      return;
 
     try {
+      clearRestartTimeout();
       isStartingRef.current = true;
+      stopReasonRef.current = 'none';
+      hasDetectedSpeechRef.current = false;
       setState((prev) => ({
         ...prev,
         error: null,
         result: null,
         silenceTimeoutReached: false,
+        silenceCountdownRemaining: null,
+        isListening: true,
       }));
       recognitionRef.current.start();
     } catch (error) {
@@ -257,26 +374,44 @@ export function useSpeechRecognition() {
         error: MESSAGES.SPEECH_RECOGNITION_ERROR,
       }));
     }
-  }, []);
+  }, [clearRestartTimeout]);
 
   // Stop listening
   const stopListening = useCallback(() => {
     if (!recognitionRef.current) return;
 
-    clearSilenceTimeout();
+    stopReasonRef.current = 'manual';
 
-    // If there's an interim result, mark it as final before stopping
+    clearInactivityTimeout();
+    clearRestartTimeout();
+    clearCountdown();
+
+    // Immediate manual stop UX: finalize current transcript and exit listening now.
     setState((prev) => {
+      const finalizedResult =
+        prev.result && !prev.result.isFinal
+          ? {
+              ...prev.result,
+              isFinal: true,
+            }
+          : prev.result;
+
       if (prev.result && !prev.result.isFinal) {
         return {
           ...prev,
-          result: {
-            ...prev.result,
-            isFinal: true,
-          },
+          result: finalizedResult,
+          isListening: false,
+          isProcessing: !!finalizedResult,
+          silenceCountdownRemaining: null,
         };
       }
-      return prev;
+
+      return {
+        ...prev,
+        isListening: false,
+        isProcessing: !!finalizedResult,
+        silenceCountdownRemaining: null,
+      };
     });
 
     try {
@@ -284,18 +419,25 @@ export function useSpeechRecognition() {
     } catch (error) {
       console.error('Error stopping recognition:', error);
     }
-  }, [clearSilenceTimeout]);
+  }, [clearCountdown, clearInactivityTimeout, clearRestartTimeout]);
 
   // Reset state
   const reset = useCallback(() => {
+    clearInactivityTimeout();
+    clearRestartTimeout();
+    clearCountdown();
+    stopReasonRef.current = 'manual';
+    hasDetectedSpeechRef.current = false;
+
     setState({
       isListening: false,
       isProcessing: false,
       error: null,
       result: null,
       silenceTimeoutReached: false,
+      silenceCountdownRemaining: null,
     });
-  }, []);
+  }, [clearCountdown, clearInactivityTimeout, clearRestartTimeout]);
 
   return {
     ...state,

@@ -9,6 +9,7 @@ import { useState, useCallback, useRef } from 'react';
 import {
   getSupportedMimeType,
   mergeAudioBlobs,
+  optimizeRecordedAudioBlob,
   requestMicrophonePermission,
 } from '@/lib/audioUtils';
 import { MESSAGES } from '@/lib/constants';
@@ -58,19 +59,26 @@ export function useAudioRecorder() {
       };
 
       mediaRecorder.onstop = () => {
-        // Create blob from chunks
-        const blob = new Blob(currentChunksRef.current, { type: mimeType });
+        const rawBlob = new Blob(currentChunksRef.current, { type: mimeType });
 
         setState((prev) => ({
           ...prev,
           isRecording: false,
-          recordedBlobs: [...prev.recordedBlobs, blob],
         }));
 
-        // Stop all tracks
         if (streamRef.current) {
           streamRef.current.getTracks().forEach((track) => track.stop());
         }
+
+        void (async () => {
+          const optimizedBlob = await optimizeRecordedAudioBlob(rawBlob);
+          const finalBlob = optimizedBlob.size > 0 ? optimizedBlob : rawBlob;
+
+          setState((prev) => ({
+            ...prev,
+            recordedBlobs: [...prev.recordedBlobs, finalBlob],
+          }));
+        })();
       };
 
       mediaRecorder.onerror = (event: Event) => {

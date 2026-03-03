@@ -25,7 +25,9 @@ export function ExampleConversationScreen({
 }: ExampleConversationScreenProps) {
   const conversation = getConversationById(conversationId) ?? conversations[0];
   const [hasStarted, setHasStarted] = useState(false);
-  const [activeAudioLineId, setActiveAudioLineId] = useState<string | null>(null);
+  const [activeAudioLineId, setActiveAudioLineId] = useState<string | null>(
+    null,
+  );
   const [isSentenceAudioPaused, setIsSentenceAudioPaused] = useState(false);
   const locale = useLocale();
   const t = useTranslations('conversation');
@@ -49,9 +51,14 @@ export function ExampleConversationScreen({
     [t],
   );
   const sentenceUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const sentenceAudioElementRef = useRef<HTMLAudioElement | null>(null);
+  const recordingCountRef = useRef(0);
   const lineTimestampRef = useRef<Record<string, string>>({});
   const replayCancelledRef = useRef(false);
   const [isReplayPlaying, setIsReplayPlaying] = useState(false);
+  const [userLineRecordingUrls, setUserLineRecordingUrls] = useState<
+    Record<number, string>
+  >({});
 
   const {
     botState,
@@ -131,8 +138,9 @@ export function ExampleConversationScreen({
     [timeFormatter],
   );
 
-  const isListening =
+  const isCaptureActive =
     speechRecognition.isListening || audioRecorder.isRecording;
+  const isDetecting = speechRecognition.isListening;
   const canSpeak = botState.state === 'waiting_for_user';
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -150,14 +158,50 @@ export function ExampleConversationScreen({
   const tailHoldFramesRef = useRef(0);
 
   // Voice-detected flag: true when the recogniser has picked up speech
-  const voiceDetected = isListening && !!speechRecognition.result?.transcript;
-
-  // Countdown timer (seconds remaining while listening)
-  const LISTEN_DURATION = 5;
-  const [countdown, setCountdown] = useState(LISTEN_DURATION);
-  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const voiceDetected =
+    isDetecting &&
+    !speechRecognition.silenceTimeoutReached &&
+    !!speechRecognition.result?.transcript;
+  const silenceCountdown = speechRecognition.silenceCountdownRemaining;
   const desktopMessagesRef = useRef<HTMLDivElement | null>(null);
   const mobileMessagesRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const total = audioRecorder.recordedBlobs.length;
+    if (total <= recordingCountRef.current) return;
+
+    if (currentLine?.speaker !== 'user') {
+      recordingCountRef.current = total;
+      return;
+    }
+
+    const latestBlob = audioRecorder.recordedBlobs[total - 1];
+    if (!latestBlob || latestBlob.size === 0) {
+      recordingCountRef.current = total;
+      return;
+    }
+
+    const lineIndex = botState.currentLineIndex;
+    const nextUrl = URL.createObjectURL(latestBlob);
+
+    setUserLineRecordingUrls((prev) => {
+      const previousUrl = prev[lineIndex];
+      if (previousUrl) {
+        URL.revokeObjectURL(previousUrl);
+      }
+
+      return {
+        ...prev,
+        [lineIndex]: nextUrl,
+      };
+    });
+
+    recordingCountRef.current = total;
+  }, [
+    audioRecorder.recordedBlobs,
+    botState.currentLineIndex,
+    currentLine?.speaker,
+  ]);
 
   // Equaliser bar helpers
   const MOBILE_BARS = 16;
@@ -218,27 +262,6 @@ export function ExampleConversationScreen({
     [getWaveBarHeight],
   );
 
-  useEffect(() => {
-    if (isListening) {
-      setCountdown(LISTEN_DURATION);
-      countdownRef.current = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            if (countdownRef.current) clearInterval(countdownRef.current);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      if (countdownRef.current) clearInterval(countdownRef.current);
-      setCountdown(LISTEN_DURATION);
-    }
-    return () => {
-      if (countdownRef.current) clearInterval(countdownRef.current);
-    };
-  }, [isListening]);
-
   const stopLevelMeter = useCallback(() => {
     if (levelFrameRef.current) {
       cancelAnimationFrame(levelFrameRef.current);
@@ -268,7 +291,7 @@ export function ExampleConversationScreen({
   }, [MOBILE_BARS, desktopBarsCount, setWaveHeights]);
 
   useEffect(() => {
-    if (!isListening) {
+    if (!isDetecting) {
       stopLevelMeter();
       return;
     }
@@ -304,7 +327,9 @@ export function ExampleConversationScreen({
         audioContextRef.current = audioContext;
         analyserRef.current = analyser;
         mediaStreamRef.current = stream;
-        desktopBarLevelsRef.current = new Array(desktopBarsCount).fill(baseWaveLevel);
+        desktopBarLevelsRef.current = new Array(desktopBarsCount).fill(
+          baseWaveLevel,
+        );
         mobileBarLevelsRef.current = new Array(MOBILE_BARS).fill(baseWaveLevel);
         desktopFilledRef.current = 0;
         mobileFilledRef.current = 0;
@@ -332,9 +357,10 @@ export function ExampleConversationScreen({
               ? totalEnergy / (floorEndBin - floorStartBin)
               : 0;
           const noiseFloor = noiseFloorRef.current;
-          const nextNoiseFloor = rawLevel < noiseFloor
-            ? noiseFloor * 0.92 + rawLevel * 0.08
-            : noiseFloor * 0.995 + rawLevel * 0.005;
+          const nextNoiseFloor =
+            rawLevel < noiseFloor
+              ? noiseFloor * 0.92 + rawLevel * 0.08
+              : noiseFloor * 0.995 + rawLevel * 0.005;
           noiseFloorRef.current = nextNoiseFloor;
 
           peakLevelRef.current = Math.max(
@@ -343,7 +369,10 @@ export function ExampleConversationScreen({
             nextNoiseFloor + 0.03,
           );
 
-          const dynamicRange = Math.max(0.02, peakLevelRef.current - nextNoiseFloor);
+          const dynamicRange = Math.max(
+            0.02,
+            peakLevelRef.current - nextNoiseFloor,
+          );
           const normalizedLevel = Math.max(
             0,
             Math.min(1, (rawLevel - nextNoiseFloor) / dynamicRange),
@@ -352,7 +381,10 @@ export function ExampleConversationScreen({
           const binWidth = audioContext.sampleRate / analyser.fftSize;
           const getBandEnergy = (startHz: number, endHz: number) => {
             const startBin = Math.max(2, Math.floor(startHz / binWidth));
-            const endBin = Math.min(data.length - 1, Math.ceil(endHz / binWidth));
+            const endBin = Math.min(
+              data.length - 1,
+              Math.ceil(endHz / binWidth),
+            );
             if (endBin <= startBin) return 0;
 
             let sum = 0;
@@ -368,12 +400,19 @@ export function ExampleConversationScreen({
           const speechBandEnergy = getBandEnergy(250, 3600);
           const lowNoiseEnergy = getBandEnergy(40, 180);
           const highNoiseEnergy = getBandEnergy(5000, 9000);
-          const noiseBandEnergy = lowNoiseEnergy * 0.58 + highNoiseEnergy * 0.42;
+          const noiseBandEnergy =
+            lowNoiseEnergy * 0.58 + highNoiseEnergy * 0.42;
 
-          const speechContrast = Math.max(0, speechBandEnergy - noiseBandEnergy * 0.78);
+          const speechContrast = Math.max(
+            0,
+            speechBandEnergy - noiseBandEnergy * 0.78,
+          );
           const speechPresence = Math.max(
             0,
-            Math.min(1, speechContrast / Math.max(0.06, speechBandEnergy + 0.01)),
+            Math.min(
+              1,
+              speechContrast / Math.max(0.06, speechBandEnergy + 0.01),
+            ),
           );
 
           let filteredLevel = normalizedLevel * (0.4 + speechPresence * 0.9);
@@ -415,12 +454,12 @@ export function ExampleConversationScreen({
 
           const desktopCurrent =
             desktopFilledRef.current < desktopBarsCount
-              ? nextDesktop[desktopIndex] ?? baseWaveLevel
-              : nextDesktop[0] ?? baseWaveLevel;
+              ? (nextDesktop[desktopIndex] ?? baseWaveLevel)
+              : (nextDesktop[0] ?? baseWaveLevel);
           const mobileCurrent =
             mobileFilledRef.current < MOBILE_BARS
-              ? nextMobile[mobileIndex] ?? baseWaveLevel
-              : nextMobile[0] ?? baseWaveLevel;
+              ? (nextMobile[mobileIndex] ?? baseWaveLevel)
+              : (nextMobile[0] ?? baseWaveLevel);
 
           const desktopTarget = Math.max(baseWaveLevel, filteredLevel * 1.15);
           const mobileTarget = Math.max(baseWaveLevel, filteredLevel * 1.05);
@@ -475,7 +514,7 @@ export function ExampleConversationScreen({
       cancelled = true;
       stopLevelMeter();
     };
-  }, [isListening, stopLevelMeter]);
+  }, [isDetecting, stopLevelMeter]);
 
   const scrollChatsToBottom = useCallback(() => {
     if (desktopMessagesRef.current) {
@@ -502,6 +541,14 @@ export function ExampleConversationScreen({
   ]);
 
   const stopSentenceAudio = useCallback(() => {
+    if (sentenceAudioElementRef.current) {
+      sentenceAudioElementRef.current.pause();
+      sentenceAudioElementRef.current.currentTime = 0;
+      sentenceAudioElementRef.current.onended = null;
+      sentenceAudioElementRef.current.onerror = null;
+      sentenceAudioElementRef.current = null;
+    }
+
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
 
     window.speechSynthesis.cancel();
@@ -511,8 +558,59 @@ export function ExampleConversationScreen({
   }, []);
 
   const handleSentenceAudioToggle = useCallback(
-    (lineId: string, text: string) => {
-      if (typeof window === 'undefined' || !window.speechSynthesis || !text.trim()) {
+    (lineId: string, text: string, isUser: boolean, lineIndex: number) => {
+      if (isUser) {
+        const recordedUrl = userLineRecordingUrls[lineIndex];
+        if (!recordedUrl) {
+          return;
+        }
+
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+          sentenceUtteranceRef.current = null;
+        }
+
+        if (activeAudioLineId === lineId && sentenceAudioElementRef.current) {
+          if (!sentenceAudioElementRef.current.paused) {
+            sentenceAudioElementRef.current.pause();
+            setIsSentenceAudioPaused(true);
+            return;
+          }
+
+          void sentenceAudioElementRef.current.play();
+          setIsSentenceAudioPaused(false);
+          return;
+        }
+
+        if (sentenceAudioElementRef.current) {
+          sentenceAudioElementRef.current.pause();
+          sentenceAudioElementRef.current.currentTime = 0;
+        }
+
+        const audio = new Audio(recordedUrl);
+        audio.onended = () => {
+          sentenceAudioElementRef.current = null;
+          setActiveAudioLineId(null);
+          setIsSentenceAudioPaused(false);
+        };
+        audio.onerror = () => {
+          sentenceAudioElementRef.current = null;
+          setActiveAudioLineId(null);
+          setIsSentenceAudioPaused(false);
+        };
+
+        sentenceAudioElementRef.current = audio;
+        setActiveAudioLineId(lineId);
+        setIsSentenceAudioPaused(false);
+        void audio.play();
+        return;
+      }
+
+      if (
+        typeof window === 'undefined' ||
+        !window.speechSynthesis ||
+        !text.trim()
+      ) {
         return;
       }
 
@@ -556,16 +654,23 @@ export function ExampleConversationScreen({
       setIsSentenceAudioPaused(false);
       synth.speak(utterance);
     },
-    [activeAudioLineId],
+    [activeAudioLineId, userLineRecordingUrls],
   );
 
   useEffect(() => {
     return () => {
+      Object.values(userLineRecordingUrls).forEach((url) =>
+        URL.revokeObjectURL(url),
+      );
+      if (sentenceAudioElementRef.current) {
+        sentenceAudioElementRef.current.pause();
+        sentenceAudioElementRef.current = null;
+      }
       if (typeof window !== 'undefined' && window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
     };
-  }, []);
+  }, [userLineRecordingUrls]);
 
   const isAiSpeakingNow = botState.state === 'ai_speaking';
 
@@ -587,6 +692,15 @@ export function ExampleConversationScreen({
       window.speechSynthesis.cancel();
     }
     setIsReplayPlaying(false);
+    if (sentenceAudioElementRef.current) {
+      sentenceAudioElementRef.current.pause();
+      sentenceAudioElementRef.current = null;
+    }
+    Object.values(userLineRecordingUrls).forEach((url) =>
+      URL.revokeObjectURL(url),
+    );
+    setUserLineRecordingUrls({});
+    recordingCountRef.current = 0;
     reset();
     setHasStarted(false);
   };
@@ -736,7 +850,8 @@ export function ExampleConversationScreen({
                 {displayLines.map((line, index) => {
                   const transcript = botState.userTranscripts[index];
                   const isUser = line.speaker === 'user';
-                  const sentenceText = isUser && transcript ? transcript : line.text;
+                  const sentenceText =
+                    isUser && transcript ? transcript : line.text;
                   const lineTime = getLineTimestamp(line.id);
                   const isActiveSentence = activeAudioLineId === line.id;
                   const sentenceIcon =
@@ -772,7 +887,12 @@ export function ExampleConversationScreen({
                               <button
                                 className={styles.sentenceAudioBtn}
                                 onClick={() =>
-                                  handleSentenceAudioToggle(line.id, sentenceText)
+                                  handleSentenceAudioToggle(
+                                    line.id,
+                                    sentenceText,
+                                    isUser,
+                                    index,
+                                  )
                                 }
                                 aria-label={t('sentenceAudioAria')}
                                 disabled={isAiSpeakingNow}
@@ -791,7 +911,12 @@ export function ExampleConversationScreen({
                               <button
                                 className={styles.sentenceAudioBtn}
                                 onClick={() =>
-                                  handleSentenceAudioToggle(line.id, sentenceText)
+                                  handleSentenceAudioToggle(
+                                    line.id,
+                                    sentenceText,
+                                    isUser,
+                                    index,
+                                  )
                                 }
                                 aria-label={t('sentenceAudioAria')}
                                 disabled={isAiSpeakingNow}
@@ -843,7 +968,6 @@ export function ExampleConversationScreen({
                     )}
                   </div>
                 )}
-
               </div>
 
               <div className={styles.desktopComposer}>
@@ -869,31 +993,37 @@ export function ExampleConversationScreen({
 
                 <div className={styles.desktopControls}>
                   <button
-                    onClick={isListening ? handleStopSpeaking : handleUserSpeak}
-                    disabled={!canSpeak && !isListening}
+                    onClick={
+                      isCaptureActive ? handleStopSpeaking : handleUserSpeak
+                    }
+                    disabled={!canSpeak && !isCaptureActive}
                     className={styles.primaryBtn}
-                    aria-label={isListening ? t('stop') : t('tapToSpeak')}
+                    aria-label={isCaptureActive ? t('stop') : t('tapToSpeak')}
                   >
-                    {isListening ? (
-                      <span className={styles.tapSpeakWave}>
-                        {Array.from({ length: desktopBarsCount }).map((_, i) => (
-                          <span
-                            key={i}
-                            className={styles.tapSpeakWaveBar}
-                            ref={(node) => {
-                              desktopWaveBarsRef.current[i] = node;
-                            }}
-                          />
-                        ))}
-                      </span>
+                    {isDetecting ? (
+                      <>
+                        <span className={styles.tapSpeakWave}>
+                          {Array.from({ length: desktopBarsCount }).map(
+                            (_, i) => (
+                              <span
+                                key={i}
+                                className={styles.tapSpeakWaveBar}
+                                ref={(node) => {
+                                  desktopWaveBarsRef.current[i] = node;
+                                }}
+                              />
+                            ),
+                          )}
+                        </span>
+                        <span className={styles.tapSpeakInlineNotice}>
+                          {t('autoStopShort')}
+                        </span>
+                      </>
                     ) : (
                       t('tapToSpeak')
                     )}
                   </button>
-                  <button
-                    onClick={handleSkipLine}
-                    className={styles.skipBtn}
-                  >
+                  <button onClick={handleSkipLine} className={styles.skipBtn}>
                     {t('skip')}
                   </button>
                 </div>
@@ -1034,7 +1164,9 @@ export function ExampleConversationScreen({
                     : styles.mobileMatchError
                 }
               >
-                {t('match', { score: Math.round(botState.matchingResult.similarity) })}
+                {t('match', {
+                  score: Math.round(botState.matchingResult.similarity),
+                })}
               </div>
             )}
 
@@ -1053,31 +1185,38 @@ export function ExampleConversationScreen({
           <footer className={styles.mobileBottomControls}>
             <div className={styles.mobileVoiceWrap}>
               <button
-                className={`${styles.mobileVoiceBtn} ${isListening ? styles.mobileVoiceBtnListening : ''} ${voiceDetected ? styles.mobileVoiceBtnVoiceDetected : ''}`}
+                className={`${styles.mobileVoiceBtn} ${isDetecting ? styles.mobileVoiceBtnListening : ''} ${voiceDetected ? styles.mobileVoiceBtnVoiceDetected : ''}`}
                 aria-label={t('tapToSpeak')}
-                onClick={isListening ? handleStopSpeaking : handleUserSpeak}
-                disabled={!canSpeak && !isListening}
+                onClick={isCaptureActive ? handleStopSpeaking : handleUserSpeak}
+                disabled={!canSpeak && !isCaptureActive}
               >
                 <span className='material-symbols-outlined'>mic</span>
               </button>
 
-              {isListening ? (
+              {isDetecting ? (
                 <>
-                  {/* Mini equalizer waveform */}
-                  <div className={styles.mobileWaveformRow}>
-                    {Array.from({ length: MOBILE_BARS }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`${styles.mobileWaveformBar} ${voiceDetected ? styles.waveActive : ''}`}
-                        ref={(node) => {
-                          mobileWaveBarsRef.current[i] = node;
-                        }}
-                      />
-                    ))}
+                  <div className={styles.mobileWaveStatusRow}>
+                    {/* Mini equalizer waveform */}
+                    <div className={styles.mobileWaveformRow}>
+                      {Array.from({ length: MOBILE_BARS }).map((_, i) => (
+                        <div
+                          key={i}
+                          className={`${styles.mobileWaveformBar} ${voiceDetected ? styles.waveActive : ''}`}
+                          ref={(node) => {
+                            mobileWaveBarsRef.current[i] = node;
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <span className={styles.mobileInlineNotice}>
+                      {t('autoStopShort')}
+                    </span>
                   </div>
-                  <span className={styles.mobileCountdownText}>
-                    {countdown}s
-                  </span>
+                  {silenceCountdown !== null && (
+                    <span className={styles.mobileCountdownText}>
+                      {silenceCountdown}s
+                    </span>
+                  )}
                   <p>{voiceDetected ? t('voiceDetected') : t('stop')}</p>
                 </>
               ) : (
