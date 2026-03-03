@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import {
@@ -85,6 +86,16 @@ const MAX_ACHIEVEMENT_LENGTH = 40;
 const MAX_STORY_LENGTH = 150;
 const COUNTDOWN_SECONDS = 2 * 60 * 60;
 const COUNTDOWN_STORAGE_KEY = 'feedback-daily-countdown';
+const INITIAL_FEEDBACK_IMAGE_LIMIT = 6;
+const FEEDBACK_IMAGE_BATCH_SIZE = 6;
+
+type FeedbackImagesResponse = {
+  images: string[];
+  total: number;
+  offset: number;
+  limit: number;
+  hasMore: boolean;
+};
 
 const getDayKey = (date: Date) => {
   const year = date.getFullYear();
@@ -97,7 +108,9 @@ export default function FeedbackPage() {
   const t = useTranslations('feedbackPage');
   const [stories, setStories] = useState<SuccessStory[]>(fallbackStories);
   const [feedbackImages, setFeedbackImages] = useState<string[]>([]);
-  const [remainingSeconds, setRemainingSeconds] = useState(COUNTDOWN_SECONDS);
+  const [feedbackOffset, setFeedbackOffset] = useState(0);
+  const [hasMoreFeedbackImages, setHasMoreFeedbackImages] = useState(true);
+  const [isLoadingFeedbackImages, setIsLoadingFeedbackImages] = useState(false);
   const [name, setName] = useState('');
   const [achievement, setAchievement] = useState('');
   const [storyText, setStoryText] = useState('');
@@ -107,6 +120,7 @@ export default function FeedbackPage() {
     text: string;
   } | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const isLoadingFeedbackImagesRef = useRef(false);
 
   useEffect(() => {
     const loadStories = async () => {
@@ -131,104 +145,85 @@ export default function FeedbackPage() {
 
   const renderedStories = useMemo(() => [...stories, ...stories], [stories]);
 
-  useEffect(() => {
-    let activeDayKey = getDayKey(new Date());
-    let endTime = Date.now() + COUNTDOWN_SECONDS * 1000;
+  const loadFeedbackImages = useCallback(async (offset: number, limit: number) => {
+    if (isLoadingFeedbackImagesRef.current) {
+      return;
+    }
 
-    const persistState = (dayKey: string, endAt: number) => {
-      localStorage.setItem(
-        COUNTDOWN_STORAGE_KEY,
-        JSON.stringify({ dayKey, endTime: endAt }),
+    isLoadingFeedbackImagesRef.current = true;
+    setIsLoadingFeedbackImages(true);
+
+    try {
+      const response = await fetch(
+        `/api/feedback-images?offset=${offset}&limit=${limit}`,
       );
-    };
 
-    const loadState = () => {
-      const todayKey = getDayKey(new Date());
-      const rawValue = localStorage.getItem(COUNTDOWN_STORAGE_KEY);
-
-      if (rawValue) {
-        try {
-          const parsed = JSON.parse(rawValue) as {
-            dayKey?: string;
-            endTime?: number;
-          };
-
-          if (
-            parsed.dayKey === todayKey &&
-            typeof parsed.endTime === 'number' &&
-            Number.isFinite(parsed.endTime)
-          ) {
-            activeDayKey = parsed.dayKey;
-            endTime = parsed.endTime;
-            return;
-          }
-        } catch {
-          // Ignore invalid localStorage payload and recreate a fresh countdown.
-        }
+      if (!response.ok) {
+        return;
       }
 
-      activeDayKey = todayKey;
-      endTime = Date.now() + COUNTDOWN_SECONDS * 1000;
-      persistState(activeDayKey, endTime);
-    };
+      const json = (await response.json()) as FeedbackImagesResponse | string[];
 
-    const updateCountdown = () => {
-      const now = new Date();
-      const todayKey = getDayKey(now);
+      const incomingImages = Array.isArray(json) ? json : json.images;
+      const nextOffset = Array.isArray(json)
+        ? offset + incomingImages.length
+        : json.offset + incomingImages.length;
+      const hasMore = Array.isArray(json)
+        ? incomingImages.length === limit
+        : json.hasMore;
 
-      if (todayKey !== activeDayKey) {
-        activeDayKey = todayKey;
-        endTime = Date.now() + COUNTDOWN_SECONDS * 1000;
-        persistState(activeDayKey, endTime);
+      if (incomingImages.length > 0) {
+        setFeedbackImages((prevImages) => {
+          const imageSet = new Set(prevImages);
+          incomingImages.forEach((image) => imageSet.add(image));
+          return Array.from(imageSet);
+        });
       }
 
-      const secondsLeft = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
-      setRemainingSeconds(secondsLeft);
-    };
-
-    loadState();
-    updateCountdown();
-
-    const intervalId = window.setInterval(updateCountdown, 1000);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, []);
-
-  useEffect(() => {
-    const loadFeedbackImages = async () => {
-      try {
-        const response = await fetch('/api/feedback-images');
-        if (!response.ok) {
-          return;
-        }
-
-        const json = (await response.json()) as string[];
-        if (Array.isArray(json) && json.length > 0) {
-          setFeedbackImages(json);
-        }
-      } catch {
+      setFeedbackOffset(nextOffset);
+      setHasMoreFeedbackImages(hasMore);
+    } catch {
+      if (offset === 0) {
         setFeedbackImages([]);
       }
-    };
-
-    void loadFeedbackImages();
+    } finally {
+      isLoadingFeedbackImagesRef.current = false;
+      setIsLoadingFeedbackImages(false);
+    }
   }, []);
 
-  const countdown = useMemo(() => {
-    const days = Math.floor(remainingSeconds / 86400);
-    const hours = Math.floor((remainingSeconds % 86400) / 3600);
-    const minutes = Math.floor((remainingSeconds % 3600) / 60);
-    const seconds = remainingSeconds % 60;
+  useEffect(() => {
+    void loadFeedbackImages(0, INITIAL_FEEDBACK_IMAGE_LIMIT);
+  }, [loadFeedbackImages]);
 
-    return {
-      day: String(days).padStart(2, '0'),
-      hour: String(hours).padStart(2, '0'),
-      min: String(minutes).padStart(2, '0'),
-      sec: String(seconds).padStart(2, '0'),
+  useEffect(() => {
+    if (!hasMoreFeedbackImages || isLoadingFeedbackImages) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void loadFeedbackImages(feedbackOffset, FEEDBACK_IMAGE_BATCH_SIZE);
+    }, 1600);
+
+    return () => {
+      window.clearTimeout(timeoutId);
     };
-  }, [remainingSeconds]);
+  }, [
+    feedbackOffset,
+    hasMoreFeedbackImages,
+    isLoadingFeedbackImages,
+    loadFeedbackImages,
+  ]);
+
+  const countdownLabels = useMemo(
+    () => ({
+      day: t('offer.timer.day'),
+      hour: t('offer.timer.hour'),
+      min: t('offer.timer.min'),
+      sec: t('offer.timer.sec'),
+    }),
+    [t],
+  );
 
   const scrollCarousel = useCallback((direction: 'prev' | 'next') => {
     if (!carouselRef.current) {
@@ -369,12 +364,16 @@ export default function FeedbackPage() {
             </button>
 
             <div className={styles.carouselTrack} ref={carouselRef}>
-              {feedbackImages.map((image) => (
+              {feedbackImages.map((image, index) => (
                 <article key={image} className={styles.feedbackCard}>
-                  <img
+                  <Image
                     src={image}
                     alt={t('feedbackSection.cardImageAlt')}
-                    loading='lazy'
+                    className={styles.feedbackCardImage}
+                    width={420}
+                    height={430}
+                    sizes='(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 33vw'
+                    priority={index < 2}
                   />
                 </article>
               ))}
@@ -514,24 +513,7 @@ export default function FeedbackPage() {
             </div>
 
             <div className={styles.offerMainArea}>
-              <div className={styles.offerTimer}>
-                <div className={styles.offerTimeUnit}>
-                  <span className={styles.offerTimeValue}>{countdown.day}</span>
-                  <span className={styles.offerTimeLabel}>{t('offer.timer.day')}</span>
-                </div>
-                <div className={styles.offerTimeUnit}>
-                  <span className={styles.offerTimeValue}>{countdown.hour}</span>
-                  <span className={styles.offerTimeLabel}>{t('offer.timer.hour')}</span>
-                </div>
-                <div className={styles.offerTimeUnit}>
-                  <span className={styles.offerTimeValue}>{countdown.min}</span>
-                  <span className={styles.offerTimeLabel}>{t('offer.timer.min')}</span>
-                </div>
-                <div className={styles.offerTimeUnit}>
-                  <span className={styles.offerTimeValue}>{countdown.sec}</span>
-                  <span className={styles.offerTimeLabel}>{t('offer.timer.sec')}</span>
-                </div>
-              </div>
+                <OfferCountdown labels={countdownLabels} />
 
               <div className={styles.offerHeadlineBox}>
                 <h3>{t('offer.headline')}</h3>
@@ -546,6 +528,119 @@ export default function FeedbackPage() {
       </main>
 
       <BottomFooter />
+    </div>
+  );
+}
+
+type OfferCountdownProps = {
+  labels: {
+    day: string;
+    hour: string;
+    min: string;
+    sec: string;
+  };
+};
+
+function OfferCountdown({ labels }: OfferCountdownProps) {
+  const [remainingSeconds, setRemainingSeconds] = useState(COUNTDOWN_SECONDS);
+
+  useEffect(() => {
+    let activeDayKey = getDayKey(new Date());
+    let endTime = Date.now() + COUNTDOWN_SECONDS * 1000;
+
+    const persistState = (dayKey: string, endAt: number) => {
+      localStorage.setItem(
+        COUNTDOWN_STORAGE_KEY,
+        JSON.stringify({ dayKey, endTime: endAt }),
+      );
+    };
+
+    const loadState = () => {
+      const todayKey = getDayKey(new Date());
+      const rawValue = localStorage.getItem(COUNTDOWN_STORAGE_KEY);
+
+      if (rawValue) {
+        try {
+          const parsed = JSON.parse(rawValue) as {
+            dayKey?: string;
+            endTime?: number;
+          };
+
+          if (
+            parsed.dayKey === todayKey &&
+            typeof parsed.endTime === 'number' &&
+            Number.isFinite(parsed.endTime)
+          ) {
+            activeDayKey = parsed.dayKey;
+            endTime = parsed.endTime;
+            return;
+          }
+        } catch {
+          // Ignore invalid localStorage payload and recreate a fresh countdown.
+        }
+      }
+
+      activeDayKey = todayKey;
+      endTime = Date.now() + COUNTDOWN_SECONDS * 1000;
+      persistState(activeDayKey, endTime);
+    };
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const todayKey = getDayKey(now);
+
+      if (todayKey !== activeDayKey) {
+        activeDayKey = todayKey;
+        endTime = Date.now() + COUNTDOWN_SECONDS * 1000;
+        persistState(activeDayKey, endTime);
+      }
+
+      const secondsLeft = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      setRemainingSeconds(secondsLeft);
+    };
+
+    loadState();
+    updateCountdown();
+
+    const intervalId = window.setInterval(updateCountdown, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  const countdown = useMemo(() => {
+    const days = Math.floor(remainingSeconds / 86400);
+    const hours = Math.floor((remainingSeconds % 86400) / 3600);
+    const minutes = Math.floor((remainingSeconds % 3600) / 60);
+    const seconds = remainingSeconds % 60;
+
+    return {
+      day: String(days).padStart(2, '0'),
+      hour: String(hours).padStart(2, '0'),
+      min: String(minutes).padStart(2, '0'),
+      sec: String(seconds).padStart(2, '0'),
+    };
+  }, [remainingSeconds]);
+
+  return (
+    <div className={styles.offerTimer}>
+      <div className={styles.offerTimeUnit}>
+        <span className={styles.offerTimeValue}>{countdown.day}</span>
+        <span className={styles.offerTimeLabel}>{labels.day}</span>
+      </div>
+      <div className={styles.offerTimeUnit}>
+        <span className={styles.offerTimeValue}>{countdown.hour}</span>
+        <span className={styles.offerTimeLabel}>{labels.hour}</span>
+      </div>
+      <div className={styles.offerTimeUnit}>
+        <span className={styles.offerTimeValue}>{countdown.min}</span>
+        <span className={styles.offerTimeLabel}>{labels.min}</span>
+      </div>
+      <div className={styles.offerTimeUnit}>
+        <span className={styles.offerTimeValue}>{countdown.sec}</span>
+        <span className={styles.offerTimeLabel}>{labels.sec}</span>
+      </div>
     </div>
   );
 }
